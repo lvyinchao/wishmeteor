@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getCardImageCopy, getCopy, getWishOccasions, type Locale, type Occasion, type Theme, type Tone, type WishOccasion } from '../lib/i18n';
 
 type Props = { locale: Locale };
@@ -39,6 +39,16 @@ export default function Creator({ locale }: Props) {
   const activeOccasions: Array<Occasion | WishOccasion> = kind === 'wish' ? wishOccasions : blessingOccasions;
   const occasionLabel = (value: Occasion | WishOccasion) => kind === 'wish' ? wishContext.items[value as WishOccasion] : t.occasions[value as Occasion];
 
+  useEffect(() => {
+    if (!result.length) { setCardImage(''); return; }
+    const controller = new AbortController();
+    setCardImage('');
+    fetch(`/api/cards/backgrounds/${theme}`, { signal: controller.signal, cache: 'force-cache' }).then((response) => {
+      if (response.ok && !controller.signal.aborted) setCardImage(`/api/cards/backgrounds/${theme}`);
+    }).catch(() => undefined);
+    return () => controller.abort();
+  }, [result, theme]);
+
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setLoading(true); setMessage(''); setCardImage('');
     const data = Object.fromEntries(new FormData(event.currentTarget));
@@ -65,7 +75,7 @@ export default function Creator({ locale }: Props) {
     if (!selected) return;
     setImageLoading(true); setMessage('');
     try {
-      const response = await fetch('/api/cards/render', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ content: selected, template: theme, locale, kind, occasion }) });
+      const response = await fetch('/api/cards/render', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ content: selected, template: theme, locale, kind, occasion, quality: 'hd' }) });
       const json = await response.json();
       if (!response.ok || typeof json.imageUrl !== 'string' || typeof json.statusUrl !== 'string') throw new Error('Card image generation failed.');
       for (let attempt = 0; attempt < 36; attempt += 1) {

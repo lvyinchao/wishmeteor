@@ -1,8 +1,9 @@
 import type { Locale } from './i18n';
 
 export type GenerationInput = { occasion: string; recipient?: string; name?: string; tone: string; length: string; note?: string; locale: Locale };
-export type AiEnv = { QWEN_API_KEY?: string; QWEN_BASE_URL?: string; QWEN_MODEL?: string; QWEN_IMAGE_BASE_URL?: string; QWEN_IMAGE_MODEL?: string };
-export type CardImageInput = { kind: 'blessing' | 'wish'; occasion: string; theme: 'meteor' | 'petal' | 'aurora' };
+export type AiEnv = { QWEN_API_KEY?: string; QWEN_BASE_URL?: string; QWEN_MODEL?: string; QWEN_IMAGE_BASE_URL?: string; QWEN_IMAGE_MODEL?: string; QWEN_IMAGE_FAST_MODEL?: string };
+export type CardImageQuality = 'fast' | 'hd';
+export type CardImageInput = { kind: 'blessing' | 'wish'; occasion: string; theme: 'meteor' | 'petal' | 'aurora'; quality: CardImageQuality };
 export class CardImageProviderError extends Error {
   constructor(readonly status: number, readonly providerCode?: string) { super(`Qwen image request failed (${status}).`); }
 }
@@ -55,13 +56,14 @@ export async function generateCardImage(input: CardImageInput, env: AiEnv) {
   if (!env.QWEN_API_KEY) throw new Error('AI image generation is not configured.');
   const occasion = cardOccasionContexts[input.occasion] || 'a gentle personal moment';
   const prompt = `Create a premium vertical 2:3 greeting-card background for ${input.kind === 'wish' ? 'a private wish' : 'a heartfelt blessing'} about ${occasion}. ${cardThemeDirections[input.theme]}. Leave generous calm negative space through the center for a later multilingual message overlay. Background artwork only: absolutely no text, letters, numbers, logos, signatures, watermarks, frames, or readable symbols. Elegant editorial paper-and-light aesthetic, high detail, no people.`;
+  const isFast = input.quality === 'fast';
   const response = await fetch(env.QWEN_IMAGE_BASE_URL || defaultImageEndpoint, {
     method: 'POST',
     headers: { Authorization: `Bearer ${env.QWEN_API_KEY}`, 'content-type': 'application/json' },
     body: JSON.stringify({
-      model: env.QWEN_IMAGE_MODEL || 'qwen-image-3.0-pro',
+      model: isFast ? (env.QWEN_IMAGE_FAST_MODEL || 'qwen-image-3.0') : (env.QWEN_IMAGE_MODEL || 'qwen-image-3.0-pro'),
       input: { messages: [{ role: 'user', content: [{ text: prompt }] }] },
-      parameters: { prompt_extend: true, prompt_extend_mode: 'agent', n: 1, size: '1024*1536', watermark: false, negative_prompt: 'text, lettering, words, numbers, logo, watermark, signature, border, frame, people' },
+      parameters: { prompt_extend: true, prompt_extend_mode: 'direct', n: 1, size: isFast ? '768*1152' : '1024*1536', watermark: false, negative_prompt: 'text, lettering, words, numbers, logo, watermark, signature, border, frame, people' },
     }),
   });
   if (!response.ok) {

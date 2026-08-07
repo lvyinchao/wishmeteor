@@ -53,14 +53,14 @@ export function getWishOccasions(locale: Locale) { return wishOccasionCopy[local
 
 type CardImageCopy = { generate: string; generating: string };
 const cardImageCopy: Record<Locale, CardImageCopy> = {
-  en: { generate: 'Generate card image', generating: 'Creating card image…' },
-  'zh-CN': { generate: '生成卡片配图', generating: '正在生成卡片配图…' },
-  ja: { generate: 'カード画像をつくる', generating: 'カード画像をつくっています…' },
-  fr: { generate: 'Créer l’image de la carte', generating: 'Création de l’image…' },
-  ru: { generate: 'Создать изображение для открытки', generating: 'Создаём изображение…' },
-  es: { generate: 'Crear imagen de tarjeta', generating: 'Creando la imagen…' },
-  hi: { generate: 'कार्ड की छवि बनाएँ', generating: 'कार्ड की छवि बनाई जा रही है…' },
-  pt: { generate: 'Criar imagem do cartão', generating: 'Criando imagem do cartão…' },
-  ms: { generate: 'Cipta imej kad', generating: 'Sedang mencipta imej kad…' },
+  en: { generate: 'Create unique HD background', generating: 'Creating HD background…' },
+  'zh-CN': { generate: '生成独特高清背景', generating: '正在生成高清背景…' },
+  ja: { generate: '個性的な高画質背景をつくる', generating: '高画質背景をつくっています…' },
+  fr: { generate: 'Créer un fond HD unique', generating: 'Création du fond HD…' },
+  ru: { generate: 'Создать уникальный HD-фон', generating: 'Создаём HD-фон…' },
+  es: { generate: 'Crear fondo HD único', generating: 'Creando fondo HD…' },
+  hi: { generate: 'अनोखा HD बैकग्राउंड बनाएँ', generating: 'HD बैकग्राउंड बनाया जा रहा है…' },
+  pt: { generate: 'Criar fundo HD exclusivo', generating: 'Criando fundo HD…' },
+  ms: { generate: 'Cipta latar HD unik', generating: 'Sedang mencipta latar HD…' },
 };
 export function getCardImageCopy(locale: Locale) { return cardImageCopy[locale]; }
