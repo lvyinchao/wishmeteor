@@ -1,15 +1,17 @@
 import { useMemo, useState } from 'react';
-import { getCopy, type Locale, type Occasion, type Theme, type Tone } from '../lib/i18n';
+import { getCopy, getWishOccasions, type Locale, type Occasion, type Theme, type Tone, type WishOccasion } from '../lib/i18n';
 
 type Props = { locale: Locale };
-const occasions: Occasion[] = ['birthday', 'anniversary', 'holiday', 'wedding', 'thanks', 'new-beginning'];
+const blessingOccasions: Occasion[] = ['birthday', 'anniversary', 'holiday', 'wedding', 'thanks', 'new-beginning'];
+const wishOccasions: WishOccasion[] = ['personal-growth', 'love-connection', 'wellbeing', 'future-dream', 'journey', 'quiet-hope'];
 const tones: Tone[] = ['warm', 'light', 'poetic', 'elegant'];
 const themes: Theme[] = ['meteor', 'petal', 'aurora'];
 
 export default function Creator({ locale }: Props) {
   const t = getCopy(locale).maker;
+  const wishContext = getWishOccasions(locale);
   const [kind, setKind] = useState<'blessing' | 'wish'>('blessing');
-  const [occasion, setOccasion] = useState<Occasion>('birthday');
+  const [occasion, setOccasion] = useState<Occasion | WishOccasion>('birthday');
   const [recipient, setRecipient] = useState('');
   const [tone, setTone] = useState<Tone>('warm');
   const [theme, setTheme] = useState<Theme>('meteor');
@@ -20,6 +22,8 @@ export default function Creator({ locale }: Props) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const activeTheme = useMemo(() => t.themes[theme], [t, theme]);
   const preview = selected || (kind === 'wish' ? t.wishPlaceholder : t.detailPlaceholder);
+  const activeOccasions: Array<Occasion | WishOccasion> = kind === 'wish' ? wishOccasions : blessingOccasions;
+  const occasionLabel = (value: Occasion | WishOccasion) => kind === 'wish' ? wishContext.items[value as WishOccasion] : t.occasions[value as Occasion];
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setLoading(true); setMessage('');
@@ -39,6 +43,7 @@ export default function Creator({ locale }: Props) {
     setResult([]);
     setSelected('');
     setMessage('');
+    setOccasion(next === 'wish' ? 'personal-growth' : 'birthday');
     setAdvancedOpen(next === 'blessing' && advancedOpen);
   }
   function download() {
@@ -51,14 +56,14 @@ export default function Creator({ locale }: Props) {
     <div className="maker-steps" aria-label={t.steps.join(' · ')}><span className="is-active">01 · {t.steps[0]}</span><span>02 · {t.steps[1]}</span><span>03 · {t.steps[2]}</span></div>
     <div className="maker-grid"><form className="maker-form" onSubmit={submit}>
       <div className="kind-toggle" role="group" aria-label={t.steps[0]}><button type="button" className={kind === 'blessing' ? 'selected' : ''} onClick={() => chooseKind('blessing')}>{t.blessing}</button><button type="button" className={kind === 'wish' ? 'selected' : ''} onClick={() => chooseKind('wish')}>{t.wish}</button></div>
-      <div className="field-block"><span className="field-label">{t.occasion}</span><div className="occasion-list">{occasions.map((item) => <button type="button" key={item} className={occasion === item ? 'selected' : ''} onClick={() => setOccasion(item)}>{t.occasions[item]}</button>)}</div></div>
+      <div className="field-block"><span className="field-label">{kind === 'wish' ? wishContext.label : t.occasion}</span><div className="occasion-list">{activeOccasions.map((item) => <button type="button" key={item} className={occasion === item ? 'selected' : ''} onClick={() => setOccasion(item)}>{occasionLabel(item)}</button>)}</div></div>
       {kind === 'blessing' && <label className="editor-field"><span>{t.recipient}</span><input name="recipient" value={recipient} onChange={(event) => setRecipient(event.target.value)} placeholder={t.recipientPlaceholder} /></label>}
       {kind === 'wish' && <label className="editor-field wish-intention"><span>{t.wishMind}</span><textarea name="note" required placeholder={t.wishPlaceholder} autoFocus /></label>}
       <label className="editor-field"><span>{t.tone}</span><select name="tone" value={tone} onChange={(event) => setTone(event.target.value as Tone)}>{tones.map((item) => <option key={item} value={item}>{t.tones[item]}</option>)}</select></label>
       {kind === 'blessing' && <details className="advanced" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}><summary>{t.personal} <i>+</i></summary><div><label className="editor-field"><span>{t.detail}</span><textarea name="note" placeholder={t.detailPlaceholder} /></label><label className="editor-field"><span>{t.name}</span><input name="name" placeholder={t.namePlaceholder} /></label></div></details>}
       <input type="hidden" name="length" value="medium" />
       <button className="make-button" disabled={loading}>{loading ? t.generating : kind === 'wish' ? t.generateWish : t.generateBlessing} <span>↗</span></button>{message && !result.length && <p className="form-message" role="status">{message}</p>}
-    </form><aside className={`live-card ${theme}`} aria-label={t.preview}><div className="card-halo" /><div className="card-paper"><div className="card-brand">wish<span>meteor</span><b>✦</b></div><p className="card-kicker">{kind === 'wish' ? t.wishKicker : `${t.forOccasion} ${t.occasions[occasion]}`}</p><textarea aria-label={t.preview} value={selected} placeholder={preview} onChange={(event) => setSelected(event.target.value)} /><div className="card-footer"><span>{activeTheme.name}</span><span>·</span><span>{t.madeWithCare}</span></div></div><p className="card-note">{activeTheme.note}</p></aside></div>
+    </form><aside className={`live-card ${theme}`} aria-label={t.preview}><div className="card-halo" /><div className="card-paper"><div className="card-brand">wish<span>meteor</span><b>✦</b></div><p className="card-kicker">{kind === 'wish' ? t.wishKicker : `${t.forOccasion} ${occasionLabel(occasion)}`}</p><textarea aria-label={t.preview} value={selected} placeholder={preview} onChange={(event) => setSelected(event.target.value)} /><div className="card-footer"><span>{activeTheme.name}</span><span>·</span><span>{t.madeWithCare}</span></div></div><p className="card-note">{activeTheme.note}</p></aside></div>
     {result.length > 0 && <div className="result-stage" aria-live="polite"><div className="result-intro"><span className="section-number">02</span><div><p className="eyebrow">{t.resultKicker}</p><h2>{t.resultTitle}</h2></div></div><div className="result-body"><div className="variants">{result.map((item, index) => <button type="button" key={item} className={selected === item ? 'chosen' : ''} onClick={() => setSelected(item)}><span>0{index + 1}</span>{item}</button>)}</div><div className="theme-picker"><p className="eyebrow">{t.makeCard}</p>{themes.map((item) => <button type="button" key={item} className={theme === item ? 'picked' : ''} onClick={() => setTheme(item)}><span className={`theme-swatch ${item}`} /><span><strong>{t.themes[item].name}</strong><small>{t.themes[item].note}</small></span></button>)}<div className="card-actions"><button type="button" className="quiet-button" onClick={() => navigator.clipboard.writeText(selected)}>{t.copy}</button><button type="button" className="quiet-button" onClick={download}>{t.download}</button>{kind === 'wish' && <button type="button" className="make-button" onClick={publish}>{t.share} <span>↗</span></button>}</div>{message && <p className="form-message" role="status">{message}</p>}</div></div></div>}
   </section>;
 }

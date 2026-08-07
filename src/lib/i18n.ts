@@ -1,6 +1,7 @@
 export const locales = ['en', 'zh-CN', 'ja', 'fr', 'ru', 'es', 'hi', 'pt', 'ms'] as const;
 export type Locale = (typeof locales)[number];
 export type Occasion = 'birthday' | 'anniversary' | 'holiday' | 'wedding' | 'thanks' | 'new-beginning';
+export type WishOccasion = 'personal-growth' | 'love-connection' | 'wellbeing' | 'future-dream' | 'journey' | 'quiet-hope';
 export type Tone = 'warm' | 'light' | 'poetic' | 'elegant';
 export type Theme = 'meteor' | 'petal' | 'aurora';
 type Copy = {
@@ -35,3 +36,17 @@ export const copy: Record<Locale, Copy> = {
 export function getCopy(locale: Locale) { return copy[locale]; }
 export function isLocale(value: string | undefined): value is Locale { return !!value && locales.includes(value as Locale); }
 export function detectLocale(header: string | null): Locale { const raw = header?.toLowerCase() ?? ''; return locales.find((locale) => raw.startsWith(locale.toLowerCase().split('-')[0])) ?? 'en'; }
+
+type WishOccasionCopy = { label: string; items: Record<WishOccasion, string> };
+const wishOccasionCopy: Record<Locale, WishOccasionCopy> = {
+  en: { label: 'What are you wishing for?', items: { 'personal-growth': 'Growth & courage', 'love-connection': 'Love & connection', wellbeing: 'Wellbeing', 'future-dream': 'A dream ahead', journey: 'A journey ahead', 'quiet-hope': 'A quiet hope' } },
+  'zh-CN': { label: '你想许下哪一种心愿？', items: { 'personal-growth': '成长与勇气', 'love-connection': '爱与联结', wellbeing: '平安与健康', 'future-dream': '未来的梦想', journey: '即将启程的旅途', 'quiet-hope': '一份安静的期盼' } },
+  ja: { label: 'どんな願いをかけますか？', items: { 'personal-growth': '成長と勇気', 'love-connection': '愛とつながり', wellbeing: '健やかな日々', 'future-dream': '叶えたい夢', journey: 'これからの旅', 'quiet-hope': '静かな願い' } },
+  fr: { label: 'Quel souhait voulez-vous faire ?', items: { 'personal-growth': 'Élan & courage', 'love-connection': 'Amour & liens', wellbeing: 'Bien-être', 'future-dream': 'Un rêve à suivre', journey: 'Un voyage à venir', 'quiet-hope': 'Un espoir discret' } },
+  ru: { label: 'Какое желание вы загадаете?', items: { 'personal-growth': 'Рост и смелость', 'love-connection': 'Любовь и близость', wellbeing: 'Благополучие', 'future-dream': 'Мечта впереди', journey: 'Предстоящий путь', 'quiet-hope': 'Тихая надежда' } },
+  es: { label: '¿Qué deseo quieres pedir?', items: { 'personal-growth': 'Crecimiento y valentía', 'love-connection': 'Amor y vínculos', wellbeing: 'Bienestar', 'future-dream': 'Un sueño por cumplir', journey: 'Un viaje por delante', 'quiet-hope': 'Una esperanza serena' } },
+  hi: { label: 'आप किस चीज़ की कामना कर रहे हैं?', items: { 'personal-growth': 'विकास और साहस', 'love-connection': 'प्रेम और जुड़ाव', wellbeing: 'स्वस्थ और सुखी जीवन', 'future-dream': 'आने वाला सपना', journey: 'आने वाली यात्रा', 'quiet-hope': 'एक शांत आशा' } },
+  pt: { label: 'Qual desejo você quer fazer?', items: { 'personal-growth': 'Crescimento e coragem', 'love-connection': 'Amor e conexão', wellbeing: 'Bem-estar', 'future-dream': 'Um sonho adiante', journey: 'Uma jornada adiante', 'quiet-hope': 'Uma esperança serena' } },
+  ms: { label: 'Hajat apa yang anda ingin lakukan?', items: { 'personal-growth': 'Pertumbuhan & keberanian', 'love-connection': 'Kasih & hubungan', wellbeing: 'Kesejahteraan', 'future-dream': 'Impian di hadapan', journey: 'Perjalanan yang mendatang', 'quiet-hope': 'Harapan yang tenang' } },
+};
+export function getWishOccasions(locale: Locale) { return wishOccasionCopy[locale]; }

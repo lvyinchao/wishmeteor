@@ -5,6 +5,14 @@ export type AiEnv = { QWEN_API_KEY?: string; QWEN_BASE_URL?: string; QWEN_MODEL?
 const blocked = /(kill myself|suicide|bomb|hate\s+\w+|credit card|password)/i;
 export function moderate(text: string) { return blocked.test(text) ? { verdict: 'blocked', reason: 'This content needs care before it can be shared publicly.' } : { verdict: 'published', reason: null }; }
 const languageNames: Record<Locale, string> = { en: 'English', 'zh-CN': 'Simplified Chinese', ja: 'Japanese', fr: 'French', ru: 'Russian', es: 'Spanish', hi: 'Hindi', pt: 'Portuguese', ms: 'Malay' };
+const wishOccasionContexts: Record<string, string> = {
+  'personal-growth': 'personal growth and courage',
+  'love-connection': 'love and meaningful connection',
+  wellbeing: 'wellbeing, peace, and health',
+  'future-dream': 'a dream they want to pursue',
+  journey: 'a journey or path ahead',
+  'quiet-hope': 'a quiet personal hope',
+};
 function text(value: unknown) { return typeof value === 'string' ? value : ''; }
 function parseVariants(content: string) {
   const match = content.match(/\[[\s\S]*\]/);
@@ -13,7 +21,7 @@ function parseVariants(content: string) {
 }
 export async function generateWithQwen(input: GenerationInput, kind: 'blessing' | 'wish', env: AiEnv) {
   if (!env.QWEN_API_KEY) throw new Error('AI generation is not configured. Add QWEN_API_KEY as a Worker secret.');
-  const target = kind === 'blessing' ? `Recipient: ${input.recipient || 'not specified'}; name: ${input.name || 'not specified'}; occasion: ${input.occasion}.` : `This is a private wish for ${input.occasion || 'a new beginning'}, never a promise or prediction.`;
+  const target = kind === 'blessing' ? `Recipient: ${input.recipient || 'not specified'}; name: ${input.name || 'not specified'}; occasion: ${input.occasion}.` : `This is a private wish about ${wishOccasionContexts[input.occasion] || 'a quiet personal hope'}, never a promise or prediction.`;
   const instruction = kind === 'blessing'
     ? 'Write exactly 3 distinct, ready-to-send blessings.'
     : 'Write exactly 1 gentle, first-person wish.';
