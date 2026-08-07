@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { env as workerEnv } from 'cloudflare:workers';
-import { generateCardImage, type AiEnv, type CardImageInput } from '../../../lib/ai';
+import { CardImageProviderError, generateCardImage, type AiEnv, type CardImageInput } from '../../../lib/ai';
 
 type MediaBucket = { put: (key: string, value: ArrayBuffer, options?: { httpMetadata?: { contentType?: string }; customMetadata?: Record<string, string> }) => Promise<unknown> };
 type CardEnv = AiEnv & { MEDIA?: MediaBucket };
@@ -19,6 +19,7 @@ export const POST: APIRoute = async ({ request }) => {
     return Response.json({ id, template, locale, status: 'ready', imageUrl: `/api/cards/${id}`, format: 'png' });
   } catch (error) {
     console.error('Card image generation failed', error instanceof Error ? error.message : 'Unknown error');
-    return Response.json({ errorCode: 'card_image_generation_failed', error: 'Card image generation failed.' }, { status: 502 });
+    const providerStatus = error instanceof CardImageProviderError ? error.status : undefined;
+    return Response.json({ errorCode: providerStatus ? 'card_image_provider_rejected' : 'card_image_generation_failed', providerStatus, error: 'Card image generation failed.' }, { status: 502 });
   }
 };

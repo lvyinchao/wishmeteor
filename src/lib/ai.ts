@@ -3,6 +3,9 @@ import type { Locale } from './i18n';
 export type GenerationInput = { occasion: string; recipient?: string; name?: string; tone: string; length: string; note?: string; locale: Locale };
 export type AiEnv = { QWEN_API_KEY?: string; QWEN_BASE_URL?: string; QWEN_MODEL?: string; QWEN_IMAGE_BASE_URL?: string; QWEN_IMAGE_MODEL?: string };
 export type CardImageInput = { kind: 'blessing' | 'wish'; occasion: string; theme: 'meteor' | 'petal' | 'aurora' };
+export class CardImageProviderError extends Error {
+  constructor(readonly status: number, readonly providerCode?: string) { super(`Qwen image request failed (${status}).`); }
+}
 const blocked = /(kill myself|suicide|bomb|hate\s+\w+|credit card|password)/i;
 export function moderate(text: string) { return blocked.test(text) ? { verdict: 'blocked', reason: 'This content needs care before it can be shared publicly.' } : { verdict: 'published', reason: null }; }
 const languageNames: Record<Locale, string> = { en: 'English', 'zh-CN': 'Simplified Chinese', ja: 'Japanese', fr: 'French', ru: 'Russian', es: 'Spanish', hi: 'Hindi', pt: 'Portuguese', ms: 'Malay' };
@@ -61,7 +64,10 @@ export async function generateCardImage(input: CardImageInput, env: AiEnv) {
       parameters: { prompt_extend: true, prompt_extend_mode: 'agent', n: 1, size: '1024*1536', watermark: false, negative_prompt: 'text, lettering, words, numbers, logo, watermark, signature, border, frame, people' },
     }),
   });
-  if (!response.ok) throw new Error(`Qwen image request failed (${response.status}).`);
+  if (!response.ok) {
+    const failure = await response.json().catch(() => ({})) as { code?: unknown };
+    throw new CardImageProviderError(response.status, typeof failure.code === 'string' ? failure.code : undefined);
+  }
   const payload = await response.json() as { output?: { choices?: Array<{ message?: { content?: Array<{ image?: unknown }> } }> } };
   const imageUrl = payload.output?.choices?.[0]?.message?.content?.find((item) => typeof item.image === 'string')?.image;
   if (typeof imageUrl !== 'string' || !imageUrl.startsWith('https://')) throw new Error('Qwen did not return a card image.');
