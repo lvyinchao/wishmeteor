@@ -1,0 +1,11 @@
+html {
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  height: 0;
+  width: 0;
+}
