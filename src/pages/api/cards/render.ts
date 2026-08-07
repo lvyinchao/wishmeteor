@@ -17,7 +17,8 @@ export const POST: APIRoute = async ({ request }) => {
     const image = await generateCardImage({ kind, occasion: typeof occasion === 'string' ? occasion : 'birthday', theme: template }, env);
     await env.MEDIA.put(`cards/${id}.png`, image.bytes, { httpMetadata: { contentType: image.contentType }, customMetadata: { locale: typeof locale === 'string' ? locale : 'en', template, kind } });
     return Response.json({ id, template, locale, status: 'ready', imageUrl: `/api/cards/${id}`, format: 'png' });
-  } catch {
+  } catch (error) {
+    console.error('Card image generation failed', error instanceof Error ? error.message : 'Unknown error');
     return Response.json({ errorCode: 'card_image_generation_failed', error: 'Card image generation failed.' }, { status: 502 });
   }
 };
