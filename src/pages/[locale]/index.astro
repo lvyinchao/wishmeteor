@@ -7,11 +7,21 @@ const locale = isLocale(Astro.params.locale) ? Astro.params.locale : 'en';
 const t = copy[locale];
 const canonical = `https://wishmeteor.net/${locale}`;
 ---
-<!doctype html><html lang={locale}><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>WishMeteor — AI blessings & wishes</title><meta name="description" content="Create a beautiful blessing, card, or wish in your language." /><link rel="canonical" href={canonical} />{locales.map((item) => <link rel="alternate" hreflang={item} href={`https://wishmeteor.net/${item}`} />)}<meta property="og:title" content="WishMeteor — Send a little wonder" /><meta property="og:description" content="Create a beautiful blessing, card, or wish." /><meta property="og:type" content="website" /><script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'WishMeteor', applicationCategory: 'LifestyleApplication', url: canonical })} /></head>
-<body><main><header><a class="brand" href={`/${locale}`}>wish<span>meteor</span></a><nav><a href="#create">{t.navCreate}</a><a href="#wishes">{t.navWishes}</a><a href="#plans">{t.navPricing}</a><details><summary>{localeMeta[locale].native}</summary><div class="language-menu">{locales.map((item) => <a href={`/${item}`}>{localeMeta[item].native}</a>)}</div></details></nav></header>
-<section class="hero"><div class="hero-copy"><p class="eyebrow">✦ {t.eyebrow}</p><h1>{t.title}</h1><p class="lede">{t.subtitle}</p><a class="hero-link" href="#create">Start with a feeling <span>↓</span></a></div><div class="hero-orbit" aria-hidden="true"><span class="orbit-line"/><span class="orbit-star star-a">✦</span><span class="orbit-star star-b">·</span><span class="orbit-star star-c">✧</span><p>made for<br/>ordinary magic</p></div></section>
-<Creator client:load locale={locale} />
-<section class="how-it-works"><div><span class="section-number">01</span><p class="eyebrow">A small ritual, made simple</p><h2>A thought becomes something you can hold.</h2></div><ol><li><span>01</span><p><strong>Choose a feeling</strong>Begin with a birthday, a quiet thank you, or a wish for yourself.</p></li><li><span>02</span><p><strong>Let language arrive</strong>Your words are shaped in your chosen language, then stay fully yours to edit.</p></li><li><span>03</span><p><strong>Send a little wonder</strong>Dress it in a card, save it, or leave a small light on the wish wall.</p></li></ol></section>
-<WishWall client:load />
-<section class="closing" id="plans"><p class="eyebrow">No account needed to begin</p><h2>Five little sparks,<br/><em>every month.</em></h2><p>Write a blessing, make a wish, and keep the words that matter close.</p><a class="make-button" href="#create">Make something lovely <span>↗</span></a></section>
-</main><footer><a class="brand" href={`/${locale}`}>wish<span>meteor</span></a><p>Made for gentle words and bright beginnings.</p><a href="#wishes">Community guidelines</a></footer></body></html>
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width" />
+    <title>{t.seo.title}</title><meta name="description" content={t.seo.description} /><link rel="canonical" href={canonical} />
+    {locales.map((item) => <link rel="alternate" hreflang={item} href={`https://wishmeteor.net/${item}`} />)}
+    <meta property="og:title" content={t.seo.ogTitle} /><meta property="og:description" content={t.seo.ogDescription} /><meta property="og:type" content="website" />
+    <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'WishMeteor', description: t.seo.description, applicationCategory: 'LifestyleApplication', url: canonical })} />
+  </head>
+  <body><main>
+    <header><a class="brand" href={`/${locale}`}>wish<span>meteor</span></a><nav><a href="#create">{t.nav.create}</a><a href="#wishes">{t.nav.wishes}</a><a href="#plans">{t.nav.plans}</a><details><summary>{localeMeta[locale].native}</summary><div class="language-menu">{locales.map((item) => <a href={`/${item}`}>{localeMeta[item].native}</a>)}</div></details></nav></header>
+    <section class="hero"><div class="hero-copy"><p class="eyebrow">✦ {t.hero.eyebrow}</p><h1>{t.hero.title}</h1><p class="lede">{t.hero.subtitle}</p><a class="hero-link" href="#create">{t.hero.start} <span>↓</span></a></div><div class="hero-orbit" aria-hidden="true"><span class="orbit-line"/><span class="orbit-star star-a">✦</span><span class="orbit-star star-b">·</span><span class="orbit-star star-c">✧</span><p>{t.hero.orbit.split('\n').map((line) => <>{line}<br /></>)}</p></div></section>
+    <Creator client:load locale={locale} />
+    <section class="how-it-works"><div><span class="section-number">01</span><p class="eyebrow">{t.flow.eyebrow}</p><h2>{t.flow.title}</h2></div><ol>{t.flow.steps.map((step, index) => <li><span>0{index + 1}</span><p><strong>{step.title}</strong>{step.text}</p></li>)}</ol></section>
+    <WishWall client:load locale={locale} />
+    <section class="closing" id="plans"><p class="eyebrow">{t.closing.eyebrow}</p><h2>{t.closing.title}<br/><em>{t.closing.emphasis}</em></h2><p>{t.closing.body}</p><a class="make-button" href="#create">{t.closing.action} <span>↗</span></a></section>
+  </main><footer><a class="brand" href={`/${locale}`}>wish<span>meteor</span></a><p>{t.footer.text}</p><a href="#wishes">{t.footer.guidelines}</a></footer></body>
+</html>

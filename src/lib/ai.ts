@@ -30,3 +30,19 @@ export async function generateWithQwen(input: GenerationInput, kind: 'blessing' 
   if (variants.length < (kind === 'blessing' ? 3 : 1)) throw new Error('Qwen returned an unusable response.');
   return kind === 'blessing' ? { variants } : { content: variants[0] };
 }
+export async function translateWish(content: string, sourceLocale: Locale, targetLocale: Locale, env: AiEnv) {
+  if (sourceLocale === targetLocale) return content;
+  if (!env.QWEN_API_KEY) throw new Error('AI translation is not configured.');
+  const response = await fetch(`${(env.QWEN_BASE_URL || 'https://llm-hkywi0m4u8k0u4ss.cn-beijing.maas.aliyuncs.com/compatible-mode/v1').replace(/\/$/, '')}/chat/completions`, {
+    method: 'POST', headers: { Authorization: `Bearer ${env.QWEN_API_KEY}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ model: env.QWEN_MODEL || 'qwen3.8-max', temperature: 0.2, max_tokens: 500, messages: [
+      { role: 'system', content: `Translate public wish text from ${languageNames[sourceLocale]} into ${languageNames[targetLocale]}. Preserve the first-person voice, meaning, and warmth. Return only the translation with no label, markdown, or quotation marks.` },
+      { role: 'user', content },
+    ] }),
+  });
+  if (!response.ok) throw new Error(`Qwen translation failed (${response.status}).`);
+  const payload = await response.json() as { choices?: Array<{ message?: { content?: unknown } }> };
+  const translation = text(payload.choices?.[0]?.message?.content).trim();
+  if (!translation) throw new Error('Qwen returned an empty translation.');
+  return translation;
+}
