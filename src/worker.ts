@@ -5,7 +5,15 @@ type QueueMessage = { body: unknown; ack: () => void };
 type QueueBatch = { messages: QueueMessage[] };
 
 export default {
-  fetch: astroWorker.fetch,
+  fetch(...args: Parameters<typeof astroWorker.fetch>) {
+    const [request] = args;
+    const url = new URL(request.url);
+    if (url.hostname === 'www.wishmeteor.net') {
+      url.hostname = 'wishmeteor.net';
+      return Response.redirect(url.toString(), 301);
+    }
+    return astroWorker.fetch(...args);
+  },
   async queue(batch: QueueBatch, env: CardGenerationEnv) {
     for (const message of batch.messages) {
       await processCardGeneration(message.body as CardGenerationJob, env);

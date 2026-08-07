@@ -5,7 +5,10 @@
   "compatibility_date": "2026-08-07",
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": "./dist", "binding": "ASSETS" },
-  "routes": [{ "pattern": "wishmeteor.net/*", "zone_name": "wishmeteor.net" }],
+  "routes": [
+    { "pattern": "wishmeteor.net/*", "zone_name": "wishmeteor.net" },
+    { "pattern": "www.wishmeteor.net/*", "zone_name": "wishmeteor.net" }
+  ],
   "vars": { "APP_URL": "https://wishmeteor.net" },
   "d1_databases": [{ "binding": "DB", "database_name": "wishmeteor", "database_id": "6217d5cf-0d16-45e0-9b77-4408187bf400" }],
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "wishmeteor-media" }],

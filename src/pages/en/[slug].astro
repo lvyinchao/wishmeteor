@@ -1,0 +1,100 @@
+---
+import '../../styles/global.css';
+import '../../styles/seo-pages.css';
+import { getSeoLandingPage, seoLandingPages } from '../../lib/seo-pages';
+
+const page = getSeoLandingPage(Astro.params.slug);
+
+if (!page) {
+  return new Response('Not found', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } });
+}
+
+const canonical = `https://wishmeteor.net/en/${page.slug}`;
+const related = seoLandingPages.filter((item) => item.slug !== page.slug).slice(0, 3);
+const webPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: page.title,
+  description: page.description,
+  url: canonical,
+  isPartOf: { '@type': 'WebSite', name: 'WishMeteor', url: 'https://wishmeteor.net/' },
+};
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: page.faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{page.title}</title>
+    <meta name="description" content={page.description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={page.title} />
+    <meta property="og:description" content={page.description} />
+    <meta property="og:url" content={canonical} />
+    <script type="application/ld+json" set:html={JSON.stringify(webPageSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </head>
+  <body class="seo-page">
+    <header class="seo-header">
+      <a class="brand" href="/en" aria-label="WishMeteor home">wish<span>meteor</span></a>
+      <a class="seo-header-action" href="/en#create">Create a card <span aria-hidden="true">↗</span></a>
+    </header>
+    <main>
+      <section class="seo-hero">
+        <div class="seo-hero-copy">
+          <p class="eyebrow">✦ {page.eyebrow}</p>
+          <h1>{page.headline}</h1>
+          <p class="seo-lede">{page.lede}</p>
+          <a class="seo-primary-action" href="/en#create">Create your message <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="seo-letter-stage" aria-hidden="true">
+          <div class="seo-orbit seo-orbit-one"></div><div class="seo-orbit seo-orbit-two"></div>
+          <div class="seo-meteor"></div><span class="seo-star seo-star-one">✦</span><span class="seo-star seo-star-two">·</span>
+          <article class="seo-letter">
+            <span>WISHMETEOR</span>
+            <p>{page.note}</p>
+            <i>✦</i>
+          </article>
+        </div>
+      </section>
+
+      <section class="seo-guide" aria-labelledby="guide-title">
+        <div class="seo-section-intro"><span>01</span><div><p class="eyebrow">A useful starting point</p><h2 id="guide-title">{page.guideTitle}</h2></div></div>
+        <div class="seo-guide-list">{page.guide.map((item, index) => <article><span>0{index + 1}</span><div><h3>{item.heading}</h3><p>{item.body}</p></div></article>)}</div>
+      </section>
+
+      <section class="seo-examples" aria-labelledby="examples-title">
+        <div class="seo-examples-heading"><p class="eyebrow">Keep what feels true</p><h2 id="examples-title">{page.examplesTitle}</h2><p>Use these as a beginning, then add the detail only you know.</p></div>
+        <div class="seo-example-list">{page.examples.map((example) => <article><span>{example.label}</span><blockquote>“{example.text}”</blockquote></article>)}</div>
+      </section>
+
+      <section class="seo-faq" aria-labelledby="faq-title">
+        <div><p class="eyebrow">A few clear answers</p><h2 id="faq-title">Questions, answered.</h2></div>
+        <div>{page.faqs.map((faq) => <details><summary>{faq.question}<span aria-hidden="true">+</span></summary><p>{faq.answer}</p></details>)}</div>
+      </section>
+
+      <section class="seo-related" aria-labelledby="related-title">
+        <p class="eyebrow">More ways to say it</p><h2 id="related-title">Find the right occasion.</h2>
+        <nav aria-label="Related writing guides">{related.map((item) => <a href={`/en/${item.slug}`}><span>{item.eyebrow}</span><b>{item.headline}</b><i aria-hidden="true">↗</i></a>)}</nav>
+      </section>
+
+      <section class="seo-closing">
+        <p class="eyebrow">No account needed to begin</p><h2>Start with a feeling.<br /><em>Make it a little brighter.</em></h2>
+        <a class="make-button" href="/en#create">Create a blessing or wish <span aria-hidden="true">↗</span></a>
+      </section>
+    </main>
+    <footer class="seo-footer"><a class="brand" href="/en">wish<span>meteor</span></a><p>For gentle words and bright beginnings.</p><a href="/en#create">Create a card</a></footer>
+  </body>
+</html>

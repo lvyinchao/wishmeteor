@@ -1,27 +1,33 @@
 ---
 import '../../styles/global.css';
 import '../../styles/card-image.css';
+import '../../styles/seo-pages.css';
 import Creator from '../../components/Creator';
 import WishWall from '../../components/WishWall';
 import { copy, isLocale, localeMeta, locales } from '../../lib/i18n';
+import { englishHomeSeo, seoLandingPages } from '../../lib/seo-pages';
 const locale = isLocale(Astro.params.locale) ? Astro.params.locale : 'en';
 const t = copy[locale];
+const seo = locale === 'en' ? { ...t.seo, title: englishHomeSeo.title, description: englishHomeSeo.description, ogTitle: englishHomeSeo.ogTitle, ogDescription: englishHomeSeo.ogDescription } : t.seo;
+const hero = locale === 'en' ? { ...t.hero, eyebrow: englishHomeSeo.eyebrow, title: englishHomeSeo.headline, subtitle: englishHomeSeo.subtitle } : t.hero;
 const canonical = `https://wishmeteor.net/${locale}`;
 ---
 <!doctype html>
 <html lang={locale}>
   <head>
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width" />
-    <title>{t.seo.title}</title><meta name="description" content={t.seo.description} /><link rel="canonical" href={canonical} />
+    <title>{seo.title}</title><meta name="description" content={seo.description} /><link rel="canonical" href={canonical} />
     {locales.map((item) => <link rel="alternate" hreflang={item} href={`https://wishmeteor.net/${item}`} />)}
-    <meta property="og:title" content={t.seo.ogTitle} /><meta property="og:description" content={t.seo.ogDescription} /><meta property="og:type" content="website" />
-    <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'WishMeteor', description: t.seo.description, applicationCategory: 'LifestyleApplication', url: canonical })} />
+    <link rel="alternate" hreflang="x-default" href="https://wishmeteor.net/en" />
+    <meta property="og:title" content={seo.ogTitle} /><meta property="og:description" content={seo.ogDescription} /><meta property="og:type" content="website" />
+    <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'WishMeteor', description: seo.description, applicationCategory: 'LifestyleApplication', url: canonical })} />
   </head>
   <body><main>
     <header><a class="brand" href={`/${locale}`}>wish<span>meteor</span></a><nav><a href="#create">{t.nav.create}</a><a href="#wishes">{t.nav.wishes}</a><a href="#plans">{t.nav.plans}</a><details><summary>{localeMeta[locale].native}</summary><div class="language-menu">{locales.map((item) => <a href={`/${item}`}>{localeMeta[item].native}</a>)}</div></details></nav></header>
-    <section class="hero"><div class="hero-copy"><p class="eyebrow">✦ {t.hero.eyebrow}</p><h1>{t.hero.title}</h1><p class="lede">{t.hero.subtitle}</p><a class="hero-link" href="#create">{t.hero.start} <span>↓</span></a></div><div class="hero-orbit" aria-hidden="true"><span class="orbit-line"/><span class="orbit-star star-a">✦</span><span class="orbit-star star-b">·</span><span class="orbit-star star-c">✧</span><p>{t.hero.orbit.split('\n').map((line) => <>{line}<br /></>)}</p></div></section>
+    <section class="hero"><div class="hero-copy"><p class="eyebrow">✦ {hero.eyebrow}</p><h1>{hero.title}</h1><p class="lede">{hero.subtitle}</p><a class="hero-link" href="#create">{t.hero.start} <span>↓</span></a></div><div class="hero-orbit" aria-hidden="true"><span class="orbit-line"/><span class="orbit-star star-a">✦</span><span class="orbit-star star-b">·</span><span class="orbit-star star-c">✧</span><p>{t.hero.orbit.split('\n').map((line) => <>{line}<br /></>)}</p></div></section>
     <Creator client:load locale={locale} />
     <section class="how-it-works"><div><span class="section-number">01</span><p class="eyebrow">{t.flow.eyebrow}</p><h2>{t.flow.title}</h2></div><ol>{t.flow.steps.map((step, index) => <li><span>0{index + 1}</span><p><strong>{step.title}</strong>{step.text}</p></li>)}</ol></section>
+    {locale === 'en' && <section class="home-seo" aria-labelledby="home-seo-title"><div class="home-seo-inner"><div><p class="eyebrow">Words for real moments</p><h2 id="home-seo-title">AI blessings for the moments that matter.</h2></div><div class="home-seo-copy"><p>WishMeteor is an AI blessing generator and greeting card maker for the messages that deserve more than a copied line. Start with a birthday, wedding, anniversary, thank you, or Christmas greeting; then choose a tone, add a memory, and edit until it sounds like you.</p><p>Your words stay yours. Use the generator for a first draft, refine the details that matter, and turn the finished message into a card you can download and share.</p><nav class="home-seo-links" aria-label="Writing guides">{seoLandingPages.map((page) => <a href={`/en/${page.slug}`}>{page.eyebrow} <span aria-hidden="true">↗</span></a>)}</nav></div></div></section>}
     <WishWall client:load locale={locale} />
     <section class="closing" id="plans"><p class="eyebrow">{t.closing.eyebrow}</p><h2>{t.closing.title}<br/><em>{t.closing.emphasis}</em></h2><p>{t.closing.body}</p><a class="make-button" href="#create">{t.closing.action} <span>↗</span></a></section>
   </main><footer><a class="brand" href={`/${locale}`}>wish<span>meteor</span></a><p>{t.footer.text}</p><a href="#wishes">{t.footer.guidelines}</a></footer></body>
