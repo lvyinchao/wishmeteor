@@ -67,8 +67,14 @@ export default function Creator({ locale }: Props) {
     try {
       const response = await fetch('/api/cards/render', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ content: selected, template: theme, locale, kind, occasion }) });
       const json = await response.json();
-      if (!response.ok || typeof json.imageUrl !== 'string') throw new Error('Card image generation failed.');
-      setCardImage(json.imageUrl);
+      if (!response.ok || typeof json.imageUrl !== 'string' || typeof json.statusUrl !== 'string') throw new Error('Card image generation failed.');
+      for (let attempt = 0; attempt < 36; attempt += 1) {
+        await new Promise((resolve) => window.setTimeout(resolve, 2500));
+        const task = await fetch(json.statusUrl, { cache: 'no-store' }).then((item) => item.json());
+        if (task.status === 'ready') { setCardImage(json.imageUrl); break; }
+        if (task.status === 'failed') throw new Error('Card image generation failed.');
+        if (attempt === 35) throw new Error('Card image generation timed out.');
+      }
     } catch { setMessage(t.error); }
     setImageLoading(false);
   }
