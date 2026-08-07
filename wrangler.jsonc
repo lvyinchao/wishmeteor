@@ -15,6 +15,6 @@
   ],
   "queues": {
     "producers": [{ "binding": "CARD_GENERATION_QUEUE", "queue": "wishmeteor-card-generation" }],
-    "consumers": [{ "queue": "wishmeteor-card-generation", "max_batch_size": 1, "max_retries": 2, "max_concurrency": 2 }]
+    "consumers": [{ "queue": "wishmeteor-card-generation", "max_batch_size": 1, "max_retries": 2, "max_concurrency": 1 }]
   }
 }
