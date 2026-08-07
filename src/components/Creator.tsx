@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getCardImageCopy, getCopy, getWishOccasions, type Locale, type Occasion, type Theme, type Tone, type WishOccasion } from '../lib/i18n';
 
 type Props = { locale: Locale };
@@ -34,7 +34,6 @@ export default function Creator({ locale }: Props) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [cardImage, setCardImage] = useState('');
   const [imageLoading, setImageLoading] = useState(false);
-  const activeTheme = useMemo(() => t.themes[theme], [t, theme]);
   const preview = selected || (kind === 'wish' ? t.wishPlaceholder : t.detailPlaceholder);
   const activeOccasions: Array<Occasion | WishOccasion> = kind === 'wish' ? wishOccasions : blessingOccasions;
   const occasionLabel = (value: Occasion | WishOccasion) => kind === 'wish' ? wishContext.items[value as WishOccasion] : t.occasions[value as Occasion];
@@ -95,9 +94,7 @@ export default function Creator({ locale }: Props) {
     const gradient = context.createRadialGradient(900, 260, 20, 650, 800, 1400); gradient.addColorStop(0, palette[1]); gradient.addColorStop(.55, palette[0]); gradient.addColorStop(1, palette[2]); context.fillStyle = gradient; context.fillRect(0, 0, canvas.width, canvas.height);
     if (cardImage) await new Promise<void>((resolve) => { const image = new Image(); image.onload = () => { context.drawImage(image, 0, 0, canvas.width, canvas.height); resolve(); }; image.onerror = () => resolve(); image.src = cardImage; });
     context.fillStyle = 'rgba(18, 17, 42, .38)'; context.fillRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = '#fffdf8'; context.font = '500 37px Georgia, serif'; context.fillText('WISHMETEOR', 100, 145);
-    context.font = '500 62px Georgia, serif'; const lines = wrapCardText(context, selected || preview, 980); const lineHeight = 88; const startY = Math.max(550, 900 - ((lines.length - 1) * lineHeight) / 2); lines.slice(0, 7).forEach((line, index) => context.fillText(line, 110, startY + index * lineHeight));
-    context.font = '500 24px sans-serif'; context.fillText(`${activeTheme.name}  ·  wishmeteor`, 100, 1690);
+    context.fillStyle = '#fffdf8'; context.font = '500 62px Georgia, serif'; const lines = wrapCardText(context, selected || preview, 980); const lineHeight = 88; const startY = Math.max(550, 900 - ((lines.length - 1) * lineHeight) / 2); lines.slice(0, 7).forEach((line, index) => context.fillText(line, 110, startY + index * lineHeight));
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png')); if (!blob) return;
     const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `wishmeteor-${locale}-${theme}.png`; link.click(); URL.revokeObjectURL(link.href);
   }
@@ -112,7 +109,7 @@ export default function Creator({ locale }: Props) {
       {kind === 'blessing' && <details className="advanced" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}><summary>{t.personal} <i>+</i></summary><div><label className="editor-field"><span>{t.detail}</span><textarea name="note" placeholder={t.detailPlaceholder} /></label><label className="editor-field"><span>{t.name}</span><input name="name" placeholder={t.namePlaceholder} /></label></div></details>}
       <input type="hidden" name="length" value="medium" />
       <button className="make-button" disabled={loading}>{loading ? t.generating : kind === 'wish' ? t.generateWish : t.generateBlessing} <span>↗</span></button>{message && !result.length && <p className="form-message" role="status">{message}</p>}
-    </form><aside className={`live-card ${theme} ${cardImage ? 'has-generated-image' : ''}`} aria-label={t.preview}><div className="card-halo" /><div className="card-paper" style={cardImage ? { backgroundImage: `linear-gradient(rgba(20, 17, 47, .25), rgba(20, 17, 47, .48)), url("${cardImage}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}><div className="card-brand">wish<span>meteor</span><b>✦</b></div><p className="card-kicker">{kind === 'wish' ? t.wishKicker : `${t.forOccasion} ${occasionLabel(occasion)}`}</p><textarea aria-label={t.preview} value={selected} placeholder={preview} onChange={(event) => setSelected(event.target.value)} /><div className="card-footer"><span>{activeTheme.name}</span><span>·</span><span>{t.madeWithCare}</span></div></div><p className="card-note">{activeTheme.note}</p></aside></div>
+    </form><aside className={`live-card ${theme} ${cardImage ? 'has-generated-image' : ''}`} aria-label={t.preview}><div className="card-halo" /><div className="card-paper" style={cardImage ? { backgroundImage: `linear-gradient(rgba(20, 17, 47, .25), rgba(20, 17, 47, .48)), url("${cardImage}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}><textarea aria-label={t.preview} value={selected} placeholder={preview} onChange={(event) => setSelected(event.target.value)} /></div></aside></div>
     {result.length > 0 && <div className="result-stage" aria-live="polite"><div className="result-intro"><span className="section-number">02</span><div><p className="eyebrow">{t.resultKicker}</p><h2>{t.resultTitle}</h2></div></div><div className="result-body"><div className="variants">{result.map((item, index) => <button type="button" key={item} className={selected === item ? 'chosen' : ''} onClick={() => setSelected(item)}><span>0{index + 1}</span>{item}</button>)}</div><div className="theme-picker"><p className="eyebrow">{t.makeCard}</p>{themes.map((item) => <button type="button" key={item} className={theme === item ? 'picked' : ''} onClick={() => { setTheme(item); setCardImage(''); }}><span className={`theme-swatch ${item}`} /><span><strong>{t.themes[item].name}</strong><small>{t.themes[item].note}</small></span></button>)}<div className="card-actions"><button type="button" className="make-button" disabled={imageLoading} onClick={generateCardImage}>{imageLoading ? imageCopy.generating : imageCopy.generate} <span>↗</span></button><button type="button" className="quiet-button" onClick={() => navigator.clipboard.writeText(selected)}>{t.copy}</button><button type="button" className="quiet-button" onClick={download}>{t.download}</button>{kind === 'wish' && <button type="button" className="make-button" onClick={publish}>{t.share} <span>↗</span></button>}</div>{message && <p className="form-message" role="status">{message}</p>}</div></div></div>}
   </section>;
 }
