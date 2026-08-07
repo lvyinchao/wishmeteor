@@ -7,6 +7,7 @@ export const POST: APIRoute = async ({ params, request, cookies }) => {
   const session = cookies.get('wm_session')?.value ?? crypto.randomUUID();
   const payload = { ...input, locale };
   if (params.kind !== 'wish' && params.kind !== 'blessing') return Response.json({ errorCode: 'generation_unavailable' }, { status: 404 });
+  if (params.kind === 'wish' && (typeof input.note !== 'string' || !input.note.trim())) return Response.json({ errorCode: 'wish_content_required' }, { status: 400 });
   const env = workerEnv as Record<string, string>;
   try {
     const body = await generateWithQwen(payload, params.kind, env);

@@ -13,7 +13,7 @@ function parseVariants(content: string) {
 }
 export async function generateWithQwen(input: GenerationInput, kind: 'blessing' | 'wish', env: AiEnv) {
   if (!env.QWEN_API_KEY) throw new Error('AI generation is not configured. Add QWEN_API_KEY as a Worker secret.');
-  const target = kind === 'blessing' ? `Recipient: ${input.recipient || 'not specified'}; name: ${input.name || 'not specified'}; occasion: ${input.occasion}.` : 'This is a private wish, never a promise or prediction.';
+  const target = kind === 'blessing' ? `Recipient: ${input.recipient || 'not specified'}; name: ${input.name || 'not specified'}; occasion: ${input.occasion}.` : `This is a private wish for ${input.occasion || 'a new beginning'}, never a promise or prediction.`;
   const instruction = kind === 'blessing'
     ? 'Write exactly 3 distinct, ready-to-send blessings.'
     : 'Write exactly 1 gentle, first-person wish.';
