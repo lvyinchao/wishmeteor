@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "wishmeteor",
-  "main": "./dist/_worker.js/index.js",
+  "main": "./src/worker.ts",
   "compatibility_date": "2026-08-07",
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": "./dist", "binding": "ASSETS" },
@@ -12,5 +12,9 @@
   "kv_namespaces": [
     { "binding": "CACHE", "id": "3f8e4dd5185143e2866a6d926c758df6" },
     { "binding": "SESSION", "id": "353ccb112cc4460da75bb73a3d82509a" }
-  ]
+  ],
+  "queues": {
+    "producers": [{ "binding": "CARD_GENERATION_QUEUE", "queue": "wishmeteor-card-generation" }],
+    "consumers": [{ "queue": "wishmeteor-card-generation", "max_batch_size": 1, "max_retries": 2, "max_concurrency": 1 }]
+  }
 }
