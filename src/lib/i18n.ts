@@ -50,3 +50,17 @@ const wishOccasionCopy: Record<Locale, WishOccasionCopy> = {
   ms: { label: 'Hajat apa yang anda ingin lakukan?', items: { 'personal-growth': 'Pertumbuhan & keberanian', 'love-connection': 'Kasih & hubungan', wellbeing: 'Kesejahteraan', 'future-dream': 'Impian di hadapan', journey: 'Perjalanan yang mendatang', 'quiet-hope': 'Harapan yang tenang' } },
 };
 export function getWishOccasions(locale: Locale) { return wishOccasionCopy[locale]; }
+
+type CardImageCopy = { generate: string; generating: string };
+const cardImageCopy: Record<Locale, CardImageCopy> = {
+  en: { generate: 'Generate card image', generating: 'Creating card image…' },
+  'zh-CN': { generate: '生成卡片配图', generating: '正在生成卡片配图…' },
+  ja: { generate: 'カード画像をつくる', generating: 'カード画像をつくっています…' },
+  fr: { generate: 'Créer l’image de la carte', generating: 'Création de l’image…' },
+  ru: { generate: 'Создать изображение для открытки', generating: 'Создаём изображение…' },
+  es: { generate: 'Crear imagen de tarjeta', generating: 'Creando la imagen…' },
+  hi: { generate: 'कार्ड की छवि बनाएँ', generating: 'कार्ड की छवि बनाई जा रही है…' },
+  pt: { generate: 'Criar imagem do cartão', generating: 'Criando imagem do cartão…' },
+  ms: { generate: 'Cipta imej kad', generating: 'Sedang mencipta imej kad…' },
+};
+export function getCardImageCopy(locale: Locale) { return cardImageCopy[locale]; }

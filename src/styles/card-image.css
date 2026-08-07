@@ -1,0 +1,7 @@
+.live-card.has-generated-image .card-brand,
+.live-card.has-generated-image .card-kicker,
+.live-card.has-generated-image textarea,
+.live-card.has-generated-image .card-footer {
+  color: #fffdf8 !important;
+  text-shadow: 0 2px 18px rgba(19, 15, 42, 0.72);
+}
