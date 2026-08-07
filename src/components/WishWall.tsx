@@ -1,0 +1,7 @@
+import { useEffect, useState } from 'react';
+type Wish = { id: string; content: string; theme: string; locale: string; supportCount: number; createdAt: string };
+export default function WishWall() {
+ const [wishes, setWishes] = useState<Wish[]>([]); const [filter, setFilter] = useState('latest');
+ useEffect(() => { fetch(`/api/wishes?sort=${filter}`).then((r) => r.json()).then((x) => setWishes(x.wishes || [])); }, [filter]);
+ return <section className="wall" id="wishes"><div className="section-intro"><span className="eyebrow">Anonymous, gentle, human</span><h2>A sky full of small hopes.</h2><p>Read a wish. Leave a little light. No profiles, comments, or pressure.</p></div><div className="filters">{['latest', 'popular', 'holiday'].map((item) => <button key={item} className={filter === item ? 'active' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div><div className="wish-grid">{wishes.map((wish) => <article className="wish" key={wish.id}><span>✦ {wish.theme}</span><p>{wish.content}</p><footer><small>{new Intl.DateTimeFormat(wish.locale, { month: 'short', day: 'numeric' }).format(new Date(wish.createdAt))}</small><button onClick={() => fetch(`/api/wishes/${wish.id}/support`, { method: 'POST' }).then(() => setWishes((items) => items.map((item) => item.id === wish.id ? { ...item, supportCount: item.supportCount + 1 } : item)))}>✦ {wish.supportCount}</button></footer></article>)}</div></section>;
+}

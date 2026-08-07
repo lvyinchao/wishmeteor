@@ -1,0 +1,18 @@
+---
+import '../../styles/global.css';
+import Creator from '../../components/Creator';
+import WishWall from '../../components/WishWall';
+import { copy, isLocale, localeMeta, locales } from '../../lib/i18n';
+const locale = isLocale(Astro.params.locale) ? Astro.params.locale : 'en';
+const t = copy[locale];
+const canonical = `https://wishmeteor.net/${locale}`;
+---
+<!doctype html><html lang={locale}><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>WishMeteor — AI blessings & wishes</title><meta name="description" content="Create a beautiful blessing, card, or wish in your language." /><link rel="canonical" href={canonical} />{locales.map((item) => <link rel="alternate" hreflang={item} href={`https://wishmeteor.net/${item}`} />)}<meta property="og:title" content="WishMeteor — Send a little wonder" /><meta property="og:description" content="Create a beautiful blessing, card, or wish." /><meta property="og:type" content="website" /><script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'WishMeteor', applicationCategory: 'LifestyleApplication', url: canonical })} /></head>
+<body><main><header><a class="brand" href={`/${locale}`}>wish<span>meteor</span></a><nav><a href="#create">{t.navCreate}</a><a href="#wishes">{t.navWishes}</a><a href="#plans">{t.navPricing}</a><details><summary>{localeMeta[locale].native}</summary><div class="language-menu">{locales.map((item) => <a href={`/${item}`}>{localeMeta[item].native}</a>)}</div></details></nav></header>
+<section class="hero"><div class="hero-copy"><p class="eyebrow">✦ {t.eyebrow}</p><h1>{t.title}</h1><p class="lede">{t.subtitle}</p><div class="hero-actions"><a class="primary" href="#create">{t.create} <span>↗</span></a><a class="text-link" href="#create">{t.wish} <span>↓</span></a></div></div><div class="meteor" aria-hidden="true"></div><div class="constellation" aria-hidden="true">✦　·　　✧<br/>　　·　　　⋆<br/>　　　✦</div></section>
+<section class="moments"><p class="eyebrow">{t.moments}</p><div>{['birthday','anniversary','holiday','wedding'].map((key) => <a href="#create">{t[key]} <span>↗</span></a>)}</div></section>
+<Creator client:load locale={locale} />
+<section class="feature"><div><p class="eyebrow">Made to be shared</p><h2>Words that look as lovely as they feel.</h2></div><p>Choose a template, edit every line, and take your card anywhere as a high-resolution download or a simple link.</p></section>
+<WishWall client:visible />
+<section class="plans" id="plans"><p class="eyebrow">Simple from the start</p><h2>Begin with five little sparks.</h2><div class="plan-row"><div><strong>Free</strong><span>5 creations every month</span></div><div><strong>Meteor</strong><span>More creations, premium templates — coming soon</span></div><button class="primary" disabled>Subscriptions soon</button></div></section>
+</main><footer><a class="brand" href={`/${locale}`}>wish<span>meteor</span></a><p>Made for gentle words and bright beginnings.</p><a href="#wishes">Community guidelines</a></footer></body></html>

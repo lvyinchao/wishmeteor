@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wishmeteor",
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2026-08-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "vars": { "APP_URL": "https://wishmeteor.net" },
+  "d1_databases": [{ "binding": "DB", "database_name": "wishmeteor", "database_id": "6217d5cf-0d16-45e0-9b77-4408187bf400" }],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "wishmeteor-media" }],
+  "kv_namespaces": [
+    { "binding": "CACHE", "id": "3f8e4dd5185143e2866a6d926c758df6" },
+    { "binding": "SESSION", "id": "353ccb112cc4460da75bb73a3d82509a" }
+  ]
+}
