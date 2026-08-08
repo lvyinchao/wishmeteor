@@ -6,4 +6,6 @@
 .card-paper textarea {
   padding: clamp(84px, 15%, 122px) 0;
   text-align: center;
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getCardImageCopy, getCopy, getWishOccasions, type Locale, type Occasion, type Theme, type Tone, type WishOccasion } from '../lib/i18n';
 
 type Props = { locale: Locale };
@@ -18,6 +18,17 @@ function wrapCardText(context: CanvasRenderingContext2D, value: string, width: n
   return lines;
 }
 
+function fitCanvasCardText(context: CanvasRenderingContext2D, value: string, width: number, height: number) {
+  for (let size = 62; size >= 18; size -= 2) {
+    context.font = `500 ${size}px Georgia, serif`;
+    const lines = wrapCardText(context, value, width);
+    const lineHeight = Math.round(size * 1.32);
+    if (lines.length * lineHeight <= height) return { lines, size, lineHeight };
+  }
+  context.font = '500 18px Georgia, serif';
+  return { lines: wrapCardText(context, value, width), size: 18, lineHeight: 24 };
+}
+
 export default function Creator({ locale }: Props) {
   const t = getCopy(locale).maker;
   const wishContext = getWishOccasions(locale);
@@ -34,6 +45,8 @@ export default function Creator({ locale }: Props) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [cardImage, setCardImage] = useState('');
   const [imageLoading, setImageLoading] = useState(false);
+  const cardTextRef = useRef<HTMLTextAreaElement>(null);
+  const [cardFontSize, setCardFontSize] = useState<number>();
   const preview = selected || (kind === 'wish' ? t.wishPlaceholder : t.detailPlaceholder);
   const activeOccasions: Array<Occasion | WishOccasion> = kind === 'wish' ? wishOccasions : blessingOccasions;
   const occasionLabel = (value: Occasion | WishOccasion) => kind === 'wish' ? wishContext.items[value as WishOccasion] : t.occasions[value as Occasion];
@@ -47,6 +60,25 @@ export default function Creator({ locale }: Props) {
     }).catch(() => undefined);
     return () => controller.abort();
   }, [result, theme]);
+
+  useEffect(() => {
+    const element = cardTextRef.current;
+    if (!element) return;
+    const fit = () => {
+      const maximum = Math.min(44, Math.max(26, element.clientWidth * .09));
+      let fontSize = maximum;
+      element.style.fontSize = `${fontSize}px`;
+      while (element.scrollHeight > element.clientHeight + 1 && fontSize > 15) {
+        fontSize -= .5;
+        element.style.fontSize = `${fontSize}px`;
+      }
+      setCardFontSize((current) => Math.abs((current ?? 0) - fontSize) > .1 ? fontSize : current);
+    };
+    const frame = window.requestAnimationFrame(fit);
+    const observer = new ResizeObserver(fit);
+    observer.observe(element);
+    return () => { window.cancelAnimationFrame(frame); observer.disconnect(); };
+  }, [selected, preview]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setLoading(true); setMessage(''); setCardImage('');
@@ -94,7 +126,7 @@ export default function Creator({ locale }: Props) {
     const gradient = context.createRadialGradient(900, 260, 20, 650, 800, 1400); gradient.addColorStop(0, palette[1]); gradient.addColorStop(.55, palette[0]); gradient.addColorStop(1, palette[2]); context.fillStyle = gradient; context.fillRect(0, 0, canvas.width, canvas.height);
     if (cardImage) await new Promise<void>((resolve) => { const image = new Image(); image.onload = () => { context.drawImage(image, 0, 0, canvas.width, canvas.height); resolve(); }; image.onerror = () => resolve(); image.src = cardImage; });
     context.fillStyle = 'rgba(18, 17, 42, .38)'; context.fillRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = '#fffdf8'; context.font = '500 62px Georgia, serif'; const lines = wrapCardText(context, selected || preview, 980); const lineHeight = 88; const startY = Math.max(550, 900 - ((lines.length - 1) * lineHeight) / 2); lines.slice(0, 7).forEach((line, index) => context.fillText(line, 110, startY + index * lineHeight));
+    context.fillStyle = '#fffdf8'; const layout = fitCanvasCardText(context, selected || preview, 980, 1060); context.font = `500 ${layout.size}px Georgia, serif`; const startY = Math.max(370, 900 - ((layout.lines.length - 1) * layout.lineHeight) / 2); layout.lines.forEach((line, index) => context.fillText(line, 110, startY + index * layout.lineHeight));
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png')); if (!blob) return;
     const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `wishmeteor-${locale}-${theme}.png`; link.click(); URL.revokeObjectURL(link.href);
   }
@@ -109,7 +141,7 @@ export default function Creator({ locale }: Props) {
       {kind === 'blessing' && <details className="advanced" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}><summary>{t.personal} <i>+</i></summary><div><label className="editor-field"><span>{t.detail}</span><textarea name="note" placeholder={t.detailPlaceholder} /></label><label className="editor-field"><span>{t.name}</span><input name="name" placeholder={t.namePlaceholder} /></label></div></details>}
       <input type="hidden" name="length" value="medium" />
       <button className="make-button" disabled={loading}>{loading ? t.generating : kind === 'wish' ? t.generateWish : t.generateBlessing} <span>↗</span></button>{message && !result.length && <p className="form-message" role="status">{message}</p>}
-    </form><aside className={`live-card ${theme} ${cardImage ? 'has-generated-image' : ''}`} aria-label={t.preview}><div className="card-halo" /><div className="card-paper" style={cardImage ? { backgroundImage: `linear-gradient(rgba(20, 17, 47, .25), rgba(20, 17, 47, .48)), url("${cardImage}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}><textarea aria-label={t.preview} value={selected} placeholder={preview} onChange={(event) => setSelected(event.target.value)} /></div></aside></div>
+    </form><aside className={`live-card ${theme} ${cardImage ? 'has-generated-image' : ''}`} aria-label={t.preview}><div className="card-halo" /><div className="card-paper" style={cardImage ? { backgroundImage: `linear-gradient(rgba(20, 17, 47, .25), rgba(20, 17, 47, .48)), url("${cardImage}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}><textarea ref={cardTextRef} aria-label={t.preview} value={selected} placeholder={preview} style={cardFontSize ? { fontSize: `${cardFontSize}px` } : undefined} onChange={(event) => setSelected(event.target.value)} /></div></aside></div>
     {result.length > 0 && <div className="result-stage" aria-live="polite"><div className="result-intro"><span className="section-number">02</span><div><p className="eyebrow">{t.resultKicker}</p><h2>{t.resultTitle}</h2></div></div><div className="result-body"><div className="variants">{result.map((item, index) => <button type="button" key={item} className={selected === item ? 'chosen' : ''} onClick={() => setSelected(item)}><span>0{index + 1}</span>{item}</button>)}</div><div className="theme-picker"><p className="eyebrow">{t.makeCard}</p>{themes.map((item) => <button type="button" key={item} className={theme === item ? 'picked' : ''} onClick={() => { setTheme(item); setCardImage(''); }}><span className={`theme-swatch ${item}`} /><span><strong>{t.themes[item].name}</strong><small>{t.themes[item].note}</small></span></button>)}<div className="card-actions"><button type="button" className="make-button" disabled={imageLoading} onClick={generateCardImage}>{imageLoading ? imageCopy.generating : imageCopy.generate} <span>↗</span></button><button type="button" className="quiet-button" onClick={() => navigator.clipboard.writeText(selected)}>{t.copy}</button><button type="button" className="quiet-button" onClick={download}>{t.download}</button>{kind === 'wish' && <button type="button" className="make-button" onClick={publish}>{t.share} <span>↗</span></button>}</div>{message && <p className="form-message" role="status">{message}</p>}</div></div></div>}
   </section>;
 }
