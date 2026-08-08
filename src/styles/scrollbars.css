@@ -9,3 +9,15 @@ html::-webkit-scrollbar {
   height: 0;
   width: 0;
 }
+
+.card-paper textarea {
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.card-paper textarea::-webkit-scrollbar {
+  display: none;
+  height: 0;
+  width: 0;
+}
