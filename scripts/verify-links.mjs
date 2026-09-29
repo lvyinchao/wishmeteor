@@ -23,6 +23,21 @@ const DRY = Boolean(args.dry);
 const ALL = Boolean(args.all);
 const today = new Date().toISOString().slice(0, 10);
 
+/**
+ * A network error is not evidence that a site is gone. Only a hard failure to resolve or
+ * connect, or an HTTP error status, counts as dead; anything the client could not parse
+ * (header overflow, TLS quirks, timeouts, bot walls) is unverifiable and costs the entry
+ * nothing, because nofollowing a live product over a fetch bug would be worse than useless.
+ */
+const DEAD_CODES = new Set(['ENOTFOUND', 'EAI_AGAIN', 'ECONNREFUSED', 'ERR_INVALID_URL']);
+
+function classifyError(error) {
+  const code = error?.cause?.code ?? error?.code ?? '';
+  if (DEAD_CODES.has(code)) return 'dead';
+  if (error?.name === 'AbortError' || /timeout/i.test(String(error?.message))) return 'blocked';
+  return 'blocked';
+}
+
 async function check(url) {
   for (const method of ['HEAD', 'GET']) {
     try {
@@ -35,14 +50,13 @@ async function check(url) {
       await response.body?.cancel();
       if (response.status === 405 || response.status === 501) continue;
       if (response.status < 400) return { state: 'live', status: response.status };
-      // A bot wall is not a dead link: many real products answer 403 to scripts.
       if ([401, 403, 429, 451].includes(response.status)) return { state: 'blocked', status: response.status };
       return { state: 'dead', status: response.status };
     } catch (error) {
-      if (method === 'GET') return { state: 'dead', status: 0, error: error.message.slice(0, 60) };
+      if (method === 'GET') return { state: classifyError(error), status: 0, error: String(error.message).slice(0, 50) };
     }
   }
-  return { state: 'dead', status: 0 };
+  return { state: 'blocked', status: 0 };
 }
 
 const { tools, errors } = loadCatalog();

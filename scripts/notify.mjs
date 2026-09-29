@@ -25,13 +25,6 @@ const DRY = Boolean(args.dry);
 const today = new Date().toISOString().slice(0, 10);
 loadEnv();
 
-const apiKey = process.env.RESEND_API_KEY;
-const from = process.env.RESEND_FROM || SITE.sender;
-if (!apiKey && !DRY) {
-  console.error('RESEND_API_KEY is not set. Add it to .env or the environment, then re-run.\nNothing was sent, so no wish is marked as notified.');
-  process.exit(3);
-}
-
 const { tools, errors } = loadCatalog();
 if (errors.length) {
   console.error(`content invalid, refusing to send:\n${errors.join('\n')}`);
@@ -40,8 +33,15 @@ if (errors.length) {
 
 const waiting = tools.filter((entry) => entry.origin === 'submitted' && entry.wish && !entry.wish.notifiedAt);
 if (!waiting.length) {
-  console.log('No unpublished blessings waiting.');
+  console.log('No published wishes are waiting for a blessing email.');
   process.exit(0);
+}
+
+const apiKey = process.env.RESEND_API_KEY;
+const from = process.env.RESEND_FROM || SITE.sender;
+if (!apiKey && !DRY) {
+  console.error(`RESEND_API_KEY is not set, and ${waiting.length} blessing(s) are waiting.\nAdd it to .env or the environment, then re-run. Nothing was sent, so nothing is marked notified.`);
+  process.exit(3);
 }
 
 const db = existsSync(join(PATHS.root, 'wrangler.jsonc')) ? makeD1({ local: Boolean(args.local) }) : null;
