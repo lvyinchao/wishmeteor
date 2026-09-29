@@ -3,7 +3,12 @@
   "name": "wishmeteor",
   "main": "./worker/index.ts",
   "compatibility_date": "2026-08-07",
-  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  },
   "routes": [
     { "pattern": "wishmeteor.net/*", "zone_name": "wishmeteor.net" },
     { "pattern": "www.wishmeteor.net/*", "zone_name": "wishmeteor.net" }
