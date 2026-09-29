@@ -1,0 +1,27 @@
+{
+  "name": "Suno",
+  "url": "https://suno.com",
+  "category": "audio-voice",
+  "tags": [
+    "music-generation",
+    "vocals",
+    "licensing"
+  ],
+  "summary": "Song generation with vocals and lyrics, the reference point for anything claiming to make music on demand.",
+  "description": "Suno got to full songs with vocals before anyone else made it convincing, which is why it is the benchmark in this corner: prompt a structure, get something you can actually listen to twice. For placeholders, mood boards, ad rough cuts and pure play it does what nothing else in the budget does.\n\nTwo serious limits. Ownership is a plan question — read the current terms before assuming anything you generate is safe to monetise — and the industry posture around training data is contested enough that brand work needs a lawyer's opinion rather than a product page. Musically it also averages: hooks are catchy, arrangements are conventional, and fine control over a specific part remains weak.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://suno.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

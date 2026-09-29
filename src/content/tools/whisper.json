@@ -1,0 +1,38 @@
+{
+  "name": "Whisper",
+  "url": "https://openai.com/index/whisper",
+  "category": "audio-voice",
+  "tags": [
+    "open-source",
+    "transcription",
+    "multilingual",
+    "self-hostable"
+  ],
+  "summary": "The open transcription model that became the default: robust multilingual speech-to-text you can run yourself.",
+  "description": "Whisper is the reason transcription stopped being a paid feature. It is robust across accents, handles code-switching and multiple languages, ships in several sizes, and the weights are open — so a pipeline can run on your own hardware with no per-minute invoice and no audio leaving the building. Most of the transcription products in this index are, at some layer, standing on it.\n\nIt is not a solved problem: it hallucinates on silence and music, timestamps need post-processing, and long-form accuracy drops on domain vocabulary nobody fine-tuned it for. If transcripts feed anything regulated, plan for a correction step and an evaluation set rather than trusting the raw output.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "announcement",
+      "url": "https://openai.com/index/whisper",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/openai/whisper",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://openai.com/index/whisper",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-30",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

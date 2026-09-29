@@ -1,0 +1,33 @@
+{
+  "name": "Exa",
+  "url": "https://exa.ai",
+  "category": "data-retrieval",
+  "tags": [
+    "neural-search",
+    "api",
+    "embeddings",
+    "research"
+  ],
+  "summary": "A search engine built for programs: embeddings-based web retrieval, find-similar, and contents returned ready to feed a model.",
+  "description": "Exa indexes the web so retrieval can be semantic rather than keyword-only: query by meaning, ask for pages similar to a known good one, categorise results by intent, and fetch the contents in a form you can paste into a context window. AI products use it as the grounding layer when the built-in search of a model is not enough.\n\nIt is still a search engine, with a search engine's failure modes — coverage gaps, recency trade-offs, and pages that exist in the index but are gone by the time you cite them. Per-query pricing is easy to underestimate inside an agent loop that searches several times per task.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://exa.ai",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://docs.exa.ai",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

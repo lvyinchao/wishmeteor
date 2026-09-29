@@ -1,0 +1,28 @@
+{
+  "name": "pgvector",
+  "url": "https://github.com/pgvector/pgvector",
+  "category": "data-retrieval",
+  "tags": [
+    "postgres",
+    "open-source",
+    "vector-search",
+    "sql"
+  ],
+  "summary": "Vector search as a Postgres extension — the reason a lot of products never needed a separate vector database.",
+  "description": "pgvector puts embeddings and approximate nearest-neighbour search inside the database you already operate, which means transactions, joins with your relational data, backups, access control and one less vendor in the architecture. For most products under a few million vectors that is the correct answer, and the operational maturity of Postgres is worth more than a benchmark delta.\n\nIt is not the right answer when the index has to be sharded across nodes, when filtered recall at very high dimensions is the bottleneck, or when your team does not want to tune Postgres. The honest way to choose is to measure your own query shape at your own scale rather than reading vendor comparisons.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "repository",
+      "url": "https://github.com/pgvector/pgvector",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

@@ -1,0 +1,27 @@
+{
+  "name": "Luma",
+  "url": "https://lumalabs.ai",
+  "category": "image-video",
+  "tags": [
+    "text-to-video",
+    "camera-motion",
+    "keyframes"
+  ],
+  "summary": "Video generation with unusually directable camera motion and start-and-end-frame control.",
+  "description": "Luma's Dream Machine took the interesting angle for video: control over the camera and over keyframes, so a shot can be planned rather than rolled. For product films, architectural fly-throughs and any cut that needs a specific move, that control matters more than peak photorealism, and the interface is built around it.\n\nThe rest of the category's physics still apply — motion artifacts on hands and text, duration ceilings, retries that add up in cost. Teams comparing it against Runway usually decide on which controls they need per shot, not on which demo looked better on a Tuesday.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://lumalabs.ai",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

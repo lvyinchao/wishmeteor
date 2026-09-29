@@ -1,0 +1,28 @@
+{
+  "name": "Falcon",
+  "url": "https://huggingface.co/tiiuae",
+  "category": "open-source-models",
+  "tags": [
+    "open-weights",
+    "research",
+    "eu",
+    "fine-tuning"
+  ],
+  "summary": "Models from Abu Dhabi's TII research institute, notable for publishing training data details alongside weights.",
+  "description": "Falcon earned trust by being unusually transparent: refiner weights with known training data provenance, technical reports that describe the mixture, and small variants intended for fine-tuning rather than for show. Teams building a domain-specific model with a need to document how the base was made have a real advantage choosing this lineage.\n\nThe ecosystem around it is smaller than Llama's, so quantisations, serving recipes and community fine-tunes appear more slowly, and the top-end capability race has been won elsewhere. It is a strong pick when documentation and control matter more than having the largest number of people already running it.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "hub",
+      "url": "https://huggingface.co/tiiuae",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

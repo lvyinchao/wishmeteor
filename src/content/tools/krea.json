@@ -1,0 +1,33 @@
+{
+  "name": "Krea",
+  "url": "https://krea.ai",
+  "category": "image-video",
+  "tags": [
+    "realtime",
+    "canvas",
+    "upscaling",
+    "reference"
+  ],
+  "summary": "A canvas-first image tool whose real strength is editing: realtime sketching, reference control and upscaling.",
+  "description": "Krea is where a lot of visual people end up when generation alone stops being interesting: you draw or drop a reference and the image updates while you work, and the enhance and upscale passes are good enough to be part of a real delivery workflow. It aggregates several models, which suits users who want the best available option per task rather than loyalty to one.\n\nBecause the value is in the interaction, teams that need headless automation care about the API and its limits, not the canvas. And aggregation means the output look changes when a third-party model behind it changes — a surprise at the worst possible moment in a brand context.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://krea.ai",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://krea.ai",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-30",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

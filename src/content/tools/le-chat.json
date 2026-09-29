@@ -1,0 +1,38 @@
+{
+  "name": "Le Chat",
+  "url": "https://chat.mistral.ai",
+  "category": "ai-chat",
+  "tags": [
+    "assistant",
+    "eu",
+    "open-weights",
+    "agents"
+  ],
+  "summary": "Mistral's assistant, useful for European teams and for people who want the same models via API or self-hosted.",
+  "description": "Le Chat is the front door to Mistral's models, and the reason to care is the path it opens: the same family is available through API and, for many releases, as downloadable weights you can run yourself. That continuity is rare, and it matters to teams that expect to move a workload from a chat client to production or to their own infrastructure.\n\nFeature depth trails the two biggest assistants — the ecosystem integrations and memory are thinner — and the consumer plan history has changed more than once. Treat it as a model vendor's client rather than an all-in-one workspace, which is exactly the framing most European buyers prefer anyway.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://chat.mistral.ai",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "changelog",
+      "url": "https://mistral.ai/news/",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://chat.mistral.ai",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-30",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

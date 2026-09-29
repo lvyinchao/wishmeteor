@@ -1,0 +1,28 @@
+{
+  "name": "Otter",
+  "url": "https://otter.ai",
+  "category": "productivity",
+  "tags": [
+    "meeting-notes",
+    "transcription",
+    "summaries",
+    "integrations"
+  ],
+  "summary": "Meeting transcription and summaries with action items, joined to your calendar and CRM.",
+  "description": "Otter does a job that people will pay to never do again: sit in the call, produce a searchable transcript with speaker labels, then a summary and the action items nobody wanted to type. Calendar integration and the ability to push notes into a CRM or project tool is what makes it stick in a sales and PM workflow rather than being a novelty.\n\nAccuracy degrades fast on heavy accents, crosstalk and jargon, and a bot in the meeting is a consent question before it is a feature question — check your jurisdiction and your company policy. The interesting failure mode is a confident wrong summary of a decision, so keep the transcript linked wherever the notes go.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://otter.ai",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

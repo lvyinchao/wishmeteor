@@ -1,0 +1,28 @@
+{
+  "name": "Windsurf",
+  "url": "https://windsurf.com",
+  "category": "ai-coding",
+  "tags": [
+    "ide",
+    "agentic",
+    "flow",
+    "autocomplete"
+  ],
+  "summary": "An editor built around a cascading agent that keeps watching your edits instead of waiting for a prompt.",
+  "description": "Windsurf's pitch is that the agent should notice what you are doing: it follows your recent edits and terminal output, so the next suggestion arrives with context you did not have to type. In practice that reads as fewer \"explain what I meant\" round trips on medium-sized tasks, and the preview-and-accept step is there before anything lands in a file.\n\nIt is a full editor replacement, so the adoption cost is migration rather than a plugin install, and enterprise teams usually stop at that sentence. As with every agentic editor, the useful question is not how smart it looks in a demo but how cheap its mistakes are to spot.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://windsurf.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

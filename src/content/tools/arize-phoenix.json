@@ -1,0 +1,33 @@
+{
+  "name": "Arize Phoenix",
+  "url": "https://github.com/Arize-ai/phoenix",
+  "category": "evals-observability",
+  "tags": [
+    "open-source",
+    "opentelemetry",
+    "tracing",
+    "self-hostable"
+  ],
+  "summary": "Open-source LLM tracing and evaluation built on OpenTelemetry, so the spans are not locked to one vendor's format.",
+  "description": "Phoenix's most consequential choice is the standard: it speaks OTel, so your traces are already in the format your rest-of-stack instrumentation uses, and swapping tools later does not mean re-instrumenting. Notebook-style evaluation, LLM-as-judge experiments and retrieval diagnostics sit on top, and it runs locally in a few lines, which makes it the easy first step for a team with no observability at all.\n\nIt is developer tooling rather than an operations product — alerting, RBAC and long-horizon retention are yours to add. Arize's commercial platform offers the enterprise layer, and teams usually decide at the point where dashboards become someone's on-call responsibility.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "repository",
+      "url": "https://github.com/Arize-ai/phoenix",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "website",
+      "url": "https://arize.com/docs/phoenix",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

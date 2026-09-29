@@ -1,0 +1,33 @@
+{
+  "name": "Browser Use",
+  "url": "https://github.com/browser-use/browser-use",
+  "category": "agents-automation",
+  "tags": [
+    "open-source",
+    "browser-agent",
+    "python",
+    "computer-use"
+  ],
+  "summary": "The library that turns a vision-capable model into a browser operator, with DOM extraction and a real Chrome profile.",
+  "description": "Browser Use became the reference implementation for agents that click: it feeds the model a cleaned, indexed DOM alongside a screenshot, lets it act, and reports back — including the option to drive your own logged-in Chrome, which is the only way most internal tools can be automated at all. It is Python, hackable, and moving fast.\n\nWhich is also the risk profile to be honest about. An agent with your session can do anything your session can, so the guardrail is the account you give it, not the library. Sites change, captchas and bot walls exist, and a task that needs reliability should have a human approval step before the click that writes.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "repository",
+      "url": "https://github.com/browser-use/browser-use",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "website",
+      "url": "https://browser-use.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

@@ -1,0 +1,33 @@
+{
+  "name": "LangSmith",
+  "url": "https://smith.langchain.com",
+  "category": "evals-observability",
+  "tags": [
+    "tracing",
+    "evaluation",
+    "datasets",
+    "langchain"
+  ],
+  "summary": "Traces, datasets, evaluations and prompt versioning, most seamless if you already build with LangChain.",
+  "description": "LangSmith answers the question every LLM feature eventually raises: what exactly happened in that request. Nested traces show each step, tool call and retry with token counts and cost, and the dataset-plus-evaluator loop is a workable path from anecdote to regression test. Annotation queues make human review part of the pipeline instead of a spreadsheet.\n\nIt is a hosted product, so prompt contents and user data live with the vendor — a decision some teams cannot make. Non-LangChain instrumentation works but is less ergonomic, and pricing tied to traces and seat roles needs modelling before you wire it into every service.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://smith.langchain.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://docs.smith.langchain.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

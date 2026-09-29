@@ -1,0 +1,33 @@
+{
+  "name": "Cline",
+  "url": "https://cline.bot",
+  "category": "ai-coding",
+  "tags": [
+    "open-source",
+    "vs-code-extension",
+    "agent",
+    "mcp"
+  ],
+  "summary": "An open-source VS Code agent that plans, runs terminal commands and asks before each file edit.",
+  "description": "Cline runs inside VS Code as an extension, which is the whole argument: no new editor, no fork to maintain, and the model is whatever you bring, including local endpoints. It works in a plan-then-act loop with an explicit approval step per file change and per command, so a runaway agent is a thing you decided to allow rather than something that happened to you.\n\nThat step-by-step consent is also the friction: a long task is a sequence of clicks, and people who want fire-and-forget agents find it tiring. Being open source and vendor-neutral means the quality you get is the quality of the model you pay for separately.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://cline.bot",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/cline/cline",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

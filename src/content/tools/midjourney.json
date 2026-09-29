@@ -1,0 +1,34 @@
+{
+  "name": "Midjourney",
+  "url": "https://midjourney.com",
+  "category": "image-video",
+  "tags": [
+    "text-to-image",
+    "style",
+    "community",
+    "no-api"
+  ],
+  "summary": "The image model people still judge by aesthetically, sold as a subscription with no official public API.",
+  "description": "Midjourney's output has a look, and that is the product: for concept art, editorial illustration, moodboards and anything where taste matters more than literal prompt compliance, it still sets the bar that other models get compared against. Version-to-version improvements have been about coherence and text rendering rather than novelty, which suits paying users.\n\nTwo structural frictions: there is no first-party public API, so production pipelines mean automating the web app or not shipping it, and the training-data posture has kept enterprise adoption cautious. If you need exact brand control or reproducible character consistency, this is a beautiful tool pointed at the wrong job.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://midjourney.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://midjourney.com",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-30",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true,
+  "featured": true
+}

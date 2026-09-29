@@ -1,0 +1,33 @@
+{
+  "name": "Gemma",
+  "url": "https://ai.google.dev/gemma",
+  "category": "open-source-models",
+  "tags": [
+    "open-weights",
+    "small-models",
+    "on-device",
+    "multilingual"
+  ],
+  "summary": "Google's open-weight family, sized for laptops and phones rather than for benchmark charts.",
+  "description": "Gemma is the credible answer to \"can this run where my users are\". The small end of the family is genuinely deployable on consumer hardware and on-device, quality-per-parameter has been competitive at every release, and the surrounding tooling — conversions for llama.cpp and Ollama, LoRA recipes, multilingual coverage — is mature enough to build on.\n\n\"Open weights under a licence\" is not the same as open source, and the terms have shifted between versions, so check the specific model card you intend to ship. Larger variants trail Gemini on hard reasoning, which is expected: this family's job is efficiency, and choosing it is a decision to trade peak capability for control and cost.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "docs",
+      "url": "https://ai.google.dev/gemma",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "hub",
+      "url": "https://huggingface.co/google/gemma-3-4b-it",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

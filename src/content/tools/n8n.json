@@ -1,0 +1,33 @@
+{
+  "name": "n8n",
+  "url": "https://n8n.io",
+  "category": "agents-automation",
+  "tags": [
+    "workflow",
+    "self-hostable",
+    "fair-code",
+    "ai-nodes"
+  ],
+  "summary": "Node-based automation you can host yourself, now with AI agent, model and memory nodes in the same canvas.",
+  "description": "n8n's strength is that the workflow, the branching and the credentials live where you can see and audit them, and self-hosting means an internal automation never has to leave your network. Adding LangChain-backed agent nodes made it a legitimate place to build AI features without writing an orchestration layer, and the connector catalogue is wide enough that most SaaS is one node away.\n\nLicensing is fair-code, not OSI open source, so read what that means before reselling or embedding it. And any visual tool lets a team build fifteen automations nobody owns — the maintenance cost of that is a governance problem, not a product flaw.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://n8n.io",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/n8n-io/n8n",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Qwen",
+  "url": "https://qwenlm.github.io",
+  "category": "open-source-models",
+  "tags": [
+    "open-weights",
+    "multilingual",
+    "long-context",
+    "small-models"
+  ],
+  "summary": "Alibaba's open-weight family, unusually strong at small sizes and for non-English workloads.",
+  "description": "Qwen has become the family to check when a benchmark conversation ignores your language. Multilingual performance is consistently good, the small and mid-size releases are disproportionately capable — which matters for anything on-device or cost-capped — and long-context variants are published as weights rather than only as an API, with vision and coding specialists in the same lineage.\n\nHosting and evaluation tooling outside mainland China is thinner than for Llama-class models, so plan to verify a quantisation yourself before shipping it. Licence terms are permissive for most releases but vary per checkpoint, so read the model card for the specific version rather than the family page.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://qwenlm.github.io",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "hub",
+      "url": "https://huggingface.co/Qwen",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

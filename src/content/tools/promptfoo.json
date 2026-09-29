@@ -1,0 +1,33 @@
+{
+  "name": "Promptfoo",
+  "url": "https://promptfoo.dev",
+  "category": "evals-observability",
+  "tags": [
+    "open-source",
+    "red-teaming",
+    "ci",
+    "assertions"
+  ],
+  "summary": "Config-driven prompt and model testing that runs in CI, including safety and jailbreak checks.",
+  "description": "Promptfoo is the cheapest way to make an LLM change look like an engineering change: a YAML file defines the prompts, the models, the test cases and the assertions, and the report tells you whether the swap you wanted is actually better. Because it is a CLI it drops into a pipeline, so a regression blocks a merge instead of appearing in a demo on Friday. The red-team mode automates prompt-injection and jailbreak probing across your targets.\n\nAssertions are only as good as your test cases, so a green run over twenty hand-picked examples can still be a thin cover for real traffic. Open source and self-hostable, with a hosted layer if you want history and sharing — most teams use the CLI and never need the rest.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://promptfoo.dev",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/promptfoo/promptfoo",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Replicate",
+  "url": "https://replicate.com",
+  "category": "model-platforms",
+  "tags": [
+    "serverless",
+    "community-models",
+    "api",
+    "image-and-video"
+  ],
+  "summary": "Run almost any community model through one API, billed per second of compute instead of per token.",
+  "description": "Replicate's catalogue is the point: thousands of models from the long tail of research releases — image, video, audio, 3D, text — each wrapped in a versioned model you can call with a JSON body, with no deployment work at all. For exploring whether a niche checkpoint solves your problem it is the fastest possible test, and the per-second billing suits spiky workloads.\n\nCold starts are the tax on that flexibility, and they are visible to your users. Model quality in the community catalogue varies enormously, licensing is per-model and often overlooked, and anything you build on a specific version should be pinned because researchers retire checkpoints without warning.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://replicate.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://replicate.com/docs",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

@@ -1,0 +1,33 @@
+{
+  "name": "DeepSeek",
+  "url": "https://chat.deepseek.com",
+  "category": "ai-chat",
+  "tags": [
+    "open-weights",
+    "reasoning",
+    "cheap-tokens",
+    "api"
+  ],
+  "summary": "A chat client and API for DeepSeek's models, known for strong reasoning at prices that reset expectations.",
+  "description": "DeepSeek matters commercially more than reputationally: its hosted API has repeatedly undercut frontier pricing for reasoning-heavy work, and much of the released model family is available with open weights, so the same capability can be run somewhere else. That combination forced a real conversation about what a token should cost.\n\nThe caveats are practical. Availability and rate limits have historically been tight at the cheapest tiers, the consumer client is thinner than the big three, and where your data goes is a question that needs an answer from the API terms rather than from a benchmark. For cost-sensitive batch work it is often the first thing to test; for regulated data it is often the last.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://chat.deepseek.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://api-docs.deepseek.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

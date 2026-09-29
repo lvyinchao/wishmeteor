@@ -1,0 +1,33 @@
+{
+  "name": "Cohere",
+  "url": "https://cohere.com",
+  "category": "data-retrieval",
+  "tags": [
+    "embeddings",
+    "rerank",
+    "enterprise-rag",
+    "api"
+  ],
+  "summary": "The embedding and reranking vendor most of RAG stacks quietly depend on, plus command models for enterprise tasks.",
+  "description": "Cohere's most-used capability is unglamorous and load-bearing: embeddings that behave across languages and domains, and a reranker that fixes retrieval after the fact. Add grounded generation with citations and a deploy story that includes single-tenant and local options, and it becomes the vendor you pick when retrieval quality and data handling both matter.\n\nEmbedding models are a switching cost — re-indexing a corpus is not free — so compare on recall over your documents, not on a public leaderboard. And a reranker is a second bill per query, which changes the arithmetic of a high-traffic search feature.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://cohere.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://docs.cohere.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

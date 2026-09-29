@@ -1,0 +1,28 @@
+{
+  "name": "Consensus",
+  "url": "https://consensus.app",
+  "category": "productivity",
+  "tags": [
+    "research",
+    "evidence",
+    "papers",
+    "citations"
+  ],
+  "summary": "Search academic papers and get a verdict on whether the evidence agrees, with the supporting studies attached.",
+  "description": "Consensus answers a different question from most AI search: not \"what do papers say about this\" but \"is there agreement\". Its consensus meter — yes, mixed, no — plus a list of the specific studies behind it is a fast triage tool for anyone who has to defend a claim, and the summarisation is tied to retrieved snippets rather than to a model's memory.\n\nMeter reading needs care: agreement across a small number of low-powered studies is not the same as settled science, and health topics attract exactly that pattern. Coverage skews toward indexed, English-language literature. Treat it as the first five minutes of a literature review, not the last.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://consensus.app",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

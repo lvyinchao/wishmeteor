@@ -1,0 +1,33 @@
+{
+  "name": "Leonardo",
+  "url": "https://leonardo.ai",
+  "category": "image-video",
+  "tags": [
+    "text-to-image",
+    "fine-tuning",
+    "game-assets",
+    "api"
+  ],
+  "summary": "Image platform for teams that need a consistent style, with custom model training and real API access.",
+  "description": "Leonardo built for the boring-but-valuable case: keep a visual identity across hundreds of assets. Fine-tuning on your own references, control over resolution and tiling, and asset-oriented features make it a common pick in game art and marketing production, where a style that survives a hundred images beats one beautiful render.\n\nRaw peak quality is not its claim — the frontier models are better at surprises. Token-metered plans and per-generation costs need modelling before you commit a pipeline to it, and self-hosted alternatives exist for teams that care about running the weights themselves.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://leonardo.ai",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://leonardo.ai",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-30",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Helicone",
+  "url": "https://helicone.ai",
+  "category": "evals-observability",
+  "tags": [
+    "proxy",
+    "logging",
+    "cost-tracking",
+    "routing"
+  ],
+  "summary": "Put a proxy in front of your model calls and get logs, cost attribution, caching and fallback routing for free-ish.",
+  "description": "Helicone's design is one base-URL change, which is why it gets adopted: every request and response is logged, spend is attributed per user or feature, caching dedupes repeated calls, and failover routing gives you a retry path when a provider degrades. Sessions and custom properties make the logs searchable in something other than raw JSON.\n\nA proxy is also a dependency in the request path — latency, outage blast radius and the fact that payloads now transit a third party all need answering before you put it in front of regulated traffic. The self-hosted option exists, and it is the version most compliance conversations actually want.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://helicone.ai",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/Helicone/helicone",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

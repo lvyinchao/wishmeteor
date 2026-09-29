@@ -1,0 +1,28 @@
+{
+  "name": "Elicit",
+  "url": "https://elicit.com",
+  "category": "productivity",
+  "tags": [
+    "research",
+    "systematic-review",
+    "papers",
+    "data-extraction"
+  ],
+  "summary": "Literature search and structured extraction over scientific papers, built for review work rather than summaries.",
+  "description": "Elicit does the tedious half of a systematic review: search across the scholarly corpus, screen by what the abstracts actually claim, then extract specified fields — population, intervention, outcomes, effect sizes — into a table you can audit. Column-by-column sourcing is the difference between a research assistant and a text generator, and it is where reviewers say the time is saved.\n\nIt is strongest in biomedical and social-science literature with good abstracts, and weaker where the useful numbers live only in a PDF's tables. Coverage of paywalled full text is limited by what the tool may legally read, so treat any extraction as a first pass with citations to verify, exactly as you would a human assistant's.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://elicit.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

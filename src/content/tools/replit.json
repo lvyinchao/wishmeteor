@@ -1,0 +1,28 @@
+{
+  "name": "Replit",
+  "url": "https://replit.com",
+  "category": "ai-coding",
+  "tags": [
+    "browser-ide",
+    "deploy",
+    "prototyping",
+    "agent"
+  ],
+  "summary": "A browser workspace where the AI agent writes the app, runs it and keeps it deployed on the same platform.",
+  "description": "Replit's advantage over a code-generation demo is that the loop closes: the agent edits, the environment runs, the database exists, and hosting is a button rather than a weekend. For internal tools, side projects and founder prototypes that collapses a lot of setup work into one tab, and it is genuinely usable by people who do not want to think about infrastructure.\n\nThe lock-in is the platform itself, not the model — deployment, storage and auth all live on Replit, and the bill scales with usage rather than with effort. Anything that later needs custom infrastructure, strict data residency or a peculiar runtime tends to be migrated off rather than grown in place.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://replit.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

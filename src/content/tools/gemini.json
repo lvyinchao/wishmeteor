@@ -1,0 +1,33 @@
+{
+  "name": "Gemini",
+  "url": "https://gemini.google.com",
+  "category": "ai-chat",
+  "tags": [
+    "assistant",
+    "multimodal",
+    "workspace",
+    "search-grounded"
+  ],
+  "summary": "Google's assistant, at its best where it can reach into Search, Docs, Gmail and Drive with your permission.",
+  "description": "Gemini is worth evaluating on integration rather than on a benchmark: it can ground answers in live search, act across Workspace apps, and read what you already have in Drive. For people whose work lives in Google's suite that shortens real tasks — summarising a thread, drafting from a doc, answering something that changed this morning.\n\nOutside that orbit the advantage narrows, and the account-level permissions it asks for are a genuine decision rather than a formality. Long-context claims and shipping features are different things; the useful test is a task you actually do weekly, checked against what the plan you can buy allows.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://gemini.google.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://gemini.google.com",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-30",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

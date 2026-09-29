@@ -2,19 +2,32 @@
   "name": "Claude Code",
   "url": "https://anthropic.com/claude-code",
   "category": "ai-coding",
-  "tags": ["terminal", "agentic", "codebase", "mcp"],
+  "tags": [
+    "terminal",
+    "agentic",
+    "codebase",
+    "mcp"
+  ],
   "summary": "Anthropic's terminal agent for working across an existing repository, with project rules and tool access.",
   "description": "Claude Code runs in the shell, reads the repository you point it at, and proposes edits with the file context already resolved — which is the part that separates an agent from a chat window you paste diffs into. It picks up project instructions from a committed rules file, so conventions survive across sessions and between teammates.\n\nIt is agentic by default, meaning it will run commands unless you gate them, so the useful configuration is permissions rather than prompts. Long sessions against large codebases consume context faster than most people expect, and the first task you give it should be small enough that a wrong answer is obvious. Anthropic documents the pricing in tokens, and a real refactor is a multi-dollar event, not a rounding error.",
   "pricing": "paid",
   "status": "active",
   "origin": "curated",
   "sources": [
-    { "type": "website", "url": "https://anthropic.com/claude-code", "observedAt": "2026-09-30" },
-    { "type": "docs", "url": "https://docs.anthropic.com/en/docs/claude-code/overview", "observedAt": "2026-09-30" }
+    {
+      "type": "website",
+      "url": "https://anthropic.com/claude-code",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://docs.anthropic.com/en/docs/claude-code/overview",
+      "observedAt": "2026-09-30"
+    }
   ],
   "firstSeenAt": "2026-09-30",
-  "lastSeenAt": "2026-09-30",
-  "lastVerifiedAt": null,
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
   "checksFailed": 0,
   "approved": true,
   "featured": true

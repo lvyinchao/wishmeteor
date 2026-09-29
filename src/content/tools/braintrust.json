@@ -1,0 +1,28 @@
+{
+  "name": "Braintrust",
+  "url": "https://braintrust.dev",
+  "category": "evals-observability",
+  "tags": [
+    "evaluation",
+    "experimentation",
+    "playground",
+    "logging"
+  ],
+  "summary": "An evaluation-first workflow: datasets, scorers as code, experiments you can diff, and production logging attached.",
+  "description": "Braintrust treats prompt improvement as an experiment you can reproduce. Evaluation functions are code you version, datasets are pinned, and an experiment records exactly which prompt, model and parameters produced which score — so \"it felt better\" becomes a diff you can argue with. The playground connects to that instead of being a separate toy.\n\nThe centre of gravity is offline evaluation; teams wanting a full observability stack with alerting and cost attribution may still need tracing alongside it. Scorers-as-code also puts the burden of judging quality on you, which is honest but not free — a bad metric here will confidently mislead you at scale.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://braintrust.dev",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

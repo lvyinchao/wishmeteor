@@ -1,0 +1,33 @@
+{
+  "name": "Deepgram",
+  "url": "https://deepgram.com",
+  "category": "audio-voice",
+  "tags": [
+    "stt",
+    "streaming",
+    "low-latency",
+    "voice-agents"
+  ],
+  "summary": "Speech API built for streaming: fast transcription, keyword spotting and the turn-taking voice agents need.",
+  "description": "Deepgram's whole design sits on latency. Batch transcription is table stakes; the reason teams pick it is streaming — partials arriving quickly, word-level timing, and endpointing that decides when a caller has actually finished speaking. That specific engineering is why it keeps showing up under phone bots and live captioning rather than in podcast workflows.\n\nAccuracy on accented or noisy audio is where you decide whether the speed was worth it, so run it against your own recordings before committing. Pricing is per-minute and stacks across both legs of a conversation, which is the line item most voice-agent budgets forget.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://deepgram.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://deepgram.com/learn",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

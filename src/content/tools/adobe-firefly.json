@@ -1,0 +1,28 @@
+{
+  "name": "Adobe Firefly",
+  "url": "https://adobe.com/products/firefly",
+  "category": "image-video",
+  "tags": [
+    "commercial-safe",
+    "photoshop",
+    "generative-fill",
+    "enterprise"
+  ],
+  "summary": "Adobe's generative layer, trained on licensed material and sold on the premise that the provenance is defensible.",
+  "description": "Firefly's value proposition is legal rather than aesthetic: it is trained on Adobe Stock and public-domain material, outputs carry content credentials, and it lives inside the tools a design team already uses — generative fill in Photoshop, vector generation in Illustrator, video work in Premiere. That is why procurement signs it while the models produce better pictures.\n\nImage quality is competent and distinctive in a bland way; the interesting capabilities are the ones tied to editing rather than generation. Costs arrive as Creative Cloud plans and generative credits, so budgeting is about your whole Adobe footprint rather than this product alone.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://adobe.com/products/firefly",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Claude",
+  "url": "https://claude.ai",
+  "category": "ai-chat",
+  "tags": [
+    "assistant",
+    "long-context",
+    "artifacts",
+    "projects"
+  ],
+  "summary": "Anthropic's assistant, strong at long documents and code, with projects and Artifacts for reusable outputs.",
+  "description": "Claude's interface is deliberately work-shaped rather than chat-shaped: projects keep files and instructions attached, Artifacts turn a one-off answer into something you can iterate on and share, and the model's behaviour on long documents and refactors is the reason people pick it over the bigger brand.\n\nLimits worth knowing: the free tier is short enough that an honest evaluation of your own workload needs a paid plan for a week, and file handling has size and page caps that surface mid-task rather than up front. It also declines more requests than most competitors, which is a reasonable trade until it blocks work you genuinely need done.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://claude.ai",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://claude.ai",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-30",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true,
+  "featured": true
+}

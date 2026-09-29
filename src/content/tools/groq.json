@@ -1,0 +1,33 @@
+{
+  "name": "Groq",
+  "url": "https://groq.com",
+  "category": "model-platforms",
+  "tags": [
+    "inference",
+    "low-latency",
+    "lpu",
+    "open-models"
+  ],
+  "summary": "Deterministic silicon for inference, which is how it keeps winning token-per-second comparisons.",
+  "description": "Groq's argument is speed as an engineering property rather than an optimisation: its LPU executes in a fixed schedule with no dynamic scheduling surprises, so open-weight models run at token rates that make interactive use feel different. For voice agents, autocomplete, and any interface where a user watches text arrive, that latency is the feature.\n\nThe trade-offs are capability ceiling and capacity. You run the models it chooses to support, at the sizes it supports, and demand spikes are rationed by rate limits that are contractual rather than technical. Teams that build on raw speed should measure what happens on the throttled path, because that is the path your busiest hour uses.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://groq.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://console.groq.com/docs",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

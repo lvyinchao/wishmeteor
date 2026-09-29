@@ -1,0 +1,33 @@
+{
+  "name": "LangChain",
+  "url": "https://github.com/langchain-ai/langchain",
+  "category": "agents-automation",
+  "tags": [
+    "open-source",
+    "orchestration",
+    "python",
+    "javascript"
+  ],
+  "summary": "The framework that standardised wiring models to tools, memory and retrievers, for better and for worse.",
+  "description": "LangChain's real contribution is the vocabulary it forced on the industry — chains, tools, retrievers, runnables — plus an enormous surface of integrations. If you need to swap providers or glue a vector store to a model this week, the abstraction usually saves the afternoon, and LangGraph extends it to stateful agent loops with explicit edges.\n\nThe honest criticism is leaky abstraction: when something goes wrong you end up debugging the framework's reasoning about your problem rather than your problem, and API churn across versions is a documented complaint. Teams that outgrow it generally keep the patterns and drop the package, which says something about which part was valuable.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "repository",
+      "url": "https://github.com/langchain-ai/langchain",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "website",
+      "url": "https://langchain-ai.github.io/langgraph/",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

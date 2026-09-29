@@ -1,0 +1,33 @@
+{
+  "name": "Llama",
+  "url": "https://huggingface.co/meta-llama",
+  "category": "open-source-models",
+  "tags": [
+    "open-weights",
+    "community-finetunes",
+    "multimodal",
+    "licence"
+  ],
+  "summary": "Meta's model family — the reason open weights became the default assumption instead of a research courtesy.",
+  "description": "Llama's significance is the ecosystem it created: quantisations on the day of release, hundreds of community fine-tunes, tooling written against it, and a size ladder from phone-servable to datacentre. For a builder that means capability you can run, inspect and keep when a vendor changes terms, which is a genuinely different procurement position from renting a black box.\n\nRead the licence before shipping, because the community licence has historically carried usage thresholds and redistribution conditions that a permissive developer reads as \"open\" and counsel reads differently. Model card details, guardrail behaviour and the fine-tuning stack all matter more than the headline benchmark.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "hub",
+      "url": "https://huggingface.co/meta-llama",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "website",
+      "url": "https://huggingface.co/meta-llama",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

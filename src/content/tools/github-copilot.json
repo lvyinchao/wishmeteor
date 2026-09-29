@@ -2,19 +2,32 @@
   "name": "GitHub Copilot",
   "url": "https://github.com/features/copilot",
   "category": "ai-coding",
-  "tags": ["autocomplete", "ide-plugin", "code-review", "enterprise"],
+  "tags": [
+    "autocomplete",
+    "ide-plugin",
+    "code-review",
+    "enterprise"
+  ],
   "summary": "The default AI layer inside GitHub and most editors: completion, chat, and an agent that opens its own pull requests.",
   "description": "Copilot's advantage is distribution rather than raw capability: it lives where the code already is — the editor, the pull request, the issue thread — so the review workflow does not have to change for a team to adopt it. Completion quality has improved with each model swap, and the coding agent is aimed squarely at well-scoped tickets rather than open-ended refactors.\n\nWhere it is weaker is anything outside GitHub's own plumbing; teams with a self-hosted forge or heavy local tooling tend to hit the edges of what the plugin will do. Pricing is per seat and sold to procurement first, developers second, which is either the reason it gets approved quickly or the reason it gets resented, depending on who is answering.",
   "pricing": "paid",
   "status": "active",
   "origin": "curated",
   "sources": [
-    { "type": "website", "url": "https://github.com/features/copilot", "observedAt": "2026-09-30" },
-    { "type": "docs", "url": "https://docs.github.com/en/copilot", "observedAt": "2026-09-30" }
+    {
+      "type": "website",
+      "url": "https://github.com/features/copilot",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://docs.github.com/en/copilot",
+      "observedAt": "2026-09-30"
+    }
   ],
   "firstSeenAt": "2026-09-30",
-  "lastSeenAt": "2026-09-30",
-  "lastVerifiedAt": null,
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
   "checksFailed": 0,
   "approved": true
 }

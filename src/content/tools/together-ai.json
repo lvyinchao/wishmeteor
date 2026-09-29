@@ -1,0 +1,33 @@
+{
+  "name": "Together AI",
+  "url": "https://together.ai",
+  "category": "model-platforms",
+  "tags": [
+    "inference",
+    "open-models",
+    "fine-tuning",
+    "gpu"
+  ],
+  "summary": "Cloud for open-weight models: serve popular checkpoints, fine-tune them, and rent raw GPU capacity when needed.",
+  "description": "Together sits in the useful middle — you get an OpenAI-shaped API over a long catalogue of open models without running anything, and the same account offers fine-tuning and dedicated endpoints when a shared deployment stops being predictable. When a new open checkpoint lands, it is usually servable there within days, which is the practical definition of staying current.\n\nPricing per million tokens hides the important variable: shared endpoints have noisy latency under load, so a user-facing feature should be tested at your peak rather than at yours alone. The GPU-rental layer is a different product with different operational expectations, and teams often discover that gap mid-migration.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://together.ai",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://docs.together.ai",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

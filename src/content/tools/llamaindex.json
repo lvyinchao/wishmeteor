@@ -1,0 +1,33 @@
+{
+  "name": "LlamaIndex",
+  "url": "https://github.com/run-llama/llama_index",
+  "category": "data-retrieval",
+  "tags": [
+    "open-source",
+    "rag",
+    "ingestion",
+    "python"
+  ],
+  "summary": "A data framework for putting your documents in front of a model: readers, indices, retrievers and query engines.",
+  "description": "LlamaIndex starts from the ingestion side rather than the prompt side, which is why it is the default when the hard part is the corpus: readers for hundreds of sources, document structures that survive chunking, indices and retrievers to compare, and reranking hooks. Property-graph retrieval over documents is a real capability rather than a marketing phrase.\n\nYou still own the evaluation. It will happily build a pipeline that retrieves confidently and answers badly, and the number of knobs is large enough that a baseline you can measure is the only defence. For plain question-answering over a few PDFs it is more machinery than the job needs.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "repository",
+      "url": "https://github.com/run-llama/llama_index",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "website",
+      "url": "https://llamaindex.ai",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

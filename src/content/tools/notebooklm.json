@@ -1,0 +1,29 @@
+{
+  "name": "NotebookLM",
+  "url": "https://notebooklm.google",
+  "category": "productivity",
+  "tags": [
+    "research",
+    "grounded-answers",
+    "audio-overview",
+    "source-based"
+  ],
+  "summary": "A notebook that answers only from the sources you load, with citations and a surprisingly useful audio summary.",
+  "description": "NotebookLM's discipline is what makes it usable: you attach documents, links and uploads, and every answer is grounded in that corpus with clickable citations. That constraint kills the hallucination class people fear most and turns the tool into something you can trust for a literature pile, a contract bundle or meeting notes across a quarter. The audio overview format is a genuine invention for absorbing written material by ear.\n\nIt is grounded, not smart: it will not tell you the answer is missing from your sources, and retrieval over a messy corpus is still your problem. Google account dependencies, regional availability and the pace of feature churn are the practical adoption questions nobody answers in the demo.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://notebooklm.google",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true,
+  "featured": true
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Firecrawl",
+  "url": "https://firecrawl.dev",
+  "category": "data-retrieval",
+  "tags": [
+    "crawling",
+    "scraping",
+    "markdown",
+    "open-source"
+  ],
+  "summary": "Turn any website into clean markdown for a model: crawl whole domains, extract structured fields, respect robots.",
+  "description": "Firecrawl solves the unglamorous step in retrieval-heavy products — getting the text out of the web in a form a model can read. Give it a URL and it returns markdown; give it a site and it crawls with limits; the extract mode pulls structured fields out of unstructured pages. The self-hostable core and the API-first design are why it gets adopted quickly by builders.\n\nRate limits, anti-bot walls and JavaScript-heavy pages are the honest failure modes, and they arrive unevenly by target site. Legal and ethical use is yours to own: crawling is polite until it is a load test, and content you scrape into a corpus has provenance questions you should answer before, not after.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://firecrawl.dev",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/mendableai/firecrawl",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

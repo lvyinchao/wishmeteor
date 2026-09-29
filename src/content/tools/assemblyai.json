@@ -1,0 +1,28 @@
+{
+  "name": "AssemblyAI",
+  "url": "https://assemblyai.com",
+  "category": "audio-voice",
+  "tags": [
+    "transcription",
+    "diarisation",
+    "summarisation",
+    "api"
+  ],
+  "summary": "Transcription API with diarisation and LLM-powered follow-up features, pitched at product teams.",
+  "description": "AssemblyAI is the pragmatic middle: an accurate-enough general transcription API with speaker diarisation, custom vocabulary and a layer of summarisation and question-answering over the transcript. For meeting notes, interview research and call QA you can usually ship the feature without owning a model, which is the point.\n\nIts own AI features are the thing to be careful with — a summary of a summary inherits errors, so anything that ends up in front of a customer needs the transcript kept alongside it. If the workload is live rather than batch, or a specific language is central, compare against a provider strong in that dimension instead of assuming one vendor covers both.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://assemblyai.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

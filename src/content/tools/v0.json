@@ -1,0 +1,28 @@
+{
+  "name": "v0",
+  "url": "https://v0.dev",
+  "category": "ai-coding",
+  "tags": [
+    "ui-generation",
+    "react",
+    "tailwind",
+    "shadcn"
+  ],
+  "summary": "Generates React and Tailwind interface code from a prompt or a screenshot, aimed at designers who ship.",
+  "description": "v0 earns its place by staying inside one stack: it writes React components with Tailwind and shadcn primitives, so output lands in a codebase that already looks like the rest of the product instead of needing a translation step. Screenshot-to-component and iterative refinement both work well for dashboards, settings screens and marketing pages.\n\nIt is a UI generator, not an application builder — business logic, data fetching and authentication are yours. And like anything that optimises for a specific component library, it produces the house style whether you want it or not, which is a feature for teams on shadcn and a limitation for anyone with their own design system.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://v0.dev",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

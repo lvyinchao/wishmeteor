@@ -1,0 +1,33 @@
+{
+  "name": "Qdrant",
+  "url": "https://qdrant.tech",
+  "category": "data-retrieval",
+  "tags": [
+    "vector-database",
+    "rust",
+    "open-source",
+    "hybrid-search"
+  ],
+  "summary": "A Rust vector database with strong filtering, quantisation and a licensing posture that suits self-hosters.",
+  "description": "Qdrant's pitch to engineers is control: payload filtering that runs during the search rather than after it, scalar and binary quantisation to fit more vectors in less RAM, sparse vectors for hybrid retrieval, and a real open-source build you can run on your own hardware without a sales call. Performance-per-byte is where it tends to win comparisons.\n\nLike everything in this category, it solves storage and not retrieval quality — your chunking and embedding choices still decide whether answers are useful. Operating a database with replicas and backups is also a job someone has to want, which is the moment the managed cloud starts looking reasonable.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://qdrant.tech",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/qdrant/qdrant",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

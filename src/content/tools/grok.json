@@ -1,0 +1,27 @@
+{
+  "name": "Grok",
+  "url": "https://grok.com",
+  "category": "ai-chat",
+  "tags": [
+    "assistant",
+    "real-time",
+    "x-integration"
+  ],
+  "summary": "xAI's assistant with live access to X posts, which is its differentiator and its main sourcing risk.",
+  "description": "Grok's genuine edge is recency: it can pull what is being said on X right now, which makes it useful for breaking events, sentiment during an incident, and anything where a five-minute-old signal beats an authoritative-but-stale one. The client itself is competent at the ordinary assistant jobs.\n\nThe same property is the caveat. Social posts are not evidence, and an answer assembled from them needs checking in a way that a search-grounded citation does not. If you need current public reaction it is a distinct tool; if you need defensible research it should not be the only one you consult.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://grok.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

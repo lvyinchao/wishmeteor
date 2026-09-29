@@ -1,0 +1,28 @@
+{
+  "name": "Bolt",
+  "url": "https://bolt.new",
+  "category": "ai-coding",
+  "tags": [
+    "app-builder",
+    "browser",
+    "full-stack",
+    "prototyping"
+  ],
+  "summary": "Prompt-to-app builder that scaffolds a real frontend project in the browser and lets you keep editing it.",
+  "description": "Bolt generates an actual codebase you can export rather than a locked canvas, which is the reason it gets used for more than screenshots: describe an app, get a working scaffold with dependencies installed and a preview running, then keep talking to it or drop into the files. For validating a product idea in an afternoon it is hard to beat.\n\nWhat you should expect is a prototype-shaped result. Complexity grows faster than the generated code can absorb — auth, payments and anything with real data modelling tends to reach a point where a developer takes the repo and rebuilds parts of it. Token metering makes long iterative sessions expensive in a way that is easy to underestimate.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://bolt.new",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

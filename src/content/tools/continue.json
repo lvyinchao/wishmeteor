@@ -1,0 +1,33 @@
+{
+  "name": "Continue",
+  "url": "https://continue.dev",
+  "category": "ai-coding",
+  "tags": [
+    "open-source",
+    "ide-plugin",
+    "self-hosted",
+    "model-routing"
+  ],
+  "summary": "Open-source assistant plugins for VS Code and JetBrains that point at whichever models you run or rent.",
+  "description": "Continue is the pragmatic answer for teams that cannot send source to a third party: the extension is open source, the models are your choice, and the context providers — local codebase search, docs, Jira, whatever you wire up — are configured in a file you can commit. Autocomplete, chat and agentic edits are all there, but the design goal is control rather than maximum polish.\n\nThe trade is assembly. Nobody is tuning retrieval for your monorepo, and the experience is only as good as the model you can actually serve. For regulated codebases and self-hosting fans that is the right side of the trade; for a team that just wants the best completion today, it is work they should not have to do.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://continue.dev",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/continuedev/continue",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

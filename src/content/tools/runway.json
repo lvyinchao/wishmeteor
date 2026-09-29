@@ -1,0 +1,28 @@
+{
+  "name": "Runway",
+  "url": "https://runwayml.com",
+  "category": "image-video",
+  "tags": [
+    "text-to-video",
+    "editing",
+    "studio-workflow",
+    "api"
+  ],
+  "summary": "Video generation aimed at productions rather than clips, with editing tools and an API around the model.",
+  "description": "Runway has stayed useful by treating generation as one step in a pipeline: reference images, camera and motion controls, inpainting and a timeline that a human still drives. That is what makes it show up in actual ad and film previz work instead of only in demo threads, and it ships an API for teams building on top.\n\nThe limits are the category's: shots drift between generations, longer takes are unreliable, physics still lies. Budget for retries rather than for a single prompt, and be clear internally about which stage of production this replaces — usually it saves storyboarding and pickups, not shooting.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://runwayml.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

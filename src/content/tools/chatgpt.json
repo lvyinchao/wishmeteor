@@ -28,6 +28,11 @@
       "type": "manual-confirmation",
       "url": "https://chatgpt.com",
       "observedAt": "2026-09-29"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://chatgpt.com",
+      "observedAt": "2026-09-29"
     }
   ],
   "firstSeenAt": "2026-09-29",

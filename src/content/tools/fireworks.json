@@ -1,0 +1,33 @@
+{
+  "name": "Fireworks",
+  "url": "https://fireworks.ai",
+  "category": "model-platforms",
+  "tags": [
+    "inference",
+    "speed",
+    "function-calling",
+    "enterprise"
+  ],
+  "summary": "Inference cloud aimed at production traffic: fast open-model serving, structured output and accountable rate limits.",
+  "description": "Fireworks competes on the parts a business cares about — throughput under load, function calling and JSON output that actually validates, model coverage that includes the current open releases, and an enterprise story built around predictable limits instead of best-effort shared capacity. It is where teams land when a hobby endpoint stops surviving their own traffic.\n\nFine-tuning and dedicated deployments push you into a procurement conversation about GPUs and commitments, at which point self-hosting with vLLM becomes a live alternative worth pricing honestly. Speed claims should be verified against your prompt shape, since prefill-heavy workloads behave nothing like benchmark tweets.",
+  "pricing": "paid",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://fireworks.ai",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "docs",
+      "url": "https://docs.fireworks.ai",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

@@ -1,0 +1,28 @@
+{
+  "name": "HeyGen",
+  "url": "https://heygen.com",
+  "category": "image-video",
+  "tags": [
+    "avatar",
+    "dubbing",
+    "localisation",
+    "api"
+  ],
+  "summary": "Talking-head video from a script, with avatar cloning and lip-synced translation into other languages.",
+  "description": "HeyGen found a genuine business use rather than a novelty: turn a written explainer into a presenter video, clone a specific spokesperson once, and produce lip-synced versions in other languages so training and support content localises without reshooting. For distributed teams that replaces a real cost.\n\nSynthetic presenters carry an honesty problem, and the platform's own consent rules are the thing to read before cloning anyone. Output looks like what it is when the script is long or the delivery needs nuance; it works best for structured information, not for persuasion.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://heygen.com",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

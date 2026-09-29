@@ -1,0 +1,33 @@
+{
+  "name": "CrewAI",
+  "url": "https://crewai.com",
+  "category": "agents-automation",
+  "tags": [
+    "open-source",
+    "multi-agent",
+    "python",
+    "roles"
+  ],
+  "summary": "A multi-agent framework organised around roles and tasks, which makes agent teams legible and testable.",
+  "description": "CrewAI's framing is its usefulness: instead of one giant prompt, you declare agents with roles, goals and backstories, hand them tasks, and pick a process — sequential or with delegation. That vocabulary is a decent fit for business workflows like research-then-draft-then-review, and it makes an agent team reviewable in a standup.\n\nRole-play adds tokens and rarely adds capability, so treat the persona layer as documentation rather than engineering. The harder part of any agent stack is stopping conditions and failure handling, and those remain your responsibility: an autonomous crew that cannot be halted is an incident with a schedule.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://crewai.com",
+      "observedAt": "2026-09-30"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/crewAIInc/crewAI",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

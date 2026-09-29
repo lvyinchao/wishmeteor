@@ -1,0 +1,28 @@
+{
+  "name": "AutoGen",
+  "url": "https://github.com/microsoft/autogen",
+  "category": "agents-automation",
+  "tags": [
+    "open-source",
+    "multi-agent",
+    "conversation",
+    "research"
+  ],
+  "summary": "Microsoft's multi-agent conversation framework, strongest when agents genuinely need to talk to each other.",
+  "description": "AutoGen's model of the world is a group chat: agents with tools and personas exchange messages until the task resolves, which is a good fit for tasks with no fixed pipeline — research loops, adversarial review, code-and-test cycles. The newer rewrite separated the core event-driven runtime from the high-level API and the Studio front end, and that split matters if you are evaluating maturity.\n\nMulti-agent conversation is expensive and hard to make deterministic, so it is overkill for most production features that a single model with tools handles better. Choose it when you specifically want independent agents to disagree, and budget for the token cost of the disagreement.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "repository",
+      "url": "https://github.com/microsoft/autogen",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

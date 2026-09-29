@@ -1,0 +1,28 @@
+{
+  "name": "Murf",
+  "url": "https://murf.ai",
+  "category": "audio-voice",
+  "tags": [
+    "text-to-speech",
+    "studio",
+    "corporate-video",
+    "voices"
+  ],
+  "summary": "A voiceover studio for corporate media: pick a voice, edit timing like a document, export finished narration.",
+  "description": "Murf is aimed at the person making the training video, not at the developer building a real-time feature. The studio model — voice selection, script editing with pacing control, pronunciation fixes, export aligned to a slide deck — matches how narration actually gets produced in a marketing or L&D team, and the voice library is broad enough to cover most brand tones.\n\nBecause it is studio-first, API-and-latency work is a weaker fit, and it is not trying to win cloning either. If the job is a call that responds in under 300ms, look elsewhere; if the job is 40 explainer videos a quarter that sound consistent, this is the shape of tool that fits.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://murf.ai",
+      "observedAt": "2026-09-30"
+    }
+  ],
+  "firstSeenAt": "2026-09-30",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}
