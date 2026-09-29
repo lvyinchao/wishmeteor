@@ -1,0 +1,33 @@
+{
+  "name": "Aider",
+  "url": "https://aider.chat",
+  "category": "ai-coding",
+  "tags": [
+    "open-source",
+    "terminal",
+    "git",
+    "model-agnostic"
+  ],
+  "summary": "A terminal pair programmer that edits your repo through git commits, with any model you point it at.",
+  "description": "Aider works in a terminal, keeps a repository map of your code so it can reference files it has not been handed, and writes each accepted change as a real git commit with a message it generated. That commit-per-change behaviour is the design: you can revert a bad model edit with the same tool you use to revert a bad human edit, and history stays legible.\n\nIt is model-agnostic, so quality tracks whatever you wire it to, and the defaults are conservative in ways some people find slow — it asks before running tests and prefers small diffs. The interface is a prompt loop rather than an editor, which suits people who already live in a terminal and frustrates people who want to see a diff pane. MIT-licensed, actively maintained, self-hostable.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://aider.chat",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/Aider-AI/aider",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-29",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

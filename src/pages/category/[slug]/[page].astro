@@ -1,0 +1,41 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import ToolListing from '../../../components/ToolListing.astro';
+import { loadCatalog, inCategory } from '../../../lib/catalog.mjs';
+import { slicePages } from '../../../lib/pagination.ts';
+
+export const getStaticPaths = async () => {
+  const { tools, categories } = loadCatalog();
+  const paths = [];
+  for (const category of categories) {
+    const slices = slicePages(inCategory(tools, category.id)).filter((slice) => slice.page > 1);
+    for (const slice of slices) {
+      paths.push({ params: { slug: category.id, page: String(slice.page) }, props: { category, slice } });
+    }
+  }
+  return paths;
+};
+
+const { category, slice } = Astro.props;
+const { categories } = loadCatalog();
+const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
+---
+
+<Base
+  title={`${category.name} AI tools, page ${slice.page}`}
+  description={`Page ${slice.page} of ${category.title}: ${slice.items.length} more entries with pricing, status and what each one is actually good at.`}
+>
+  <Breadcrumbs
+    trail={[
+      { name: 'Home', path: '/' },
+      { name: 'AI tools', path: '/tools' },
+      { name: category.name, path: `/category/${category.id}` },
+      { name: `Page ${slice.page}` },
+    ]}
+  />
+  <div class="page-head">
+    <h1>{category.title} · page {slice.page}</h1>
+  </div>
+  <ToolListing slice={slice} base={`/category/${category.id}`} categoryName={nameOf} listName={`${category.title} page ${slice.page}`} />
+</Base>

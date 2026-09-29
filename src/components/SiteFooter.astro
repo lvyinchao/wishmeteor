@@ -1,0 +1,25 @@
+---
+import { SITE } from '../lib/site.ts';
+const year = new Date().getFullYear();
+const links = [
+  { href: '/tools', label: 'AI tools index' },
+  { href: '/category/ai-coding', label: 'Coding tools' },
+  { href: '/new', label: 'Newly launched' },
+  { href: '/submit', label: 'Submit a product' },
+  { href: '/dofollow-policy', label: 'Link policy' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/about', label: 'About' },
+  { href: '/privacy', label: 'Privacy' },
+];
+---
+
+<footer class="site-footer">
+  <div class="shell">
+    <div>
+      <strong>{SITE.name}</strong> — {SITE.tagline}<br />
+      <span>AI tools, models and open-source projects, indexed weekly since 2026.</span>
+    </div>
+    <nav aria-label="Footer">{links.map((l) => <a href={l.href}>{l.label}</a>)}</nav>
+    <div>© {year} {SITE.name}</div>
+  </div>
+</footer>

@@ -7,21 +7,24 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "check:worker": "tsc -p worker",
+    "ingest": "node scripts/ingest/all.mjs",
+    "moderate": "node scripts/moderate.mjs",
+    "approve": "node scripts/approve.mjs",
+    "verify-links": "node scripts/verify-links.mjs",
+    "notify": "node scripts/notify.mjs",
+    "ship": "node scripts/pipeline.mjs"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.2",
-    "@astrojs/react": "^4.4.1",
-    "astro": "^5.14.0",
-    "hono": "^4.9.6",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "astro": "^5.18.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@cloudflare/workers-types": "^4.20250808.0",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
+    "@fontsource/inter": "^5.2.5",
+    "@resvg/resvg-js": "^2.6.2",
+    "satori": "^0.15.0",
     "typescript": "^5.9.2",
     "wrangler": "^4.29.1"
   },
@@ -29,7 +32,8 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "sharp",
-      "workerd"
+      "workerd",
+      "@resvg/resvg-js"
     ]
   }
 }

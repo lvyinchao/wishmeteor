@@ -1,0 +1,31 @@
+{
+  "sources": {
+    "github-search": {
+      "since": "2026-09-29",
+      "lastRunAt": "2026-09-29T16:06:45.067Z",
+      "remaining": 9,
+      "createdSince": "2026-09-15"
+    },
+    "github": {
+      "since": "2026-09-29",
+      "lastRunAt": "2026-09-29T16:06:45.072Z",
+      "candidates": 30
+    },
+    "hn": {
+      "since": "2026-09-29T14:25:41Z",
+      "lastRunAt": "2026-09-29T16:06:47.208Z",
+      "candidates": 28
+    },
+    "huggingface": {
+      "since": "2026-09-29",
+      "lastRunAt": "2026-09-29T16:06:50.116Z",
+      "candidates": 38
+    },
+    "vendors": {
+      "since": "2026-09-29",
+      "lastRunAt": "2026-09-29T16:07:01.666Z",
+      "candidates": 2212,
+      "feeds": 7
+    }
+  }
+}

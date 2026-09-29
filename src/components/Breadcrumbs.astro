@@ -1,0 +1,18 @@
+---
+interface Props {
+  /** Full trail, starting with Home. Kept identical to the BreadcrumbList JSON-LD. */
+  trail: { name: string; path?: string }[];
+}
+
+const { trail } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {trail.map((crumb, index) =>
+      crumb.path && index < trail.length - 1
+        ? <li><a href={crumb.path}>{crumb.name}</a></li>
+        : <li aria-current="page">{crumb.name}</li>
+    )}
+  </ol>
+</nav>

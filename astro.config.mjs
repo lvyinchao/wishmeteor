@@ -1,9 +1,10 @@
 import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
-import react from '@astrojs/react';
+import { blessingCards } from './integrations/blessing-cards.mjs';
 
 export default defineConfig({
-  adapter: cloudflare({ platformProxy: { enabled: true } }),
-  output: 'server',
-  integrations: [react()],
+  site: 'https://wishmeteor.net',
+  output: 'static',
+  trailingSlash: 'never',
+  build: { inlineStylesheets: 'auto' },
+  integrations: [blessingCards()],
 });

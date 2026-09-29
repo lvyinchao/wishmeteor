@@ -1,0 +1,83 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { loadCatalog } from '../../lib/catalog.mjs';
+import { OG } from '../../lib/og.mjs';
+import { blogPosting, breadcrumbs as breadcrumbData } from '../../lib/jsonld.ts';
+import { SITE } from '../../lib/site.ts';
+
+export const getStaticPaths = async () => {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+};
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { tools } = loadCatalog();
+const referenced = post.data.toolRefs
+  .map((slug) => tools.find((entry) => entry.slug === slug))
+  .filter((entry): entry is (typeof tools)[number] => Boolean(entry));
+const pubDate = post.data.pubDate.toISOString().slice(0, 10);
+const updated = post.data.updatedDate ? post.data.updatedDate.toISOString().slice(0, 10) : null;
+const path = `/blog/${post.id}`;
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog' },
+  { name: post.data.title },
+];
+---
+
+<Base
+  title={`${post.data.title} | ${SITE.name}`}
+  description={post.data.description}
+  image={OG.post(post.id)}
+  type="article"
+  publishedTime={post.data.pubDate.toISOString()}
+  modifiedTime={(post.data.updatedDate ?? post.data.pubDate).toISOString()}
+  jsonLd={[blogPosting(post, path), breadcrumbData(trail)]}
+>
+  <Breadcrumbs {trail} />
+  <article class="split">
+    <div class="prose">
+      <header>
+        <p class="eyebrow">{post.data.category}</p>
+        <h1>{post.data.title}</h1>
+        <p class="lede">{post.data.description}</p>
+      </header>
+      <p class="meta-row">
+        <span>Published <dt>{pubDate}</dt></span>
+        {updated && <span>Updated <dt>{updated}</dt></span>}
+        <span>Tools covered <dt>{referenced.length}</dt></span>
+      </p>
+      <Content />
+    </div>
+    <div class="aside-sticky">
+      <section class="aside-box" aria-labelledby="refs">
+        <h2 id="refs">Tools in this piece</h2>
+        <div class="grid">
+          {referenced.map((entry) => <a href={`/tool/${entry.slug}`} style="text-decoration:none">{entry.name}</a>)}
+        </div>
+      </section>
+      {
+        (post.data.sources ?? []).length > 0 && (
+          <section class="aside-box" style="margin-top:1rem" aria-labelledby="srcs">
+            <h2 id="srcs">Sources</h2>
+            <ul style="font-size:.86rem;padding-left:1.1rem;margin:0">
+              {post.data.sources.map((source) => (
+                <li>
+                  <a href={source.url} target="_blank" rel="noopener">{source.title}</a>
+                  <span style="color:var(--muted)"> · {source.observedAt}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+      <p style="margin-top:1.2rem;font-size:.9rem">
+        Building something in this space? <a href="/submit">Make a wish</a> — it is free, and the link is dofollow once it
+        clears review.
+      </p>
+    </div>
+  </article>
+</Base>

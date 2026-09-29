@@ -1,0 +1,31 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import ToolListing from '../../../components/ToolListing.astro';
+import { loadCatalog, inCategory } from '../../../lib/catalog.mjs';
+import { slicePages } from '../../../lib/pagination.ts';
+import { OG } from '../../../lib/og.mjs';
+
+export const getStaticPaths = async () => {
+  const { tools, categories, errors } = loadCatalog();
+  if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
+  return categories.map((category) => ({
+    params: { slug: category.id },
+    props: { category, slice: slicePages(inCategory(tools, category.id))[0] },
+  }));
+};
+
+const { category, slice } = Astro.props;
+const { categories } = loadCatalog();
+const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
+---
+
+<Base title={`${category.title} — WishMeteor AI tools`} description={category.description} image={OG.category(category.id)}>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'AI tools', path: '/tools' }, { name: category.name }]} />
+  <div class="page-head">
+    <p class="eyebrow">Category</p>
+    <h1>{category.title}</h1>
+    <p class="lede">{category.hubCopy}</p>
+  </div>
+  <ToolListing slice={slice} base={`/category/${category.id}`} categoryName={nameOf} listName={category.title} />
+</Base>

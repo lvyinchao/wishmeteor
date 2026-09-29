@@ -1,0 +1,33 @@
+{
+  "name": "Langfuse",
+  "url": "https://langfuse.com",
+  "category": "evals-observability",
+  "tags": [
+    "open-source",
+    "tracing",
+    "prompt-management",
+    "self-hostable"
+  ],
+  "summary": "Open-source tracing, prompt versioning and evaluation layer you can self-host instead of shipping prompts to a vendor.",
+  "description": "Langfuse records the trace of an LLM call — inputs, outputs, tool steps, token counts, latency, cost — and layers prompt management and evaluations on top, so a regression in production can be tied back to the prompt version that caused it. The SDK surface covers the major frameworks, and the data model is plain enough that you can query it yourself.\n\nIts distinguishing feature is boring and important: it is open source and self-hostable, so teams under data-residency constraints can adopt it without a procurement argument about where prompts go. The cost of that is ownership — you run ClickHouse and Postgres, you upgrade them, and you decide what to keep. Hosted plans exist for teams that would rather not. If you only need a token dashboard, this is more machinery than the job requires.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://langfuse.com",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/langfuse/langfuse",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-29",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

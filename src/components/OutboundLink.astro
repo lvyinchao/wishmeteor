@@ -1,0 +1,24 @@
+---
+import { outboundRel, isDofollow } from '../lib/links.mjs';
+
+interface Props {
+  entry: any;
+  class?: string;
+  /** Render the product name as the link text. */
+  label?: string;
+  showBadge?: boolean;
+}
+
+const { entry, class: className, label, showBadge = false } = Astro.props;
+const rel = outboundRel(entry);
+const dofollow = isDofollow(entry);
+---
+
+<a
+  class={className}
+  href={entry.url}
+  target="_blank"
+  rel={rel}
+  title={dofollow ? `Visit ${entry.name} (dofollow link)` : `Visit ${entry.name}`}>{label ?? entry.name}</a
+>
+{showBadge && <span class={`pill ${dofollow ? 'pill-dofollow' : 'pill-nofollow'}`}>{dofollow ? 'dofollow' : 'nofollow'}</span>}

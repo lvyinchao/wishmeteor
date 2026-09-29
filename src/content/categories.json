@@ -1,0 +1,82 @@
+[
+  {
+    "id": "ai-coding",
+    "name": "Coding",
+    "title": "AI coding assistants, agents and review tools",
+    "description": "Autocomplete, agentic coding, code review and terminal helpers, with pricing and how each one actually behaves in a real repository.",
+    "hubCopy": "Coding is where AI tools get judged hardest, because the work is verifiable: either the tests pass or they do not. This category covers assistants that complete lines, agents that open pull requests, and the review and terminal tools that sit around them. We look at how each one handles an existing codebase rather than a greenfield demo, since that is where the difference between tools becomes obvious. Most entries here are also the ones founders launch as wishes, so expect a mix of established projects and things that shipped this month.",
+    "order": 1
+  },
+  {
+    "id": "ai-chat",
+    "name": "Chat & Assistants",
+    "title": "AI chat apps, copilots and general assistants",
+    "description": "General-purpose chat products built on frontier and open models, compared on context handling, tool use and what you pay once you stop tinkering.",
+    "hubCopy": "A chat client is the least differentiated layer of the stack and the one people actually keep open all day, which makes it a strange, competitive category. We track the wrappers that add something real, such as project memory, file access, retrieval over your own documents, or a model router that quietly picks the cheap option. Pricing changes weekly here, so each entry records when it was last checked rather than pretending to be current forever.",
+    "order": 2
+  },
+  {
+    "id": "image-video",
+    "name": "Image & Video",
+    "title": "AI image, video and design generation tools",
+    "description": "Text-to-image, text-to-video, editing suites and design copilots, including which ones allow commercial use and how they handle reference consistency.",
+    "hubCopy": "Generative vision tools move fast enough that a launch is old news in a fortnight. The entries here focus on what survives the demo: character and brand consistency across shots, editability rather than re-roll roulette, licensing terms you can actually publish under, and API access when you need volume. Video is still the least mature part of the category, so we grade it separately from image work even when one product ships both.",
+    "order": 3
+  },
+  {
+    "id": "audio-voice",
+    "name": "Voice & Music",
+    "title": "AI voice cloning, speech, music and audio tools",
+    "description": "Text to speech, transcription, dubbing, sound-effect and music generation tools, with notes on latency, language coverage and consent policies.",
+    "hubCopy": "Audio is where AI gets used in production more often than it gets written about: subtitles, dubbing, IVR triage, podcast cleanup, and product voices that have to sound the same in eleven languages. Latency decides which of these can be interactive and which can only be rendered ahead of time, so each entry notes whether it streams. Voice cloning sits next to an obvious consent problem, and the tools with published policies on it are listed alongside the ones that stay quiet.",
+    "order": 4
+  },
+  {
+    "id": "agents-automation",
+    "name": "Agents & Automation",
+    "title": "AI agent frameworks, browser agents and workflow automation",
+    "description": "Frameworks and products that let models take multi-step actions: orchestration, computer use, background workers and no-code AI automations.",
+    "hubCopy": "Agent tooling is the category with the widest gap between marketing and measured reliability. We separate frameworks you host yourself from products that run the loop for you, because the trade is control over failure handling versus not maintaining a runtime. Anything that touches a real account needs an audit trail and a stop button, and the entries that lack both are marked as experimental regardless of how good the demo looks.",
+    "order": 5
+  },
+  {
+    "id": "data-retrieval",
+    "name": "Search & RAG",
+    "title": "AI search, retrieval, RAG and vector data tools",
+    "description": "Vector databases, embedding models, rerankers, document parsing and retrieval platforms that sit underneath most shipped AI features.",
+    "hubCopy": "Most shipped AI features are a retrieval problem wearing a model. This category collects the layer that decides what the model gets to see: stores, embeddings, rerankers, parsers for ugly PDFs, and the evaluation harnesses that tell you whether your chunking strategy is doing anything. It is the least glamorous part of the stack and usually the one holding a product back, which is why it gets its own page instead of a footnote under infrastructure.",
+    "order": 6
+  },
+  {
+    "id": "model-platforms",
+    "name": "Models & Inference",
+    "title": "Model APIs, inference clouds and training platforms",
+    "description": "Where to get frontier and open-weights models served, what a million tokens really costs, and the fine-tuning and serving platforms attached to them.",
+    "hubCopy": "Model access is a commodity that behaves like a non-commodity: the same weights cost different amounts, at different speeds, with different retention terms depending on who serves them. Entries here record context windows, structured output support, rate limits and the price band per million tokens, because those four things decide an architecture faster than any benchmark. We list hosted APIs and self-hostable runtimes side by side, since the honest answer to either is usually 'both, for different traffic'.",
+    "order": 7
+  },
+  {
+    "id": "evals-observability",
+    "name": "Evals & Ops",
+    "title": "LLM evaluation, tracing and observability tools",
+    "description": "Prompt versioning, evals, traces, cost tracking and regression testing for teams that have to defend an AI feature in production.",
+    "hubCopy": "The moment an AI feature has users, someone asks why it changed. This category is the tooling that answers that: traces, prompt versioning, offline eval suites, online sampling, cost attribution and regression gates. It is also the category where open source does most of the heavy lifting, so several entries here are repositories you self-host rather than products you buy. Teams that skip this layer tend to add it after one bad demo, which is why we keep it separated out.",
+    "order": 8
+  },
+  {
+    "id": "open-source-models",
+    "name": "Open Weights",
+    "title": "Open-weight AI models and the projects around them",
+    "description": "Released model weights with their licences, sizes and quantisations, plus the tooling that makes them runnable on hardware people actually own.",
+    "hubCopy": "Open weights are a licence question before they are a capability question, so each entry here states what the licence permits, what size fits on consumer hardware, and whether the project publishes quantisations and a real model card. Where a release is weights-only with no training data or code, we say so, because 'open' is doing a lot of work in this corner of the industry. The runtime tooling around these models moves as fast as the models, and it is listed in the same place for that reason.",
+    "order": 9
+  },
+  {
+    "id": "productivity",
+    "name": "Writing & Research",
+    "title": "AI writing, research, note-taking and productivity tools",
+    "description": "Tools that read a lot so you do not have to: research assistants, long-document analysis, meeting notes, writing aids and knowledge bases.",
+    "hubCopy": "The productivity layer is crowded and mostly shallow, so the bar here is a specific workflow the tool genuinely shortens. Research assistants get judged on whether they cite verifiably, note tools on whether retrieval beats scrolling, and writing aids on whether the output still sounds like the author. Meeting summarisers are included only where the product handles multi-language transcripts or long calls, since the easy version is a feature rather than a product.",
+    "order": 10
+  }
+]

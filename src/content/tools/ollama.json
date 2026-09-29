@@ -1,0 +1,33 @@
+{
+  "name": "Ollama",
+  "url": "https://ollama.com",
+  "category": "model-platforms",
+  "tags": [
+    "local",
+    "open-source",
+    "quantisation",
+    "developer-tooling"
+  ],
+  "summary": "One-command local runner for open-weight models, with a library of quantised builds and a simple API.",
+  "description": "Ollama made \"run a model on my laptop\" a single command. It ships a small model library of pre-quantised builds, pulls and caches them like container images, exposes a local HTTP API that most frameworks already know how to talk to, and handles the awkward parts — GPU detection, memory pressure, keeping a model warm — better than most people want to spend an afternoon on.\n\nIt is a runner, not a serving platform: throughput, batching and multi-user access are deliberately out of scope, which is why teams usually graduate to vLLM or a hosted provider the moment other people need the model too. Model quality is whatever the upstream weights are, and the convenience of one-command pulls makes it easy to forget that the licence on the model you pulled may not permit what your product does.",
+  "pricing": "open-source",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://ollama.com",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "repository",
+      "url": "https://github.com/ollama/ollama",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-29",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

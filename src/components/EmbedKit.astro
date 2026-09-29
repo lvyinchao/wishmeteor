@@ -1,0 +1,27 @@
+---
+import { SITE } from '../lib/site.ts';
+
+interface Props {
+  entry: any;
+}
+
+const { entry } = Astro.props;
+const pageUrl = `${SITE.url}/tool/${entry.slug}`;
+const markdown = `[${entry.name} — launched on ${SITE.name}](${pageUrl})`;
+const html = `<a href="${pageUrl}" title="${entry.name} on ${SITE.name}">${entry.name}</a>`;
+const badge = `<a href="${SITE.url}"><img src="${SITE.url}/badge/wishmeteor-listed.svg" alt="Wish listed on ${SITE.name}" width="180" height="60"></a>`;
+---
+
+<aside class="aside-box" aria-labelledby="embed-kit">
+  <h2 id="embed-kit">Bring it back to your own site</h2>
+  <p style="font-size:.88rem;color:var(--muted)">
+    Nothing is required. If you want the badge, copy one of these — every form below links back to the entry, and this is
+    the only reciprocal link we ever ask for.
+  </p>
+  <h3 style="font-size:.85rem;margin-top:1rem">Markdown</h3>
+  <pre class="embed-code">{markdown}</pre>
+  <h3 style="font-size:.85rem">HTML</h3>
+  <pre class="embed-code">{html}</pre>
+  <h3 style="font-size:.85rem">Badge</h3>
+  <pre class="embed-code">{badge}</pre>
+</aside>

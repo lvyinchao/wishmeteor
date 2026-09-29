@@ -1,0 +1,121 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import WishWall from '../components/WishWall.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { loadCatalog, launchedWishes } from '../lib/catalog.mjs';
+import { isListable } from '../lib/links.mjs';
+import { SITE } from '../lib/site.ts';
+
+const { tools, errors } = loadCatalog();
+if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
+const live = tools.filter((t) => t.status !== 'archived');
+const wishes = launchedWishes(live, 12);
+const dofollowCount = live.filter((entry) => isListable(entry)).length;
+
+const faqs = [
+  {
+    q: 'Is the backlink really free?',
+    a: 'Yes. Submission, review, the listing page and the dofollow link all cost nothing, and there is no paid tier hiding behind them. The trade is our time: we read every page before it goes live, which is why the queue moves at up to nine launches a day rather than a thousand.',
+  },
+  {
+    q: 'What does dofollow mean here?',
+    a: `The link on your entry carries no rel="nofollow", rel="ugc" or rel="sponsored" attribute, so search engines treat it as an editorial vote from ${SITE.name}. We only keep it that way while the entry stays true: reachable, on-topic, and described in text we wrote ourselves.`,
+  },
+  {
+    q: 'Do I have to link back?',
+    a: 'No. The badge is offered because some founders like it, not because it buys anything. A listing with zero reciprocal links is treated exactly the same as one with three.',
+  },
+  {
+    q: 'How long does the link last?',
+    a: `As long as it stays honest. Every link is re-checked, and one that has been unreachable for ${SITE.staleAfterDays} days loses its dofollow status rather than sitting there pointing at a parked domain. Deletions are logged on the policy page.`,
+  },
+  {
+    q: 'What gets rejected?',
+    a: 'Sites we cannot evaluate without an account, products that are a thin wrapper over an API call they do not describe, casino and crypto giveaway pages, link farms and anything whose own outbound links are all nofollow because the page exists only to hand out credit.',
+  },
+];
+
+const title = `Free dofollow backlinks for AI tools — ${SITE.dailyLaunchCap} launches a day | ${SITE.name}`;
+const description = `A free, reviewed dofollow backlink for your AI tool, model or open-source project. No fee, no link exchange, no paid tier: ${dofollowCount} live entries and a hand-written blessing with every launch.`;
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.q,
+        acceptedAnswer: { '@type': 'Answer', text: faq.a },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: `Free dofollow listing on ${SITE.name}`,
+      serviceType: 'Directory listing with dofollow backlink',
+      areaServed: 'Worldwide',
+      provider: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      description,
+    },
+  ]}
+>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Free dofollow backlinks' }]} />
+
+  <div class="page-head">
+    <p class="eyebrow">The whole point</p>
+    <h1>Free dofollow backlinks, with the boring parts enforced</h1>
+    <p class="lede">
+      {dofollowCount} entries on this index currently carry a dofollow link. Every one of them was read by a human or an
+      editor-agent before it went live, and every one of them can lose that status. That is the entire offer — it happens to be
+      paired with an AI tools directory, because a directory of junk links is worthless to everyone including the people
+      buying into it.
+    </p>
+  </div>
+
+  <p class="hero-cta" style="margin-bottom:2.4rem">
+    <a class="btn btn-primary" href="/submit">Make a wish</a>
+    <a class="btn btn-ghost" href="/dofollow-policy">Read the policy</a>
+  </p>
+
+  <WishWall entries={wishes} title="Recently launched links" />
+
+  <section aria-labelledby="how">
+    <h2 id="how">What happens after you submit</h2>
+    <ol>
+      <li>Your link is canonicalised, deduplicated against the index, and dropped into a queue. Nothing is published yet.</li>
+      <li>Twice a day the review pass opens the page. It has to load, be about what you said it is about, and be evaluable without signing in.</li>
+      <li>If it passes, an entry is written in our own words: what the thing does, what it costs, who it is for and where it falls short. No copy-paste of your tagline.</li>
+      <li>The entry goes live with a dofollow link, and your blessing — one paragraph, written for your product, not a template — is emailed to you along with a card you can share.</li>
+      <li>After that, links are re-checked on a rolling basis. Dead link, nofollow. Fixed within the grace period, dofollow again.</li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="faq">
+    <h2 id="faq">Questions founders actually ask</h2>
+    {
+      faqs.map((faq) => (
+        <>
+          <h3>{faq.q}</h3>
+          <p>{faq.a}</p>
+        </>
+      ))
+    }
+  </section>
+
+  <JsonLd
+    data={{
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: title,
+      description,
+      url: `${SITE.url}/free-dofollow-backlinks`,
+      inLanguage: 'en',
+    }}
+  />
+</Base>

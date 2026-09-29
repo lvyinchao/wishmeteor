@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { SITE } from '../../lib/site.ts';
+
+const posts = (await getCollection('posts')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const byMonth = new Map<string, typeof posts>();
+for (const post of posts) {
+  const key = post.data.pubDate.toISOString().slice(0, 7);
+  byMonth.set(key, [...(byMonth.get(key) ?? []), post]);
+}
+
+const title = `The logbook — AI tool launches, models and what actually shipped | ${SITE.name}`;
+const description = `Notes from the collection jobs: which AI tools, models and open-source projects turned up this week, what changed, and what we decided not to index.`;
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Blog' }]} />
+  <div class="page-head">
+    <p class="eyebrow">Written after the collection runs</p>
+    <h1>The logbook</h1>
+    <p class="lede">
+      Every entry in the index has a date it was checked. These are the pieces where the checking is the story: launches worth
+      arguing about, categories that moved, and the occasional decision to leave something out.
+    </p>
+  </div>
+
+  {
+    [...byMonth.entries()].map(([month, monthPosts]) => (
+      <section class="section" aria-labelledby={`m-${month}`}>
+        <div class="section-head">
+          <h2 id={`m-${month}`} style="font-size:1.1rem;margin:0">{month}</h2>
+          <span style="color:var(--muted);font-size:.85rem">{monthPosts.length} articles</span>
+        </div>
+        <div class="grid">
+          {monthPosts.map((post) => (
+            <article class="card">
+              <h3>
+                <a class="card-title" href={`/blog/${post.id}`}>{post.data.title}</a>
+              </h3>
+              <p>{post.data.description}</p>
+              <div class="card-meta">
+                <time datetime={post.data.pubDate.toISOString().slice(0, 10)}>{post.data.pubDate.toISOString().slice(0, 10)}</time>
+                <span class="pill">{post.data.category}</span>
+                <span>{post.data.toolRefs.length} tools referenced</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+</Base>

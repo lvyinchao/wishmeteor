@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../lib/site.ts';
+
+const title = `Privacy — what ${SITE.name} stores about a submission`;
+const description = `One email address, kept for one purpose: sending your blessing. No analytics, no cookies, no mailing list, no third-party trackers on this site.`;
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Privacy' }]} />
+  <div class="page-head">
+    <h1>Privacy</h1>
+    <p class="lede">Short, because the site is short on excuses for collecting things.</p>
+  </div>
+
+  <article class="prose">
+    <h2>What a submission stores</h2>
+    <p>
+      When you use <a href="/submit">the wish form</a>, four things are written to a single database table: the product name,
+      the canonical URL, the category you chose, and the free-text description you wrote. Your email address is stored next to
+      them for one purpose — sending the blessing and the card — and it is never rendered on any public page.
+    </p>
+    <p>
+      We also store a keyed hash of the submitting IP address, used only to rate-limit the form (five wishes per hour per
+      address). It is a throttle, not a security control, and it is deleted along with the rest of the row.
+    </p>
+
+    <h2>What is published</h2>
+    <p>
+      Approved entries become a public page with the product name, its link, our description of it, the dates we indexed and
+      last checked it, and the blessing. That is all a reviewer writes down, so that is all that appears.
+    </p>
+
+    <h2>Tracking, cookies and analytics</h2>
+    <p>
+      There are no analytics scripts, advertising tags, social widgets or third-party cookies on this site, so nothing is set
+      beyond what Cloudflare needs to deliver the pages. No cross-site tracking, therefore no consent banner.
+    </p>
+
+    <h2>Retention and deletion</h2>
+    <p>
+      Pending submissions older than 90 days are cleared automatically. Published entries keep the blessing record but not the
+      email: once the notification is confirmed delivered, the address is dropped from the row and only a delivery date
+      remains. Ask for removal at <a href={'mailto:' + SITE.email}>{SITE.email}</a> and the entry comes down in the next
+      review round; ask twice and the domain is blocked from resubmission.
+    </p>
+
+    <h2>Where it lives</h2>
+    <p>
+      Pages are static files served from Cloudflare edge caches; submissions go to a Cloudflare D1 database in the same
+      account. Nothing is processed in the European Union or transferred out of that account, and the site is operated from the
+      address on the <a href="/about">about page</a>.
+    </p>
+  </article>
+</Base>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 60" width="180" height="60" role="img" aria-label="Wish listed on WishMeteor">
+  <defs>
+    <linearGradient id="tail" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffd166" stop-opacity="0" />
+      <stop offset="60%" stop-color="#ffd166" stop-opacity=".85" />
+      <stop offset="100%" stop-color="#fff6e0" />
+    </linearGradient>
+  </defs>
+  <rect width="180" height="60" rx="12" fill="#0b1226" stroke="#24304f" />
+  <path d="M16 44 L32 28" stroke="url(#tail)" stroke-width="5" stroke-linecap="round" />
+  <circle cx="37" cy="23" r="7" fill="#ffe3a3" />
+  <text x="52" y="27" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#9aa6c8" letter-spacing=".6">WISH LISTED ON</text>
+  <text x="52" y="45" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#e9edfa">WishMeteor</text>
+</svg>

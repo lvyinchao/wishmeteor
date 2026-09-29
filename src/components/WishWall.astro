@@ -1,0 +1,34 @@
+---
+interface Props {
+  entries: any[];
+  title?: string;
+}
+
+const { entries, title = 'Recently lit wishes' } = Astro.props;
+---
+
+<section class="section" aria-labelledby="wish-wall">
+  <div class="section-head">
+    <h2 id="wish-wall">{title}</h2>
+    <a href="/new">See every launch</a>
+  </div>
+  {
+    entries.length === 0 ? (
+      <p class="lede">
+        The wall is empty right now. <a href="/submit">Be the first to make a wish</a> — review happens twice a day and the
+        blessing is written by hand.
+      </p>
+    ) : (
+      <div class="wish-wall">
+        {entries.map((entry) => (
+          <article class="wish">
+            <h3 style="margin:0 0 .2rem;font-size:1rem">
+              <a href={`/tool/${entry.slug}`} style="text-decoration:none">{entry.name}</a>
+            </h3>
+            <time datetime={String(entry.wish.submittedAt).slice(0, 10)}>launched {entry.wish.submittedAt}</time>
+          </article>
+        ))}
+      </div>
+    )
+  }
+</section>

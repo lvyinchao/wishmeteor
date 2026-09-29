@@ -1,0 +1,31 @@
+---
+import { pagePath } from '../lib/pagination.ts';
+
+interface Props {
+  base: string;
+  page: number;
+  lastPage: number;
+  total: number;
+}
+
+const { base, page, lastPage, total } = Astro.props;
+const shown = [...new Set([1, lastPage, page - 1, page, page + 1])]
+  .filter((n) => n >= 1 && n <= lastPage)
+  .sort((a, b) => a - b);
+const gapBefore = (index: number) => index > 0 && shown[index] - shown[index - 1] > 1;
+---
+
+{
+  lastPage > 1 && (
+    <nav class="pager" aria-label={`More pages, ${total} entries in total`}>
+      {page > 1 && <a href={pagePath(base, page - 1)} rel="prev">Previous</a>}
+      {shown.map((n, index) => (
+        <>
+          {gapBefore(index) && <span aria-hidden="true">…</span>}
+          {n === page ? <span aria-current="page">{n}</span> : <a href={pagePath(base, n)}>{n}</a>}
+        </>
+      ))}
+      {page < lastPage && <a href={pagePath(base, page + 1)} rel="next">Next</a>}
+    </nav>
+  )
+}

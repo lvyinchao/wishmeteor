@@ -1,0 +1,34 @@
+{
+  "name": "Cursor",
+  "url": "https://cursor.com",
+  "category": "ai-coding",
+  "tags": [
+    "ide",
+    "autocomplete",
+    "refactoring",
+    "vs-code-fork"
+  ],
+  "summary": "A VS Code fork built around editing whole files with a model, rather than completing one line at a time.",
+  "description": "Cursor takes the editor shell people already know and rebuilds the parts around it: a diff-based multi-file edit flow, a codebase index that answers \"where is this handled\" questions, and an agent mode that runs commands and iterates on failures. The reason developers stick with it is the review loop — edits land as diffs you can accept chunk by chunk, which is very different from pasting a model's output into a file and hoping.\n\nWhere it gets expensive is the same place it gets good: multi-file agent runs burn tokens quickly, and a long session against a large repository can quietly consume a week of free-request allowance. It is also a fork, so you are taking the vendor's extension compatibility and update cadence rather than upstream VS Code's, and enterprise policy teams tend to notice that before the developers do.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://cursor.com",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "changelog",
+      "url": "https://cursor.com/changelog",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-29",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true,
+  "featured": true
+}

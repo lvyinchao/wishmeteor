@@ -1,0 +1,9 @@
+[
+  { "name": "OpenAI news", "kind": "rss", "url": "https://openai.com/news/rss.xml" },
+  { "name": "Google AI blog", "kind": "rss", "url": "https://blog.google/technology/ai/rss/" },
+  { "name": "Google DeepMind blog", "kind": "rss", "url": "https://deepmind.google/blog/rss.xml" },
+  { "name": "Hugging Face blog", "kind": "rss", "url": "https://huggingface.co/blog/feed.xml" },
+  { "name": "Anthropic news", "kind": "html", "url": "https://www.anthropic.com/news", "match": "/(news|research)/" },
+  { "name": "Mistral news", "kind": "html", "url": "https://mistral.ai/news/", "match": "/news/" },
+  { "name": "Meta AI blog", "kind": "html", "url": "https://ai.meta.com/blog/", "match": "/blog/" }
+]

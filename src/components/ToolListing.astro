@@ -1,0 +1,41 @@
+---
+import ToolCard from './ToolCard.astro';
+import Pager from './Pager.astro';
+import JsonLd from './JsonLd.astro';
+import { PER_PAGE, type PageSlice } from '../lib/pagination.ts';
+
+interface Props {
+  slice: PageSlice<any>;
+  /** Path the pager links to, e.g. /tools or /category/ai-coding. */
+  base: string;
+  categoryName: (id: string) => string;
+  listName: string;
+}
+
+const { slice, base, categoryName, listName } = Astro.props;
+---
+
+<div class="grid grid-cards">
+  {
+    slice.items.map((entry) => (
+      <ToolCard entry={entry} categoryName={categoryName(entry.category)} />
+    ))
+  }
+</div>
+
+<Pager base={base} page={slice.page} lastPage={slice.lastPage} total={slice.total} />
+
+<JsonLd
+  data={{
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: listName,
+    numberOfItems: slice.total,
+    itemListElement: slice.items.map((entry, index) => ({
+      '@type': 'ListItem',
+      position: (slice.page - 1) * PER_PAGE + index + 1,
+      url: `${Astro.site}/tool/${entry.slug}`,
+      name: entry.name,
+    })),
+  }}
+/>

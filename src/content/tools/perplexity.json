@@ -1,0 +1,38 @@
+{
+  "name": "Perplexity",
+  "url": "https://perplexity.ai",
+  "category": "ai-chat",
+  "tags": [
+    "search",
+    "citations",
+    "research",
+    "api"
+  ],
+  "summary": "Answer engine that searches the live web first and attaches citations to what it writes.",
+  "description": "Perplexity inverts the usual assistant flow: it runs retrieval over the open web, then writes an answer that cites the pages it used. For questions where recency matters — a library version, a conference date, who acquired whom — that ordering beats a static model, and the citation strip is genuinely useful for checking the claim rather than trusting it.\n\nThe failure mode is subtler than hallucination. Cited pages can be weak sources that merely agree with the sentence written above them, and the format makes that look like verification. Deep research mode takes minutes and produces something closer to a report than an answer. There is a free tier with a daily allowance of pro-model searches, and an API with separate pricing for the search and the answer, which is the detail most cost estimates get wrong.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://www.perplexity.ai",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "docs",
+      "url": "https://docs.perplexity.ai",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://perplexity.ai",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-29",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

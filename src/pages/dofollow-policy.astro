@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../lib/site.ts';
+
+const title = `Link policy — how ${SITE.name} decides what is dofollow`;
+const description = `The exact rules behind every outbound link on ${SITE.name}: what qualifies for dofollow, what gets nofollowed, how links expire, and how to ask for a removal.`;
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Link policy' }]} />
+  <div class="page-head">
+    <h1>Link policy</h1>
+    <p class="lede">
+      This page exists so that the rules are not a rumour. If anything here changes, the change lands on this page first.
+    </p>
+  </div>
+
+  <article class="prose">
+    <h2>What a link here means</h2>
+    <p>
+      An outbound link on {SITE.name} is a statement that we opened the product, understood it well enough to describe it, and
+      think it belongs in a list people trust. Nothing else is implied. There is no sponsorship tier, no "priority review"
+      payment, and no affiliate arrangement with any listed product, so no link here should be read as a purchase.
+    </p>
+
+    <h2>When a link is dofollow</h2>
+    <p>A link carries no value-affecting rel attribute only while all of the following hold:</p>
+    <ul>
+      <li>the entry passed review and is marked approved;</li>
+      <li>the target page returns a successful response on our last check;</li>
+      <li>that check is more recent than {SITE.staleAfterDays} days;</li>
+      <li>the entry carries at least {SITE.minDescriptionChars} characters of description we wrote ourselves.</li>
+    </ul>
+    <p>
+      If any of those fails, the link is rendered with <code>rel="nofollow ugc"</code> and the entry is dropped from the
+      sitemap until it is fixed. The status is visible on every entry page, so nobody has to guess.
+    </p>
+
+    <h2>What is never accepted</h2>
+    <ul>
+      <li>Pages that require a login, a waitlist or a sales call to evaluate.</li>
+      <li>Redirect chains, cloaking, or a submitted URL that is not the destination.</li>
+      <li>Anything whose purpose is to hand out links: marketplaces of links, "get backlinks" services, guest-post farms.</li>
+      <li>Gambling, crypto giveaways, adult content, medical or financial claims with no source.</li>
+      <li>Domain squatting: one wish per product, and we consolidate clones.</li>
+    </ul>
+
+    <h2>Volume cap</h2>
+    <p>
+      No more than {SITE.dailyLaunchCap} entries go live per day and no more than {SITE.perRoundCap} per review round. This is
+      a quality limit before it is an SEO one: a page that grows a hundred links a week stops being an index and starts being a
+      link farm, which hurts the founders who listed in good faith.
+    </p>
+
+    <h2>Removals and corrections</h2>
+    <p>
+      Want your entry taken down, retagged, or the wording changed? Email <a href={'mailto:' + SITE.email}>{SITE.email}</a> from the
+      domain you submitted. Removals happen in the next review round, and we do not require a reason.
+    </p>
+
+    <h2>Changes to this policy</h2>
+    <p>
+      Last reviewed {new Date().toISOString().slice(0, 10)}. The current version is deliberately short; when rules get long
+      enough to need a lawyer, they are usually being written to justify a business model.
+    </p>
+  </article>
+</Base>

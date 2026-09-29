@@ -1,0 +1,26 @@
+---
+import OutboundLink from './OutboundLink.astro';
+import { categoryPath } from '../lib/catalog.mjs';
+import { isDofollow } from '../lib/links.mjs';
+
+interface Props {
+  entry: any;
+  categoryName: string;
+}
+
+const { entry, categoryName } = Astro.props;
+const dofollow = isDofollow(entry);
+---
+
+<article class="card">
+  <h3>
+    <a class="card-title" href={`/tool/${entry.slug}`}>{entry.name}</a>
+  </h3>
+  <p>{entry.summary}</p>
+  <div class="card-meta">
+    <span class="pill">{entry.pricing}</span>
+    <a class="pill" href={categoryPath(entry.category)}>{categoryName}</a>
+    {entry.origin === 'submitted' && <span class="pill pill-live">wish launched</span>}
+    <OutboundLink entry={entry} label="Visit" class="pill" showBadge={dofollow} />
+  </div>
+</article>

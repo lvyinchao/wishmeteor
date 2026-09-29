@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ToolListing from '../../components/ToolListing.astro';
+import { loadCatalog, sortNewest } from '../../lib/catalog.mjs';
+import { slicePages } from '../../lib/pagination.ts';
+
+export const getStaticPaths = async () => {
+  const { tools } = loadCatalog();
+  const live = sortNewest(tools.filter((t) => t.status !== 'archived'));
+  return slicePages(live)
+    .filter((slice) => slice.page > 1)
+    .map((slice) => ({ params: { page: String(slice.page) }, props: { slice } }));
+};
+
+const { slice } = Astro.props;
+const { categories } = loadCatalog();
+const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
+---
+
+<Base
+  title={`AI tools index, page ${slice.page} of ${slice.lastPage}`}
+  description={`Page ${slice.page} of the WishMeteor AI tools index: ${slice.items.length} more tools, models and open-source projects with pricing and honest summaries.`}
+>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'AI tools', path: '/tools' }, { name: `Page ${slice.page}` }]} />
+  <div class="page-head">
+    <h1>The index · page {slice.page}</h1>
+  </div>
+  <ToolListing slice={slice} base="/tools" categoryName={nameOf} listName={`AI tools index page ${slice.page}`} />
+</Base>

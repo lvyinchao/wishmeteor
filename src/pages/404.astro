@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadCatalog, sortNewest } from '../lib/catalog.mjs';
+import { SITE } from '../lib/site.ts';
+
+const { tools } = loadCatalog();
+const picks = sortNewest(tools.filter((t) => t.status !== 'archived')).slice(0, 6);
+---
+
+<Base title="Page not found" description="That page is no longer here. Browse the WishMeteor AI tools index or make a new wish instead." noindex>
+  <div class="page-head">
+    <p class="eyebrow">404</p>
+    <h1>That link burned up on the way down.</h1>
+    <p class="lede">
+      The page you asked for is not here. If you followed a dead link from an entry, tell us and we will re-check it — that is
+      exactly the kind of thing the weekly sweep is supposed to catch.
+    </p>
+  </div>
+  <p class="hero-cta">
+    <a class="btn btn-primary" href="/submit">Make a wish</a>
+    <a class="btn btn-ghost" href="/tools">Browse the index</a>
+  </p>
+  <section class="section" aria-labelledby="picks">
+    <div class="section-head">
+      <h2 id="picks">Recently indexed</h2>
+      <a href="/new">All new entries</a>
+    </div>
+    <ul>
+      {picks.map((entry) => <li><a href={`/tool/${entry.slug}`}>{entry.name}</a> — {entry.summary}</li>)}
+    </ul>
+  </section>
+</Base>

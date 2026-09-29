@@ -1,0 +1,28 @@
+---
+import { OG } from '../lib/og.mjs';
+
+interface Props {
+  entry: any;
+  withImage?: boolean;
+}
+
+const { entry, withImage = true } = Astro.props;
+const wish = entry.wish;
+const cardPath = OG.tool(entry.slug);
+---
+
+{
+  wish && (
+    <section class="blessing" aria-label={`Blessing for ${entry.name}`}>
+      <blockquote style="margin:0">
+        <p>&ldquo;{wish.blessingLong}&rdquo;</p>
+      </blockquote>
+      <p class="by">
+        Wished into the sky on {wish.submittedAt} · written by hand for {entry.name}
+      </p>
+      {withImage && (
+        <img src={cardPath} width="1200" height="630" alt={`Blessing card for ${entry.name}`} loading="lazy" style="margin-top:.9rem;border-radius:14px" />
+      )}
+    </section>
+  )
+}

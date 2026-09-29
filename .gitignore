@@ -1,6 +1,15 @@
-node_modules
-dist
-.astro
-.wrangler
+node_modules/
+dist/
+.astro/
+.wrangler/
+.env
+.env.production
 .dev.vars
-.playwright-mcp
+
+# Runtime artifacts of the collection pipeline (regenerated every run)
+data/inbox/
+data/cache/
+data/.lock
+
+.DS_Store
+*.log

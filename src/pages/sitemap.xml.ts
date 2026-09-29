@@ -1,14 +1,21 @@
 import type { APIRoute } from 'astro';
-import { locales } from '../lib/i18n';
-import { seoLandingSlugs } from '../lib/seo-pages';
+import { loadCatalog } from '../lib/catalog.mjs';
 
-const baseUrl = 'https://wishmeteor.net';
-const urls = [
-  ...locales.map((locale) => `${baseUrl}/${locale}`),
-  ...seoLandingSlugs.map((slug) => `${baseUrl}/en/${slug}`),
-];
+export const prerender = true;
 
-export const GET: APIRoute = () => {
-  const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((url) => `  <url><loc>${url}</loc></url>`).join('\n')}\n</urlset>\n`;
-  return new Response(body, { headers: { 'content-type': 'application/xml; charset=utf-8', 'cache-control': 'public, max-age=3600' } });
+const parts = ['sitemap-pages.xml', 'sitemap-tools.xml', 'sitemap-posts.xml'];
+
+export const GET: APIRoute = ({ site }) => {
+  const { tools } = loadCatalog();
+  const newest = tools
+    .map((entry) => entry.lastVerifiedAt)
+    .filter(Boolean)
+    .sort()
+    .at(-1);
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${parts.map((part) => `  <sitemap><loc>${new URL(`/${part}`, site).href}</loc>${newest ? `<lastmod>${newest}</lastmod>` : ''}</sitemap>`).join('\n')}
+</sitemapindex>
+`;
+  return new Response(body, { headers: { 'content-type': 'application/xml; charset=utf-8' } });
 };

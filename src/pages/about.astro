@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { loadCatalog } from '../lib/catalog.mjs';
+import { SITE } from '../lib/site.ts';
+
+const { tools, categories, errors } = loadCatalog();
+if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
+const live = tools.filter((t) => t.status !== 'archived');
+const wishes = live.filter((t) => t.origin === 'submitted').length;
+
+const title = `About ${SITE.name} — an AI tools index run like a small shop`;
+const description = `Why this index exists, who writes the entries, how the collection jobs run, and what will never happen here: paid links, sponsored placements, or auto-generated descriptions.`;
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'About' }]} />
+  <div class="page-head">
+    <h1>About {SITE.name}</h1>
+    <p class="lede">
+      An index of {live.length} AI tools, models and open-source projects across {categories.length} categories, and a place
+      where {wishes} founder-launched products have already made a wish and gotten a real dofollow link for it.
+    </p>
+  </div>
+
+  <article class="prose">
+    <h2>Why it is called that</h2>
+    <p>
+      The domain is {SITE.host}, so the metaphor came first: launching a product is closer to throwing a wish at the sky than to
+      filing paperwork, and most founders do it with no audience at all. The blessing that comes back with a published link is
+      not a gimmick either — it is the only part of a directory a founder actually remembers, so it is the part we refuse to
+      generate from a template.
+    </p>
+
+    <h2>How the index is built</h2>
+    <p>
+      Three collection jobs run on a schedule: one watches GitHub trending and Hacker News for new AI repositories and launches,
+      one follows Hugging Face model releases and daily papers, and one reads vendor changelogs and official blogs. They produce
+      a shortlist of candidates with citations; they never publish anything. A human reads each candidate, and the entry text is
+      written from scratch against what the product actually does on the day it was checked. Weekly maintenance re-checks every
+      outbound link, so a product that vanished last month stops borrowing our credibility.
+    </p>
+
+    <h2>What will never happen here</h2>
+    <ul>
+      <li>Paid placement, sponsored tags, or a "priority review" fee. The <a href="/free-dofollow-backlinks">free link</a> is the product.</li>
+      <li>Reciprocal-link requirements. The badge is optional and carries no weight either way.</li>
+      <li>Auto-generated descriptions. A model helps us find things and draft long passages; nothing goes public that a person has not read and corrected.</li>
+      <li>Mass ingestion. The daily cap exists on the publish side too, not only on submissions.</li>
+    </ul>
+
+    <h2>Corrections</h2>
+    <p>
+      Pricing pages lie, and this index is wrong about things sometimes. If an entry misstates what your product costs or does,
+      email <a href={'mailto:' + SITE.email}>{SITE.email}</a> with a link to the source and it gets fixed in the next round —
+      that is a genuine request, not a form reply.
+    </p>
+
+    <h2>Colophon</h2>
+    <p>
+      Static pages built with Astro and served from Cloudflare edge caches; the only dynamic endpoint on the whole site is the
+      submission form. No trackers, no cookies, no affiliate links. Written in English for a global audience, and versioned in
+      public so every entry change has a diff behind it.
+    </p>
+  </article>
+</Base>

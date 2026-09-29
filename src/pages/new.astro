@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ToolCard from '../components/ToolCard.astro';
+import { loadCatalog, sortNewest, inCategory } from '../lib/catalog.mjs';
+import { SITE } from '../lib/site.ts';
+
+const { tools, categories, errors } = loadCatalog();
+if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
+const live = tools.filter((t) => t.status !== 'archived');
+const recent = sortNewest(live).slice(0, 60);
+const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
+
+const title = `New AI tools and launches this week | ${SITE.name}`;
+const description = `The most recent ${Math.min(recent.length, 60)} additions to the ${SITE.name} index: newly launched products from the wish queue and tools we finished reviewing this week.`;
+---
+
+<Base title={title} description={description}>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'New', path: '/new' }, { name: 'This week' }]} />
+  <div class="page-head">
+    <p class="eyebrow">Updated twice a day</p>
+    <h1>Recently lit</h1>
+    <p class="lede">
+      Wishes that went live and curated entries that finished review, newest first. {live.length} entries in the index across{' '}
+      {categories.length} categories.
+    </p>
+  </div>
+
+  <div class="grid grid-cards">
+    {recent.map((entry) => <ToolCard entry={entry} categoryName={nameOf(entry.category)} />)}
+  </div>
+
+  <p style="margin-top:2rem">
+    Looking for one kind of tool? <a href="/tools">The full index</a> is paginated, and each category page carries its own
+    introduction:
+    {' '}
+    {categories.map((category, index) => (
+      <>
+        {index > 0 && ', '}
+        <a href={`/category/${category.id}`}>{category.name}</a> ({inCategory(live, category.id).length})
+      </>
+    ))}
+    .
+  </p>
+</Base>

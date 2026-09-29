@@ -1,0 +1,39 @@
+{
+  "name": "ChatGPT",
+  "url": "https://chatgpt.com",
+  "category": "ai-chat",
+  "tags": [
+    "assistant",
+    "voice",
+    "file-upload",
+    "api-attached"
+  ],
+  "summary": "The consumer-facing assistant for OpenAI models, with project memory, file upload and built-in tool use.",
+  "description": "ChatGPT is the product most people mean when they say \"the AI\", and it is worth listing here because the interface work matters as much as the weights: project folders, saved memory, connectors to files and browsing, voice mode, and image generation stitched into the same conversation. Teams usually meet it before they meet the API.\n\nThe trade-offs are the familiar ones. Answers arrive with equal confidence whether or not they are grounded, so anything load-bearing needs a citation you checked yourself. Long conversations drift as context fills. And the free tier routes you to smaller models, which is exactly the comparison that makes the paid tier look better than it is. If you are evaluating it as a work tool rather than a curiosity, the plan and data-retention settings are the first two things to look at.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://chatgpt.com",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "docs",
+      "url": "https://help.openai.com",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "manual-confirmation",
+      "url": "https://chatgpt.com",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-29",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true,
+  "featured": true
+}

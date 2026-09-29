@@ -1,0 +1,33 @@
+{
+  "name": "ElevenLabs",
+  "url": "https://elevenlabs.io",
+  "category": "audio-voice",
+  "tags": [
+    "text-to-speech",
+    "voice-cloning",
+    "dubbing",
+    "api"
+  ],
+  "summary": "Speech synthesis platform known for voices that survive long paragraphs, plus cloning, dubbing and agents.",
+  "description": "ElevenLabs built its reputation on the part of text-to-speech that used to be unlistenable: prosody across long passages, breath and pause placement, and a clone that keeps an individual's timbre instead of producing a cousin of it. That is why it ended up behind audiobook pipelines, character voices in games, and a lot of product narration.\n\nThe commercial layer matters as much as the audio here. Cloning requires consent in their terms, and the practical risk of a voice tool is reputational rather than technical, so read the licence section for the plan you buy rather than the marketing page. Pricing is character-based and the tiers differ mostly in sample rate, concurrency and cloning rights, which is a confusing way to price things until you are the one estimating a monthly bill.",
+  "pricing": "freemium",
+  "status": "active",
+  "origin": "curated",
+  "sources": [
+    {
+      "type": "website",
+      "url": "https://elevenlabs.io",
+      "observedAt": "2026-09-29"
+    },
+    {
+      "type": "docs",
+      "url": "https://elevenlabs.io/docs",
+      "observedAt": "2026-09-29"
+    }
+  ],
+  "firstSeenAt": "2026-09-29",
+  "lastSeenAt": "2026-09-29",
+  "lastVerifiedAt": "2026-09-29",
+  "checksFailed": 0,
+  "approved": true
+}

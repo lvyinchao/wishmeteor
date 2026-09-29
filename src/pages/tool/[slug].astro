@@ -1,0 +1,141 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import OutboundLink from '../../components/OutboundLink.astro';
+import Blessing from '../../components/Blessing.astro';
+import EmbedKit from '../../components/EmbedKit.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { loadCatalog, related, categoryPath } from '../../lib/catalog.mjs';
+import { isDofollow } from '../../lib/links.mjs';
+import { OG } from '../../lib/og.mjs';
+import { softwareApplication, breadcrumbs as breadcrumbData } from '../../lib/jsonld.ts';
+
+export const getStaticPaths = async () => {
+  const { tools, errors } = loadCatalog();
+  if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
+  return tools.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+};
+
+const { entry } = Astro.props;
+const { tools, categories } = loadCatalog();
+const category = categories.find((c) => c.id === entry.category);
+const siblings = related(tools, entry, 6);
+const posts = (await getCollection('posts'))
+  .filter((post) => (post.data.toolRefs ?? []).includes(entry.slug))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+const dofollow = isDofollow(entry);
+const image = OG.tool(entry.slug);
+const paragraphs = String(entry.description).split(/\n{2,}/);
+const trail = [
+  { name: 'Home', path: '/' },
+  { name: 'AI tools', path: '/tools' },
+  { name: category?.name ?? entry.category, path: categoryPath(entry.category) },
+  { name: entry.name },
+];
+---
+
+<Base
+  title={`${entry.name}: ${entry.summary}`}
+  description={`${entry.summary} See what ${entry.name} is good at, what it costs, and how it compares with the rest of the ${category?.name ?? ''} index.`}
+  image={image}
+  jsonLd={[softwareApplication(entry, `/tool/${entry.slug}`, image), breadcrumbData(trail)]}
+>
+  <Breadcrumbs {trail} />
+  <article class="split">
+    <div>
+      <header>
+        <p class="eyebrow">{category?.name}</p>
+        <h1>{entry.name}</h1>
+        <p class="lede">{entry.summary}</p>
+      </header>
+
+      <p class="meta-row">
+        <span>Pricing <dt>{entry.pricing}</dt></span>
+        <span>Status <dt>{entry.status}</dt></span>
+        <span>Indexed <dt>{entry.firstSeenAt}</dt></span>
+        <span>Last checked <dt>{entry.lastVerifiedAt}</dt></span>
+        <span>
+          Outbound link <dt>{dofollow ? 'dofollow' : 'nofollow'}</dt>
+        </span>
+      </p>
+
+      <p>
+        <OutboundLink entry={entry} class="btn btn-primary" label={`Visit ${entry.name}`} />
+        <span style="margin-left:.8rem;font-size:.85rem;color:var(--muted)">
+          {dofollow
+            ? 'This link passes credit. It will not be sold, swapped or padded.'
+            : 'This link is nofollow until the entry passes its checks.'}
+        </span>
+      </p>
+
+      {entry.wish && <Blessing entry={entry} />}
+
+      {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+
+      <p class="card-meta" style="margin-top:1.6rem">
+        {entry.tags.map((tag) => <span class="pill">{tag}</span>)}
+      </p>
+
+      <section aria-labelledby="sources">
+        <h2 id="sources">Sources</h2>
+        <ul>
+          {
+            entry.sources.map((source) => (
+              <li>
+                <a href={source.url} target="_blank" rel="noopener">{source.type}: {source.url.replace(/^https:\/\//, '')}</a>
+                <span style="color:var(--muted);font-size:.85rem"> · observed {source.observedAt}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      {
+        posts.length > 0 && (
+          <section aria-labelledby="mentioned">
+            <h2 id="mentioned">Where we write about {entry.name}</h2>
+            <ul>
+              {posts.map((post) => (
+                <li>
+                  <a href={`/blog/${post.id}`}>{post.data.title}</a>
+                  <span style="color:var(--muted);font-size:.85rem"> · {post.data.pubDate.toISOString().slice(0, 10)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+
+    <div class="aside-sticky">
+      <EmbedKit entry={entry} />
+      <section class="aside-box" style="margin-top:1rem" aria-labelledby="siblings">
+        <h2 id="siblings">More {category?.name}</h2>
+        <div class="grid">
+          {siblings.map((sibling) => (
+            <a href={`/tool/${sibling.slug}`} style="text-decoration:none;font-size:.95rem">{sibling.name}</a>
+          ))}
+        </div>
+        <p style="margin:.9rem 0 0;font-size:.85rem">
+          <a href={categoryPath(entry.category)}>Browse the full {category?.name} list</a>
+        </p>
+      </section>
+    </div>
+  </article>
+
+  <section class="section" style="margin-top:3rem" aria-labelledby="also">
+    <div class="section-head">
+      <h2 id="also">Indexed alongside it</h2>
+      <a href="/submit">Launch your product here</a>
+    </div>
+    <div class="grid grid-cards">
+      {
+        siblings.slice(0, 3).map((sibling) => (
+          <ToolCard entry={sibling} categoryName={categories.find((c) => c.id === sibling.category)?.name ?? sibling.category} />
+        ))
+      }
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ToolListing from '../../components/ToolListing.astro';
+import { loadCatalog, sortNewest } from '../../lib/catalog.mjs';
+import { slicePages } from '../../lib/pagination.ts';
+
+const { tools, categories, errors } = loadCatalog();
+if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
+const live = sortNewest(tools.filter((t) => t.status !== 'archived'));
+const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
+const slice = slicePages(live)[0];
+---
+
+<Base
+  title={`All AI tools, models and open-source projects (${live.length} indexed)`}
+  description={`Every entry in the ${live.length}-strong WishMeteor index of AI tools, open-source projects and model releases, sorted by what was checked most recently.`}
+>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'AI tools' }]} />
+  <div class="page-head">
+    <h1>The index</h1>
+    <p class="lede">
+      {live.length} entries across {categories.length} categories. Each one is described in our own words, priced as
+      advertised, and re-checked before its outbound link keeps its value.
+    </p>
+  </div>
+  <ToolListing slice={slice} base="/tools" categoryName={nameOf} listName="AI tools index" />
+</Base>
