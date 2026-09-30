@@ -2,11 +2,12 @@
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ToolListing from '../../components/ToolListing.astro';
-import { loadCatalog, sortNewest } from '../../lib/catalog.mjs';
+import { sortNewest } from '../../lib/catalog.mjs';
+import { loadPublicCatalog } from '../../lib/public-content.ts';
 import { slicePages } from '../../lib/pagination.ts';
 
 export const getStaticPaths = async () => {
-  const { tools } = loadCatalog();
+  const { tools } = loadPublicCatalog();
   const live = sortNewest(tools.filter((t) => t.status !== 'archived'));
   return slicePages(live)
     .filter((slice) => slice.page > 1)
@@ -14,7 +15,7 @@ export const getStaticPaths = async () => {
 };
 
 const { slice } = Astro.props;
-const { categories } = loadCatalog();
+const { categories } = loadPublicCatalog();
 const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
 ---
 

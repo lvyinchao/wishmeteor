@@ -3,11 +3,12 @@ import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import WishWall from '../components/WishWall.astro';
 import JsonLd from '../components/JsonLd.astro';
-import { loadCatalog, launchedWishes } from '../lib/catalog.mjs';
+import { launchedWishes } from '../lib/catalog.mjs';
+import { loadPublicCatalog } from '../lib/public-content.ts';
 import { isListable } from '../lib/links.mjs';
 import { SITE } from '../lib/site.ts';
 
-const { tools, errors } = loadCatalog();
+const { tools, errors } = loadPublicCatalog();
 if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
 const live = tools.filter((t) => t.status !== 'archived');
 const wishes = launchedWishes(live, 12);

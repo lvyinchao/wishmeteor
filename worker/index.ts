@@ -10,6 +10,7 @@ export interface Env {
   EMAIL?: SendEmail;
   GOOGLE_CLIENT_ID?: string;
   APP_ORIGIN?: string;
+  ADMIN_API_TOKEN?: string;
 }
 
 interface Submission {
@@ -25,8 +26,170 @@ const TRUST_HOSTS = new Set(['wishmeteor.net', 'www.wishmeteor.net']);
 const BLOCKED = ['trendylinkz', 'backlinks4u', 'seo-linkz', 'dofollow-directory'];
 const HOUR_MS = 3_600_000;
 const MAX_PER_HOUR = 5;
+const MIN_DESCRIPTION_CHARS = 300;
+const DAILY_LAUNCH_CAP = 9;
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
+const CONTENT_FIELDS = ['slug', 'name', 'url', 'category', 'summary', 'description', 'tags', 'pricing', 'status', 'origin', 'sources', 'firstSeenAt', 'lastSeenAt', 'lastVerifiedAt', 'checksFailed', 'approved', 'wish'];
+
+function json(data: unknown, status = 200): Response {
+  return Response.json(data, { status, headers: JSON_HEADERS });
+}
+
+function constantTimeEqual(a: string, b: string): boolean {
+  const left = new TextEncoder().encode(a);
+  const right = new TextEncoder().encode(b);
+  let difference = left.length ^ right.length;
+  const length = Math.max(left.length, right.length);
+  for (let i = 0; i < length; i++) difference |= (left[i] ?? 0) ^ (right[i] ?? 0);
+  return difference === 0;
+}
+
+function isAdmin(request: Request, env: Env): boolean {
+  const configured = env.ADMIN_API_TOKEN;
+  if (!configured) return false;
+  const header = request.headers.get('authorization') ?? '';
+  const match = /^Bearer ([A-Za-z0-9._~-]{32,256})$/.exec(header);
+  return !!match && constantTimeEqual(match[1], configured);
+}
+
+function validateManagedTool(raw: unknown, slug: string): { value: Record<string, unknown>; errors: string[] } {
+  const errors: string[] = [];
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { value: {}, errors: ['body must be a JSON object'] };
+  const input = raw as Record<string, unknown>;
+  const name = typeof input.name === 'string' ? input.name.trim() : '';
+  const summary = typeof input.summary === 'string' ? input.summary.trim() : '';
+  const description = typeof input.description === 'string' ? input.description.trim() : '';
+  const category = typeof input.category === 'string' ? input.category.trim() : '';
+  let url: URL | null = null;
+  try { url = new URL(typeof input.url === 'string' ? input.url : ''); } catch { /* reported below */ }
+  if (!name || name.length > 80) errors.push('name must be 1-80 characters');
+  if (summary.length < 40 || summary.length > 160) errors.push('summary must be 40-160 characters');
+  if (description.length < MIN_DESCRIPTION_CHARS || description.length > 12000) errors.push(`description must be ${MIN_DESCRIPTION_CHARS}-12000 characters`);
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(category)) errors.push('category must be a lowercase category slug');
+  if (!url || !['http:', 'https:'].includes(url.protocol) || url.username || url.password) errors.push('url must be a valid http(s) URL');
+  if (!Array.isArray(input.tags) || input.tags.length < 1 || input.tags.length > 12 || input.tags.some((tag) => typeof tag !== 'string' || !tag.trim() || tag.length > 40)) errors.push('tags must contain 1-12 strings of at most 40 characters');
+  if (!['free', 'freemium', 'paid', 'open-source'].includes(String(input.pricing))) errors.push('pricing must be free, freemium, paid, or open-source');
+  if (!['active', 'beta', 'stale', 'archived'].includes(String(input.status))) errors.push('status must be active, beta, stale, or archived');
+  if (input.origin !== undefined && !['curated', 'submitted'].includes(String(input.origin))) errors.push('origin must be curated or submitted');
+  if (Array.isArray(input.sources) && input.sources.length > 10) errors.push('sources may contain at most 10 items');
+  const value: Record<string, unknown> = {};
+  for (const key of CONTENT_FIELDS) if (key in input && key !== 'slug' && key !== 'approved') value[key] = input[key];
+  Object.assign(value, {
+    slug,
+    name,
+    url: url?.toString().replace(/\/$/, '') ?? '',
+    category,
+    summary,
+    description,
+    tags: Array.isArray(input.tags) ? input.tags.map((tag) => String(tag).trim()) : [],
+    firstSeenAt: typeof input.firstSeenAt === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(input.firstSeenAt) ? input.firstSeenAt : new Date().toISOString().slice(0, 10),
+    lastSeenAt: new Date().toISOString().slice(0, 10),
+    lastVerifiedAt: null,
+    checksFailed: 0,
+    approved: true,
+  });
+  return { value, errors };
+}
+
+const htmlEscape = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
+
+function renderToolPage(tool: Record<string, unknown>): Response {
+  const title = htmlEscape(tool.name);
+  const summary = htmlEscape(tool.summary);
+  const description = htmlEscape(tool.description);
+  const category = htmlEscape(tool.category);
+  const link = htmlEscape(tool.url);
+  const tags = Array.isArray(tool.tags) ? tool.tags.map((tag) => `<span class="tag">${htmlEscape(tag)}</span>`).join(' ') : '';
+  const body = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} — WishMeteor</title><meta name="description" content="${summary}"><link rel="canonical" href="https://wishmeteor.net/tool/${htmlEscape(tool.slug)}"><style>body{margin:0;background:#090d18;color:#edf2ff;font:16px/1.7 system-ui,sans-serif}main{max-width:820px;margin:8vh auto;padding:32px}a{color:#91d8ff}.muted{color:#aab5ca}.tag{display:inline-block;background:#172235;border-radius:99px;padding:3px 12px;margin:4px}.card{background:#111a2b;border:1px solid #26334a;border-radius:18px;padding:28px;margin:24px 0}</style></head><body><main><a href="/">WishMeteor</a><p class="muted"><a href="/tools">AI tools</a> / ${category}</p><h1>${title}</h1><p>${summary}</p><div class="card"><p>${description}</p><p>${tags}</p><a href="${link}" rel="nofollow noopener" target="_blank">Visit ${title} ↗</a></div><p class="muted">Managed listing · WishMeteor</p></main></body></html>`;
+  return new Response(body, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
+}
+
+async function managedTools(env: Env): Promise<Record<string, unknown>[]> {
+  const rows = await env.DB.prepare('SELECT content_json FROM managed_tools ORDER BY updated_at DESC').all<{ content_json: string }>();
+  return (rows.results ?? []).flatMap((row) => { try { return [JSON.parse(row.content_json) as Record<string, unknown>]; } catch { return []; } });
+}
+
+async function handleAdmin(request: Request, env: Env, pathname: string): Promise<Response> {
+  if (!isAdmin(request, env)) return json({ error: 'unauthorized' }, 401);
+  if (pathname === '/api/admin/submissions' && request.method === 'GET') {
+    const result = await env.DB.prepare("SELECT id, name, url, domain, email, category, notes, created_at, verdict FROM submissions WHERE verdict = 'pending' ORDER BY created_at ASC LIMIT 100").all();
+    return json({ submissions: result.results ?? [] });
+  }
+  if (pathname === '/api/admin/content' && request.method === 'GET') return json({ tools: await managedTools(env) });
+  const contentMatch = pathname.match(/^\/api\/admin\/content\/([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+  if (contentMatch && request.method === 'PUT') {
+    const slug = contentMatch[1];
+    const raw = await request.text();
+    if (raw.length > 64_000) return json({ error: 'payload-too-large' }, 413);
+    let input: unknown;
+    try { input = JSON.parse(raw); } catch { return json({ error: 'invalid-json' }, 400); }
+    const { value, errors } = validateManagedTool(input, slug);
+    if (errors.length) return json({ error: 'invalid-content', details: errors }, 400);
+    const now = new Date().toISOString();
+    await env.DB.prepare(`INSERT INTO managed_tools (slug, content_json, created_at, updated_at) VALUES (?, ?, ?, ?)
+      ON CONFLICT(slug) DO UPDATE SET content_json = excluded.content_json, updated_at = excluded.updated_at`)
+      .bind(slug, JSON.stringify(value), now, now).run();
+    return json({ ok: true, tool: value });
+  }
+  const approvalMatch = pathname.match(/^\/api\/admin\/submissions\/(\d+)\/(approve|reject)$/);
+  if (approvalMatch && request.method === 'POST') {
+    const id = Number(approvalMatch[1]);
+    const action = approvalMatch[2];
+    const row = await env.DB.prepare("SELECT id, name, url, category, verdict, created_at FROM submissions WHERE id = ?").bind(id).first<{ id: number; name: string; url: string; category: string; verdict: string; created_at: string }>();
+    if (!row) return json({ error: 'submission-not-found' }, 404);
+    if (row.verdict !== 'pending') return json({ error: 'submission-not-pending', verdict: row.verdict }, 409);
+    if (action === 'reject') {
+      await env.DB.prepare("UPDATE submissions SET verdict = 'rejected', verdict_at = ? WHERE id = ? AND verdict = 'pending'").bind(new Date().toISOString(), id).run();
+      return json({ ok: true, id, verdict: 'rejected' });
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    const publishedToday = (await managedTools(env)).filter((tool) => {
+      const wish = tool.wish as { submittedAt?: string } | undefined;
+      return tool.origin === 'submitted' && wish?.submittedAt === today;
+    }).length;
+    if (publishedToday >= DAILY_LAUNCH_CAP) return json({ error: 'daily-cap-reached', limit: DAILY_LAUNCH_CAP }, 409);
+    const raw = await request.text();
+    if (raw.length > 64_000) return json({ error: 'payload-too-large' }, 413);
+    let body: { slug?: string; content?: unknown };
+    try { body = JSON.parse(raw) as { slug?: string; content?: unknown }; } catch { return json({ error: 'invalid-json' }, 400); }
+    const slug = body.slug ?? '';
+    if (!SLUG_RE.test(slug)) return json({ error: 'invalid-slug' }, 400);
+    const { value, errors } = validateManagedTool(body.content, slug);
+    if (errors.length) return json({ error: 'invalid-content', details: errors }, 400);
+    value.origin = 'submitted';
+    const now = new Date().toISOString();
+    value.wish = { submittedAt: row.created_at.slice(0, 10), blessingShort: '', blessingLong: '', notifiedAt: null };
+    const result = await env.DB.batch([
+      env.DB.prepare("UPDATE submissions SET verdict = 'approved', verdict_at = ? WHERE id = ? AND verdict = 'pending'").bind(now, id),
+      env.DB.prepare(`INSERT INTO managed_tools (slug, content_json, created_at, updated_at)
+        SELECT ?, ?, ?, ? WHERE changes() = 1
+        ON CONFLICT(slug) DO UPDATE SET content_json = excluded.content_json, updated_at = excluded.updated_at`)
+        .bind(slug, JSON.stringify(value), now, now),
+    ]);
+    if (!result[0]?.meta.changes) return json({ error: 'submission-not-pending' }, 409);
+    return json({ ok: true, id, verdict: 'approved', tool: value });
+  }
+  return json({ error: 'not-found' }, 404);
+}
+
+async function handleManagedPublic(request: Request, env: Env, pathname: string): Promise<Response | null> {
+  if (request.method !== 'GET') return null;
+  if (pathname === '/api/content') return json({ tools: await managedTools(env) });
+  if (pathname === '/tools' || pathname === '/tools/') {
+    const tools = await managedTools(env);
+    const cards = tools.map((tool) => `<article><h2><a href="/tool/${htmlEscape(tool.slug)}">${htmlEscape(tool.name)}</a></h2><p>${htmlEscape(tool.summary)}</p><p class="muted">${htmlEscape(tool.category)}</p></article>`).join('');
+    const body = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Tools — WishMeteor</title><meta name="description" content="Discover AI tools in the WishMeteor directory."><style>body{margin:0;background:#090d18;color:#edf2ff;font:16px/1.7 system-ui,sans-serif}main{max-width:960px;margin:8vh auto;padding:32px}a{color:#91d8ff}.muted{color:#aab5ca}article{background:#111a2b;border:1px solid #26334a;border-radius:18px;padding:20px;margin:16px 0}</style></head><body><main><a href="/">WishMeteor</a><h1>AI tools</h1>${cards || '<p class="muted">The directory is being prepared. Check back soon.</p>'}</main></body></html>`;
+    return new Response(body, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
+  }
+  const match = pathname.match(/^\/tool\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/);
+  if (match) {
+    const row = await env.DB.prepare('SELECT content_json FROM managed_tools WHERE slug = ?').bind(match[1]).first<{ content_json: string }>();
+    if (!row) return null;
+    try { return renderToolPage(JSON.parse(row.content_json) as Record<string, unknown>); } catch { return json({ error: 'content-unavailable' }, 503); }
+  }
+  return null;
+}
 
 const sha256 = async (value: string) => {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`wishmeteor-form:${value}`));
@@ -166,6 +329,23 @@ async function handleStars(request: Request, env: Env): Promise<Response> {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const { pathname } = new URL(request.url);
+    if (pathname.startsWith('/api/admin/')) {
+      try {
+        return await handleAdmin(request, env, pathname);
+      } catch (error) {
+        console.error('admin api request failed', error);
+        return json({ error: 'admin-api-unavailable' }, 503);
+      }
+    }
+    if (pathname === '/api/content' || pathname === '/tools' || pathname === '/tools/' || pathname.startsWith('/tool/')) {
+      try {
+        const response = await handleManagedPublic(request, env, pathname);
+        if (response) return response;
+      } catch (error) {
+        console.error('managed content read failed', error);
+        return json({ error: 'content-unavailable' }, 503);
+      }
+    }
     if (pathname.startsWith('/api/auth/')) {
       try {
         const response = await handleAuth(request, env);

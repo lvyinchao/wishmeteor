@@ -2,10 +2,11 @@
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ToolListing from '../../components/ToolListing.astro';
-import { loadCatalog, sortNewest } from '../../lib/catalog.mjs';
+import { sortNewest } from '../../lib/catalog.mjs';
+import { loadPublicCatalog } from '../../lib/public-content.ts';
 import { slicePages } from '../../lib/pagination.ts';
 
-const { tools, categories, errors } = loadCatalog();
+const { tools, categories, errors } = loadPublicCatalog();
 if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
 const live = sortNewest(tools.filter((t) => t.status !== 'archived'));
 const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;

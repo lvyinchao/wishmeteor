@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
-import { loadCatalog } from '../lib/catalog.mjs';
+import { loadPublicCatalog } from '../lib/public-content.ts';
 
 export const prerender = true;
 
 const parts = ['sitemap-pages.xml', 'sitemap-tools.xml', 'sitemap-posts.xml'];
 
 export const GET: APIRoute = ({ site }) => {
-  const { tools } = loadCatalog();
+  const { tools } = loadPublicCatalog();
   const newest = tools
     .map((entry) => entry.lastVerifiedAt)
     .filter(Boolean)

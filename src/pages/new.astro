@@ -2,10 +2,11 @@
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ToolCard from '../components/ToolCard.astro';
-import { loadCatalog, sortNewest, inCategory } from '../lib/catalog.mjs';
+import { sortNewest, inCategory } from '../lib/catalog.mjs';
+import { loadPublicCatalog } from '../lib/public-content.ts';
 import { SITE } from '../lib/site.ts';
 
-const { tools, categories, errors } = loadCatalog();
+const { tools, categories, errors } = loadPublicCatalog();
 if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
 const live = tools.filter((t) => t.status !== 'archived');
 const recent = sortNewest(live).slice(0, 60);

@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
 import { esc } from '../lib/sitemap.mjs';
 import { SITE } from '../lib/site.ts';
+import { getPublicPosts } from '../lib/public-content.ts';
 
 export const prerender = true;
 
 export const GET: APIRoute = async ({ site }) => {
-  const posts = (await getCollection('posts'))
+  const posts = (await getPublicPosts())
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
     .slice(0, 20);
   const items = posts.map((post) => {

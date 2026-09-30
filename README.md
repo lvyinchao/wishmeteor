@@ -5,7 +5,8 @@ An English-language index of AI tools, models and open-source projects at
 review the entry goes live with a **dofollow** backlink plus a blessing written for that specific product,
 emailed to the submitter and printed on the entry page.
 
-Pages are prerendered; the Worker handles submissions, community stars, and account endpoints.
+Pages are prerendered; the Worker handles submissions, community stars, account endpoints, and
+admin-managed tool entries stored in D1.
 
 ## How it works
 
@@ -66,6 +67,45 @@ Local only, never shipped to the Worker (see `.env.example`):
   `support@wishmeteor.net`. Sending happens **after** a successful deploy, because the email embeds the
   card image and entry URL served by this site.
 - `GITHUB_TOKEN` — optional; unauthenticated GitHub search is capped at 10 requests/minute.
+- `ADMIN_API_TOKEN` — required to use the admin content and submission endpoints. Send it only in
+  `Authorization: Bearer <token>`; never put it in a URL or browser bundle.
+
+### Admin API
+
+The API-managed directory starts empty and is served at `/tools` and `/tool/{slug}`. Content
+changes take effect immediately without rebuilding the static site.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/admin/submissions` | List pending applications |
+| `POST` | `/api/admin/submissions/{id}/approve` | Approve and publish the supplied tool entry |
+| `POST` | `/api/admin/submissions/{id}/reject` | Reject a pending application |
+| `GET` | `/api/admin/content` | List API-managed entries |
+| `PUT` | `/api/admin/content/{slug}` | Create or update an entry |
+| `GET` | `/api/content` | Public JSON feed for managed entries |
+
+Content writes accept a JSON object with `name`, `url`, `category`, `summary` (40–160 characters),
+`description` (300–12,000 characters), `tags` (1–12 strings), `pricing` (`free`, `freemium`,
+`paid`, `open-source`), and `status` (`active`, `beta`, `stale`, `archived`). For example:
+
+```http
+PUT /api/admin/content/example-tool
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{"name":"Example Tool","url":"https://example.com","category":"assistants","summary":"A concise description between forty and one hundred sixty characters long for this example tool.","description":"A fuller description of at least 300 characters explaining what the product does, who it helps, and what makes it useful in a real workflow. Include accurate details such as its main capabilities, supported platforms, and relevant limitations. This text appears on the public listing page, so it should help visitors decide whether the product is worth exploring before they follow the official link.","tags":["assistant"],"pricing":"freemium","status":"active"}
+```
+
+Approval uses the same content fields plus a `slug` in the request body. It records the
+application verdict and publishes the entry together, and keeps the existing daily launch cap of
+9 submissions:
+
+```json
+{"slug":"example-tool","content":{"name":"Example Tool","url":"https://example.com","category":"assistants","summary":"A concise description between forty and one hundred sixty characters long for this example tool.","description":"A fuller description of at least 300 characters explaining what the product does, who it helps, and what makes it useful in a real workflow. Include accurate details such as its main capabilities, supported platforms, and relevant limitations. This text appears on the public listing page, so it should help visitors decide whether the product is worth exploring before they follow the official link.","tags":["assistant"],"pricing":"freemium","status":"active"}}
+```
+
+Apply the content migration before deploying this API:
+`pnpm exec wrangler d1 migrations apply wishmeteor --remote`.
 
 Production resources: one Worker (`wishmeteor`) with static assets and a D1 database for submissions,
 community stars, accounts, email verification and sessions. Zone routes on `wishmeteor.net` and `www`.

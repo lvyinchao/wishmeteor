@@ -1,11 +1,11 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import { getPublicPosts } from '../lib/public-content.ts';
 import { urlset } from '../lib/sitemap.mjs';
 
 export const prerender = true;
 
 export const GET: APIRoute = async ({ site }) => {
-  const posts = await getCollection('posts');
+  const posts = await getPublicPosts();
   const items = posts
     .map((post) => ({
       path: `/blog/${post.id}`,

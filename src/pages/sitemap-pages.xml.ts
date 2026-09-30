@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { loadCatalog } from '../lib/catalog.mjs';
+import { loadPublicCatalog } from '../lib/public-content.ts';
 import { urlset } from '../lib/sitemap.mjs';
 
 export const prerender = true;
@@ -17,7 +17,7 @@ const evergreen = [
 ];
 
 export const GET: APIRoute = ({ site }) => {
-  const { categories, tools } = loadCatalog();
+  const { categories, tools } = loadPublicCatalog();
   const newest = tools.map((entry) => entry.lastVerifiedAt).sort().at(-1) ?? '';
   const items = [
     ...evergreen.map((item) => ({ ...item, lastmod: item.lastmod || newest })),

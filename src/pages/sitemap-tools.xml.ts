@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { loadCatalog } from '../lib/catalog.mjs';
+import { loadPublicCatalog } from '../lib/public-content.ts';
 import { isListable } from '../lib/links.mjs';
 import { urlset } from '../lib/sitemap.mjs';
 
@@ -7,7 +7,7 @@ export const prerender = true;
 
 /** Only entries whose outbound link is live and dofollow belong in the sitemap. */
 export const GET: APIRoute = ({ site }) => {
-  const { tools } = loadCatalog();
+  const { tools } = loadPublicCatalog();
   const items = tools
     .filter((entry) => isListable(entry))
     .map((entry) => ({ path: `/tool/${entry.slug}`, lastmod: entry.lastVerifiedAt }))

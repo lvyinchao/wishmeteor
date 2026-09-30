@@ -1,18 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ToolCard from '../components/ToolCard.astro';
 import WishWall from '../components/WishWall.astro';
-import { loadCatalog, inCategory, sortNewest, categoryPath } from '../lib/catalog.mjs';
+import { inCategory, sortNewest, categoryPath } from '../lib/catalog.mjs';
+import { getPublicPosts, loadPublicCatalog } from '../lib/public-content.ts';
 import { SITE } from '../lib/site.ts';
 
-const { tools, categories, errors } = loadCatalog();
+const { tools, categories, errors } = loadPublicCatalog();
 if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
 const categoryById = new Map(categories.map((c) => [c.id, c]));
 const live = tools.filter((t) => t.status !== 'archived');
 const wishes = sortNewest(live).slice(0, 9);
 const fresh = sortNewest(live.filter((t) => t.origin === 'curated')).slice(0, 6);
-const posts = (await getCollection('posts')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = (await getPublicPosts()).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const title = `${SITE.name} — a wishing well for AI builders`;
 const description = 'A small constellation for people building AI products. Share what you are making, receive a thoughtful blessing, and light a star for a launch you believe in.';
 ---

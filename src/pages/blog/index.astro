@@ -1,10 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { SITE } from '../../lib/site.ts';
+import { getPublicPosts } from '../../lib/public-content.ts';
 
-const posts = (await getCollection('posts')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = (await getPublicPosts()).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const byMonth = new Map<string, typeof posts>();
 for (const post of posts) {
   const key = post.data.pubDate.toISOString().slice(0, 7);

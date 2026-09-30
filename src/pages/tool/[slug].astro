@@ -1,26 +1,26 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import OutboundLink from '../../components/OutboundLink.astro';
 import Blessing from '../../components/Blessing.astro';
 import EmbedKit from '../../components/EmbedKit.astro';
 import ToolCard from '../../components/ToolCard.astro';
-import { loadCatalog, related, categoryPath } from '../../lib/catalog.mjs';
+import { related, categoryPath } from '../../lib/catalog.mjs';
+import { getPublicPosts, loadPublicCatalog } from '../../lib/public-content.ts';
 import { OG } from '../../lib/og.mjs';
 import { softwareApplication, breadcrumbs as breadcrumbData } from '../../lib/jsonld.ts';
 
 export const getStaticPaths = async () => {
-  const { tools, errors } = loadCatalog();
+  const { tools, errors } = loadPublicCatalog();
   if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
   return tools.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
 };
 
 const { entry } = Astro.props;
-const { tools, categories } = loadCatalog();
+const { tools, categories } = loadPublicCatalog();
 const category = categories.find((c) => c.id === entry.category);
 const siblings = related(tools, entry, 6);
-const posts = (await getCollection('posts'))
+const posts = (await getPublicPosts())
   .filter((post) => (post.data.toolRefs ?? []).includes(entry.slug))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
