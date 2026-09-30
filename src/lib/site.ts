@@ -2,9 +2,9 @@ export const SITE = {
   name: 'WishMeteor',
   host: 'wishmeteor.net',
   url: 'https://wishmeteor.net',
-  tagline: 'Make a wish. Get a real dofollow backlink.',
+  tagline: 'A little starlight for the things you are building.',
   description:
-    'WishMeteor is an index of AI tools, models and open-source projects where founders launch a wish: submit your product link, and once it clears review it goes live with a dofollow backlink and a hand-written blessing.',
+    'WishMeteor is a wishing and blessing platform for people building AI products. Share what you are making, receive a personal blessing, and light stars for launches you want to see shine.',
   sender: 'WishMeteor <support@wishmeteor.net>',
   email: 'support@wishmeteor.net',
   /** Public promise on /submit: hard caps that keep the link pool editorial. */

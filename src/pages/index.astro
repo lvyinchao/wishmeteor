@@ -3,116 +3,86 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ToolCard from '../components/ToolCard.astro';
 import WishWall from '../components/WishWall.astro';
-import { loadCatalog, inCategory, launchedWishes, sortNewest, categoryPath, toolPath } from '../lib/catalog.mjs';
+import { loadCatalog, inCategory, sortNewest, categoryPath } from '../lib/catalog.mjs';
 import { SITE } from '../lib/site.ts';
 
 const { tools, categories, errors } = loadCatalog();
 if (errors.length) throw new Error(`Content validation failed:\n${errors.join('\n')}`);
-
 const categoryById = new Map(categories.map((c) => [c.id, c]));
 const live = tools.filter((t) => t.status !== 'archived');
-const wishes = launchedWishes(live, 12);
-const fresh = sortNewest(live.filter((t) => t.origin === 'curated')).slice(0, 12);
+const wishes = sortNewest(live).slice(0, 9);
+const fresh = sortNewest(live.filter((t) => t.origin === 'curated')).slice(0, 6);
 const posts = (await getCollection('posts')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const title = `${SITE.name} — AI tools index with a free dofollow backlink for founders`;
-const description =
-  'Submit your AI tool, model or open-source project and, once it clears review, it goes live with a dofollow backlink and a hand-written blessing. Sixty curated entries across ten categories.';
+const title = `${SITE.name} — a wishing well for AI builders`;
+const description = 'A small constellation for people building AI products. Share what you are making, receive a thoughtful blessing, and light a star for a launch you believe in.';
 ---
 
-<Base
-  title={title}
-  description={description}
-  jsonLd={[
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: SITE.name,
-      url: SITE.url,
-      description: SITE.description,
-      inLanguage: 'en',
-    },
-  ]}
->
-  <section class="hero">
-    <div class="meteor-field" aria-hidden="true">
-      <span class="streak" style="top:34%;left:78%"></span>
-      <span class="streak"></span>
-      <span class="streak"></span>
-      <span class="streak"></span>
+<Base title={title} description={description}>
+  <section class="wish-hero" aria-labelledby="hero-title">
+    <div class="wish-hero__sky" aria-hidden="true">
+      <span class="sky-orbit sky-orbit--outer"></span>
+      <span class="sky-orbit sky-orbit--inner"></span>
+      <span class="sky-moon"></span>
+      <span class="sky-star sky-star--one">✦</span><span class="sky-star sky-star--two">✧</span>
+      <span class="sky-star sky-star--three">✦</span><span class="sky-star sky-star--four">✧</span>
+      <span class="sky-trail"></span>
     </div>
-    <p class="eyebrow">AI tools · models · open source</p>
-    <h1>Make a wish. Get a real dofollow backlink.</h1>
-    <p class="lede">
-      {SITE.name} indexes the tools people actually ship with — and when you launch your own product here, the link stays
-      dofollow for as long as it stays live. Every approved wish also gets a blessing written by hand, sent to your inbox and
-      printed on the entry.
-    </p>
-    <div class="hero-cta">
-      <a class="btn btn-primary" href="/submit">Make a wish — free</a>
-      <a class="btn btn-ghost" href="/free-dofollow-backlinks">How the links work</a>
+    <div class="wish-hero__copy">
+      <p class="eyebrow">A wishing well for people building AI</p>
+      <h1 id="hero-title">Every brave idea deserves a little starlight.</h1>
+      <p class="lede">Tell us what you are bringing into the world. We will meet your launch with a thoughtful blessing — and this community can help it rise, one star at a time.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="/submit">Share your wish <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-ghost" href="#wish-wall">Explore the wish sky <span aria-hidden="true">↓</span></a>
+      </div>
+      <p class="hero-note"><span class="hero-note__spark" aria-hidden="true">✦</span> For the makers, the midnight builders, and the ideas still finding their way.</p>
+    </div>
+    <div class="wish-hero__caption" aria-hidden="true"><span>WISHES IN MOTION</span><span>✦</span><span>MADE WITH HOPE</span></div>
+  </section>
+
+  <section class="welcome-strip" aria-label="Our promise">
+    <div><span class="welcome-mark">01</span><p><strong>Make room for the dream</strong><br />A home for the AI products people care enough to build.</p></div>
+    <div><span class="welcome-mark">02</span><p><strong>Leave a little light</strong><br />Every launch can carry a blessing from its maker.</p></div>
+    <div><span class="welcome-mark">03</span><p><strong>Help a wish travel</strong><br />Light a star to lift a founder's work into view.</p></div>
+  </section>
+
+  <WishWall entries={wishes} title="A project worth a little starlight" />
+
+  <section class="section constellation-section" aria-labelledby="constellations">
+    <div class="section-head">
+      <div><p class="eyebrow">Find your corner of the sky</p><h2 id="constellations">What are you dreaming up?</h2></div>
+      <a class="text-link" href="/tools">Wander through the projects <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="constellation-grid">
+      {categories.map((category, index) => {
+        const count = inCategory(live, category.id).length;
+        return <a class="constellation" href={categoryPath(category.id)}>
+          <span class="constellation__index">{String(index + 1).padStart(2, '0')}</span>
+          <span class="constellation__content"><strong>{category.name}</strong><small>{category.description}</small></span>
+          <span class="constellation__count" aria-label={`${count} projects`}>{count}<span aria-hidden="true"> ↗</span></span>
+        </a>;
+      })}
     </div>
   </section>
 
-  <WishWall entries={wishes} />
-
-  <section class="section" aria-labelledby="categories">
+  <section class="section recently-section" aria-labelledby="fresh">
     <div class="section-head">
-      <h2 id="categories">Ten categories</h2>
-      <a href="/tools">Browse all {live.length} entries</a>
-    </div>
-    <div class="grid grid-cats">
-      {
-        categories.map((category) => {
-          const count = inCategory(live, category.id).length;
-          return (
-            <a class="card" href={categoryPath(category.id)} style="text-decoration:none">
-              <h3>{category.name}</h3>
-              <p>{category.description}</p>
-              <div class="card-meta">
-                <span class="pill">{count} entries</span>
-              </div>
-            </a>
-          );
-        })
-      }
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="fresh">
-    <div class="section-head">
-      <h2 id="fresh">Recently indexed</h2>
-      <a href="/blog">Read the blog</a>
+      <div><p class="eyebrow">A few new lights on the horizon</p><h2 id="fresh">Fresh discoveries</h2></div>
+      <a class="text-link" href="/new">See what is appearing <span aria-hidden="true">↗</span></a>
     </div>
     <div class="grid grid-cards">
-      {fresh.map((entry) => (
-        <ToolCard entry={entry} categoryName={categoryById.get(entry.category)?.name ?? entry.category} />
-      ))}
+      {fresh.map((entry) => <ToolCard entry={entry} categoryName={categoryById.get(entry.category)?.name ?? entry.category} />)}
     </div>
   </section>
 
-  {
-    posts.length > 0 && (
-      <section class="section" aria-labelledby="writing">
-        <div class="section-head">
-          <h2 id="writing">From the logbook</h2>
-          <a href="/blog">All articles</a>
-        </div>
-        <div class="grid grid-cards">
-          {posts.slice(0, 3).map((post) => (
-            <article class="card">
-              <h3>
-                <a class="card-title" href={`/blog/${post.id}`}>{post.data.title}</a>
-              </h3>
-              <p>{post.data.description}</p>
-              <div class="card-meta">
-                <time datetime={post.data.pubDate.toISOString().slice(0, 10)}>{post.data.pubDate.toISOString().slice(0, 10)}</time>
-                <span class="pill">{post.data.category}</span>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    )
-  }
+  {posts.length > 0 && <section class="section logbook-section" aria-labelledby="writing">
+    <div class="section-head"><div><p class="eyebrow">Notes from our night sky</p><h2 id="writing">The logbook</h2></div><a class="text-link" href="/blog">Read the logbook <span aria-hidden="true">↗</span></a></div>
+    <div class="grid grid-cards">
+      {posts.slice(0, 3).map((post) => <article class="card logbook-card"><p class="eyebrow">{post.data.category}</p><h3><a class="card-title" href={`/blog/${post.id}`}>{post.data.title}</a></h3><p>{post.data.description}</p><time datetime={post.data.pubDate.toISOString().slice(0, 10)}>{post.data.pubDate.toISOString().slice(0, 10)}</time></article>)}
+    </div>
+  </section>}
+
+  <section class="closing-wish" aria-labelledby="closing-title">
+    <span class="closing-wish__spark" aria-hidden="true">✦</span><div><p class="eyebrow">There is room for one more</p><h2 id="closing-title">What are you hoping to bring to life?</h2><p>Put your idea beneath this sky. Let the next chapter begin with a wish.</p></div><a class="btn btn-primary" href="/submit">Plant a wish <span aria-hidden="true">↗</span></a>
+  </section>
 </Base>

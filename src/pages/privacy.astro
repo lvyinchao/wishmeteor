@@ -3,8 +3,8 @@ import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { SITE } from '../lib/site.ts';
 
-const title = `Privacy — what ${SITE.name} stores about a submission`;
-const description = `One email address, kept for one purpose: sending your blessing. No analytics, no cookies, no mailing list, no third-party trackers on this site.`;
+const title = `Privacy — what ${SITE.name} keeps`;
+const description = `What ${SITE.name} stores when you share a wish or light a star, and how that information is used.`;
 ---
 
 <Base title={title} description={description}>
@@ -22,8 +22,8 @@ const description = `One email address, kept for one purpose: sending your bless
       them for one purpose — sending the blessing and the card — and it is never rendered on any public page.
     </p>
     <p>
-      We also store a keyed hash of the submitting IP address, used only to rate-limit the form (five wishes per hour per
-      address). It is a throttle, not a security control, and it is deleted along with the rest of the row.
+      We also store a keyed hash of the submitting IP address to limit rapid repeat submissions. It is a throttle, not a
+      security control, and it is deleted along with the rest of the row.
     </p>
 
     <h2>What is published</h2>
@@ -32,15 +32,32 @@ const description = `One email address, kept for one purpose: sending your bless
       last checked it, and the blessing. That is all a reviewer writes down, so that is all that appears.
     </p>
 
+    <h2>Community stars</h2>
+    <p>
+      If you light a star, your browser keeps a random identifier and a record of which project you chose, so it can remember
+      your choice. We store a one-way hash of that identifier alongside the project and vote date. It is not linked to your
+      submission email or account, and you can clear it from your browser at any time.
+    </p>
+
     <h2>Tracking, cookies and analytics</h2>
     <p>
-      There are no analytics scripts, advertising tags, social widgets or third-party cookies on this site, so nothing is set
-      beyond what Cloudflare needs to deliver the pages. No cross-site tracking, therefore no consent banner.
+      When a GA4 measurement ID is configured, Google Analytics runs by default to measure site visits and page activity.
+      We do not send account fields, form contents or project prompts to Google Analytics. Analytics is configured with IP
+      anonymization and advertising signals disabled; the site does not use advertising tags or cross-site ad tracking.
+      Authentication uses a necessary, HttpOnly session cookie after you sign in.
+    </p>
+
+    <h2>Accounts</h2>
+    <p>
+      Email accounts store your email address and a salted password hash. Email verification links are single-use and expire
+      after one day. Sign-in sessions are stored as one-way token hashes in D1 and use a necessary, HttpOnly, Secure cookie.
+      Google sign-in stores the Google account identifier, verified email and display name needed to maintain your account.
+      You can request account removal at <a href={'mailto:' + SITE.email}>{SITE.email}</a>.
     </p>
 
     <h2>Retention and deletion</h2>
     <p>
-      Pending submissions older than 90 days are cleared automatically. Published entries keep the blessing record but not the
+      Pending submissions are cleared automatically after the review period. Published entries keep the blessing record but not the
       email: once the notification is confirmed delivered, the address is dropped from the row and only a delivery date
       remains. Ask for removal at <a href={'mailto:' + SITE.email}>{SITE.email}</a> and the entry comes down in the next
       review round; ask twice and the domain is blocked from resubmission.
@@ -48,9 +65,10 @@ const description = `One email address, kept for one purpose: sending your bless
 
     <h2>Where it lives</h2>
     <p>
-      Pages are static files served from Cloudflare edge caches; submissions go to a Cloudflare D1 database in the same
-      account. Nothing is processed in the European Union or transferred out of that account, and the site is operated from the
-      address on the <a href="/about">about page</a>.
+      Pages are served through Cloudflare. Submissions, accounts and sessions are stored in Cloudflare D1, and verification
+      messages are sent through Cloudflare Email Service. Google sign-in uses a signed identity token that WishMeteor verifies;
+      when GA4 is configured, page activity is sent to Google Analytics. Processing location and retention follow each provider's
+      service settings and policies. The site is operated from the address on the <a href="/about">about page</a>.
     </p>
   </article>
 </Base>

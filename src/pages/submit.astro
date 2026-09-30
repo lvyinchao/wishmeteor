@@ -6,8 +6,8 @@ import { SITE } from '../lib/site.ts';
 
 const { categories } = loadCatalog();
 const status = new URL(Astro.request.url).searchParams.get('status');
-const title = `Make a wish — free dofollow backlink for your AI tool | ${SITE.name}`;
-const description = `Submit your AI tool, model or open-source project. Up to ${SITE.dailyLaunchCap} wishes go live per day, every approved link is dofollow, and each one gets a hand-written blessing by email.`;
+const title = `Share your AI product wish | ${SITE.name}`;
+const description = `Bring your AI product into the WishMeteor sky. Share what you are building, receive a personal blessing, and let the community help your launch shine.`;
 ---
 
 <Base title={title} description={description}>
@@ -16,16 +16,15 @@ const description = `Submit your AI tool, model or open-source project. Up to ${
     <p class="eyebrow">Free, forever</p>
     <h1>Make a wish</h1>
     <p class="lede">
-      Submitting a link here is exactly what it sounds like: you are wishing your product into the sky. If it clears review it
-      goes live with a dofollow backlink, and we write you a blessing for it — by hand, one at a time, then email it to you
-      with a card you can share.
+      Tell us what you are building and why it matters to you. If your wish clears review, we will give it a place in the sky
+      and send a personal blessing to your inbox, along with a card you can share.
     </p>
   </div>
 
   {
     status === 'queued' && (
       <p class="notice" role="status">
-        Wish received. Review runs twice a day; if it lights up, the blessing lands in your inbox within one working day.
+        Your wish found its way to us. We will review it with care and send a note when it is ready to shine.
       </p>
     )
   }
@@ -39,7 +38,7 @@ const description = `Submit your AI tool, model or open-source project. Up to ${
   {
     status === 'throttled' && (
       <p class="notice" role="status">
-        Too many wishes from this address in the last hour. The queue resets hourly — try the next one.
+        We have received a few wishes from this address recently. Please give the sky a little time, then try again.
       </p>
     )
   }
@@ -79,8 +78,8 @@ const description = `Submit your AI tool, model or open-source project. Up to ${
         </div>
         <div>
           <label for="notes">What it does, in your own words</label>
-          <textarea id="notes" name="notes" rows="5" maxlength="600" placeholder="Two or three sentences. Who is it for, and what does it replace?"></textarea>
-          <p class="hint">Write it yourself. Copy-pasted marketing copy is the fastest way to be skipped.</p>
+          <textarea id="notes" name="notes" rows="5" maxlength="600" placeholder="Who is it for, and what does it make possible?"></textarea>
+          <p class="hint">Write from the heart. Tell us what led you to build it and the people you hope it will help.</p>
         </div>
         <div class="hp-field" aria-hidden="true">
           <label for="company">Company<input id="company" name="hp" tabindex="-1" autocomplete="off" /></label>
@@ -101,10 +100,9 @@ const description = `Submit your AI tool, model or open-source project. Up to ${
       <section class="aside-box" aria-labelledby="rules">
         <h2 id="rules">The rules, out loud</h2>
         <ul style="padding-left:1.1rem;font-size:.92rem">
-          <li><strong>{SITE.dailyLaunchCap} wishes go live per day</strong>, and no more than {SITE.perRoundCap} per review round.</li>
-          <li>Approved links are <strong>dofollow</strong>. Unverified, dead or off-topic ones are nofollow or removed.</li>
-          <li>We re-check every link. If your page disappears for {SITE.staleAfterDays} days, the link quietly loses its value.</li>
-          <li>No fee, no upgrade, no reciprocity requirement. The badge is optional.</li>
+          <li>Every wish is reviewed before it joins the sky.</li>
+          <li>Keep your product available and its description honest so its light stays clear.</li>
+          <li>There is no fee, upgrade, or reciprocity requirement.</li>
           <li>Not accepted: casinos, crypto giveaways, cloned wrappers, link farms, anything that requires a login to evaluate.</li>
         </ul>
         <p style="font-size:.9rem;margin-bottom:0">

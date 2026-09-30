@@ -68,7 +68,10 @@ async function renderCard(target, props) {
   const { Resvg } = await import('@resvg/resvg-js');
   const fonts = await loadFonts();
   const svg = await satori(card(props), { width: WIDTH, height: HEIGHT, fonts });
-  const png = new Resvg(svg, { fitTo: { mode: 'width', value: WIDTH } }).render().asPng();
+  const png = new Resvg(svg, {
+    fitTo: { mode: 'width', value: WIDTH },
+    font: { loadSystemFonts: false },
+  }).render().asPng();
   await mkdir(dirname(target), { recursive: true });
   await writeFile(target, png);
 }

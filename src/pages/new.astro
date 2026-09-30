@@ -11,18 +11,17 @@ const live = tools.filter((t) => t.status !== 'archived');
 const recent = sortNewest(live).slice(0, 60);
 const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
 
-const title = `New AI tools and launches this week | ${SITE.name}`;
-const description = `The most recent ${Math.min(recent.length, 60)} additions to the ${SITE.name} index: newly launched products from the wish queue and tools we finished reviewing this week.`;
+const title = `Fresh wishes and discoveries | ${SITE.name}`;
+const description = `Meet the latest wishes to reach the sky and thoughtful AI projects recently added to ${SITE.name}.`;
 ---
 
 <Base title={title} description={description}>
-  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'New', path: '/new' }, { name: 'This week' }]} />
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Wish sky', path: '/new' }, { name: 'Fresh wishes' }]} />
   <div class="page-head">
-    <p class="eyebrow">Updated twice a day</p>
-    <h1>Recently lit</h1>
+    <p class="eyebrow">A living sky of ideas</p>
+    <h1>Fresh wishes &amp; discoveries</h1>
     <p class="lede">
-      Wishes that went live and curated entries that finished review, newest first. {live.length} entries in the index across{' '}
-      {categories.length} categories.
+      New wishes that have found their place alongside projects we have recently discovered. Follow a spark into a new corner of AI.
     </p>
   </div>
 

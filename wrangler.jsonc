@@ -13,6 +13,15 @@
     { "pattern": "wishmeteor.net/*", "zone_name": "wishmeteor.net" },
     { "pattern": "www.wishmeteor.net/*", "zone_name": "wishmeteor.net" }
   ],
+  "vars": {
+    "APP_ORIGIN": "https://wishmeteor.net"
+  },
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": ["support@wishmeteor.net"]
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",

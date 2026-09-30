@@ -5,7 +5,7 @@ An English-language index of AI tools, models and open-source projects at
 review the entry goes live with a **dofollow** backlink plus a blessing written for that specific product,
 emailed to the submitter and printed on the entry page.
 
-Everything is prerendered. The only dynamic code is the submission endpoint.
+Pages are prerendered; the Worker handles submissions, community stars, and account endpoints.
 
 ## How it works
 
@@ -67,8 +67,28 @@ Local only, never shipped to the Worker (see `.env.example`):
   card image and entry URL served by this site.
 - `GITHUB_TOKEN` — optional; unauthenticated GitHub search is capped at 10 requests/minute.
 
-Production resources: one Worker (`wishmeteor`) with static assets, one D1 database with a single
-`submissions` table. Zone routes on `wishmeteor.net` and `www`.
+Production resources: one Worker (`wishmeteor`) with static assets and a D1 database for submissions,
+community stars, accounts, email verification and sessions. Zone routes on `wishmeteor.net` and `www`.
+
+## Accounts and analytics
+
+- `/account` supports Google sign-in / One Tap and email + password registration and sign-in. New email
+  accounts must verify a single-use link sent through the Cloudflare Email Service binding. Passwords
+  are stored as salted PBKDF2-SHA-256 hashes; session tokens are opaque, HttpOnly cookies whose hashes
+  are stored in D1.
+- Add a Google OAuth **Web application** client in Google Cloud Console and authorize the JavaScript origins
+  `https://wishmeteor.net` and `https://www.wishmeteor.net`. Set the client ID as a Worker secret with
+  `pnpm exec wrangler secret put GOOGLE_CLIENT_ID`. The client ID is public, but keeping it in the Worker
+  secret store lets the page read it from `/api/auth/config` without committing environment-specific values.
+- Cloudflare Email Service must have `wishmeteor.net` onboarded. The Worker binding is restricted to send
+  from `support@wishmeteor.net`. Cloudflare currently requires a paid Workers plan for outbound Email Service.
+- Apply `migrations/1003_accounts.sql` to D1 before enabling account endpoints in production:
+  `pnpm exec wrangler d1 migrations apply wishmeteor --remote`.
+- Set `PUBLIC_GA_MEASUREMENT_ID=G-...` in the build environment to configure GA4. Analytics loads by default
+  when this value is set; keep it blank to disable GA4.
+- For local Worker testing, copy `.dev.vars.example` to `.dev.vars`; copy `.env.example` to `.env` for
+  the Astro build settings. The local Email binding does not deliver verification messages unless Wrangler
+  is explicitly configured to use the remote Email Service.
 
 ## Layout
 

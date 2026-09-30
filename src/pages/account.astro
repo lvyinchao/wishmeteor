@@ -1,0 +1,226 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const title = 'Your account — WishMeteor';
+const description = 'Sign in or create a WishMeteor account with Google or email.';
+---
+
+<Base title={title} description={description} noindex>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Your account' }]} />
+  <section class="account-page">
+    <div class="account-page__intro">
+      <span class="eyebrow">A place among the stars</span>
+      <h1>Your WishMeteor account</h1>
+      <p class="lede">Sign in to keep your place here. A verified email helps us protect your account.</p>
+    </div>
+
+    <div class="account-card" data-account-card>
+      <div data-account-form-view>
+        <div class="account-card__google" data-google-area hidden>
+          <div id="google-signin-button"></div>
+          <p class="account-divider"><span>or continue with email</span></p>
+        </div>
+
+        <div class="account-tabs" role="tablist" aria-label="Account action">
+          <button class="account-tab is-active" id="mode-login" type="button" role="tab" aria-selected="true">Sign in</button>
+          <button class="account-tab" id="mode-register" type="button" role="tab" aria-selected="false">Create account</button>
+        </div>
+
+        <form class="account-form" id="account-form">
+          <label for="account-email">Email address</label>
+          <input id="account-email" name="email" type="email" autocomplete="email" required maxlength="254" />
+          <label for="account-password">Password</label>
+          <input id="account-password" name="password" type="password" autocomplete="current-password" required minlength="12" maxlength="256" />
+          <p class="account-form__hint" data-password-hint hidden>Use at least 12 characters. A longer phrase is easier to remember.</p>
+        <button class="btn btn-primary account-submit" type="submit" data-submit>Sign in</button>
+        </form>
+        <p class="account-message" data-account-message role="status" aria-live="polite"></p>
+        <p class="account-legal">We use your email for account access and essential service messages. Read our <a href="/privacy">privacy details</a>.</p>
+      </div>
+
+      <div data-account-signed-in hidden>
+        <span class="eyebrow">Welcome back</span>
+        <h2 data-account-name></h2>
+        <p class="section-intro" data-account-email></p>
+        <button class="btn btn-quiet account-submit" type="button" data-logout>Sign out</button>
+      </div>
+    </div>
+    <p class="account-footnote">Your account can use the same verified email across both sign-in methods.</p>
+  </section>
+</Base>
+
+<script>
+  interface AccountInfo { id: string; email: string; name: string }
+  interface GoogleCredentialResponse { credential: string }
+  interface GoogleApi {
+    accounts: {
+      id: {
+        initialize(options: { client_id: string; nonce: string; callback: (response: GoogleCredentialResponse) => void; context: 'signin'; use_fedcm_for_prompt: true }): void;
+        renderButton(parent: HTMLElement, options: { theme: 'outline'; size: 'large'; shape: 'pill'; text: 'signin_with'; width: number }): void;
+        prompt(): void;
+      };
+    };
+  }
+  declare global { interface Window { google?: GoogleApi } }
+
+  const formView = document.querySelector<HTMLElement>('[data-account-form-view]');
+  const signedInView = document.querySelector<HTMLElement>('[data-account-signed-in]');
+  const message = document.querySelector<HTMLElement>('[data-account-message]');
+  const form = document.querySelector<HTMLFormElement>('#account-form');
+  const password = document.querySelector<HTMLInputElement>('#account-password');
+  const submit = document.querySelector<HTMLButtonElement>('[data-submit]');
+  const googleArea = document.querySelector<HTMLElement>('[data-google-area]');
+  let mode: 'login' | 'register' = 'login';
+  let busy = false;
+
+  function setMessage(text: string, kind: 'info' | 'error' | 'success' = 'info') {
+    if (!message) return;
+    message.textContent = text;
+    message.dataset.kind = kind;
+  }
+
+  function showAccount(account: AccountInfo) {
+    if (formView) formView.hidden = true;
+    if (signedInView) signedInView.hidden = false;
+    const name = signedInView?.querySelector<HTMLElement>('[data-account-name]');
+    const email = signedInView?.querySelector<HTMLElement>('[data-account-email]');
+    if (name) name.textContent = account.name ? `Welcome, ${account.name}` : 'Welcome to the wish sky';
+    if (email) email.textContent = account.email;
+  }
+
+  function setMode(next: 'login' | 'register') {
+    mode = next;
+    const registering = next === 'register';
+    document.querySelector('#mode-login')?.classList.toggle('is-active', !registering);
+    document.querySelector('#mode-register')?.classList.toggle('is-active', registering);
+    document.querySelector('#mode-login')?.setAttribute('aria-selected', String(!registering));
+    document.querySelector('#mode-register')?.setAttribute('aria-selected', String(registering));
+    if (password) password.autocomplete = registering ? 'new-password' : 'current-password';
+    const hint = document.querySelector<HTMLElement>('[data-password-hint]');
+    if (hint) hint.hidden = !registering;
+    if (submit) submit.textContent = registering ? 'Create account' : 'Sign in';
+    setMessage('');
+  }
+
+  document.querySelector('#mode-login')?.addEventListener('click', () => setMode('login'));
+  document.querySelector('#mode-register')?.addEventListener('click', () => setMode('register'));
+
+  function errorText(code: string): string {
+    const messages: Record<string, string> = {
+      'invalid-input': 'Enter a valid email and a password with at least 12 characters.',
+      'invalid-credentials': 'That email and password combination could not be verified.',
+      'account-exists': 'An account already uses this email. Sign in or choose Google.',
+      'email-not-verified': 'Please verify your email first. If the link expired, create the account again to send a fresh one.',
+      'email-unavailable': 'The verification email could not be sent right now. Please try again shortly.',
+      'try-later': 'Too many attempts. Please wait a little and try again.',
+      'google-not-configured': 'Google sign-in is being set up. Use your email for now.',
+      'google-unavailable': 'Google sign-in is temporarily unavailable. Please try again.',
+      'account-conflict': 'This Google account is already linked to another account.',
+    };
+    return messages[code] ?? 'We could not complete that request. Please try again.';
+  }
+
+  async function request(path: string, payload?: Record<string, string>): Promise<{ ok: boolean; status: number; data: Record<string, unknown> }> {
+    const response = await fetch(path, {
+      method: payload ? 'POST' : 'GET',
+      headers: payload ? { 'content-type': 'application/json' } : {},
+      body: payload ? JSON.stringify(payload) : undefined,
+      credentials: 'same-origin',
+    });
+    const data = await response.json().catch(() => ({})) as Record<string, unknown>;
+    return { ok: response.ok, status: response.status, data };
+  }
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (busy) return;
+    const values = new FormData(form);
+    const email = String(values.get('email') ?? '').trim();
+    const passwordValue = String(values.get('password') ?? '');
+    if (mode === 'register' && passwordValue.length < 12) {
+      setMessage('Choose a password with at least 12 characters.', 'error');
+      return;
+    }
+    busy = true;
+    if (submit) { submit.disabled = true; submit.textContent = mode === 'register' ? 'Sending verification…' : 'Signing in…'; }
+    setMessage('');
+    try {
+      const result = await request(`/api/auth/${mode}`, { email, password: passwordValue });
+      if (!result.ok) {
+        setMessage(errorText(String(result.data.error ?? 'unknown')), 'error');
+      } else if (mode === 'register') {
+        setMessage('Check your inbox for a verification link. It will be valid for 24 hours.', 'success');
+        form.reset();
+      } else {
+        showAccount(result.data.account as AccountInfo);
+      }
+    } catch {
+      setMessage('Connection trouble. Please try again.', 'error');
+    } finally {
+      busy = false;
+      if (submit) {
+        submit.disabled = false;
+        submit.textContent = mode === 'register' ? 'Create account' : 'Sign in';
+      }
+    }
+  });
+
+  document.querySelector('[data-logout]')?.addEventListener('click', async () => {
+    await request('/api/auth/logout', {});
+    window.location.reload();
+  });
+
+  async function startGoogle() {
+    if (!googleArea) return;
+    const current = await request('/api/auth/me');
+    if (current.data.account) {
+      showAccount(current.data.account as AccountInfo);
+      return;
+    }
+    const configResponse = await fetch('/api/auth/config', { credentials: 'same-origin' });
+    if (!configResponse.ok) return;
+    const config = await configResponse.json() as { googleClientId?: string; nonce?: string };
+    if (!config.googleClientId || !config.nonce) return;
+    const loadScript = () => {
+      if (!window.google) { window.setTimeout(loadScript, 100); return; }
+      googleArea.hidden = false;
+      window.google.accounts.id.initialize({
+        client_id: config.googleClientId ?? '',
+        nonce: config.nonce ?? '',
+        context: 'signin',
+        use_fedcm_for_prompt: true,
+        callback: async ({ credential }) => {
+          setMessage('Connecting your Google account…');
+          try {
+            const result = await request('/api/auth/google', { credential });
+            if (!result.ok) setMessage(errorText(String(result.data.error ?? 'unknown')), 'error');
+            else showAccount(result.data.account as AccountInfo);
+          } catch {
+            setMessage('Connection trouble. Please try again.', 'error');
+          }
+        },
+      });
+      const button = document.querySelector<HTMLElement>('#google-signin-button');
+      if (button) window.google.accounts.id.renderButton(button, { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', width: Math.min(360, Math.max(240, Math.round(button.getBoundingClientRect().width))) });
+      window.google.accounts.id.prompt();
+    };
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = loadScript;
+    script.onerror = () => setMessage('Google sign-in could not load. Use the email form instead.', 'error');
+    document.head.append(script);
+  }
+
+  const result = new URLSearchParams(window.location.search).get('verified');
+  if (result === 'success') setMessage('Your email is verified. You can sign in now.', 'success');
+  else if (result === 'expired') setMessage('That verification link has expired. Create the account again to send a fresh link.', 'error');
+  else if (result === 'invalid') setMessage('That verification link is not valid.', 'error');
+
+  request('/api/auth/me').then(({ data }) => {
+    if (data.account) showAccount(data.account as AccountInfo);
+    else void startGoogle().catch(() => setMessage('Google sign-in could not load. Use the email form instead.', 'error'));
+  }).catch(() => setMessage('Account status could not be loaded. You can still try signing in.', 'error'));
+</script>

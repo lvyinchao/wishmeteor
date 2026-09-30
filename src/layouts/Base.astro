@@ -3,6 +3,7 @@ import SEOHead from '../components/SEOHead.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import JsonLd from '../components/JsonLd.astro';
+import AnalyticsConsent from '../components/AnalyticsConsent.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -38,5 +39,6 @@ const { jsonLd = [], ...head } = Astro.props;
       <slot />
     </main>
     <SiteFooter />
+    <AnalyticsConsent measurementId={import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? ''} />
   </body>
 </html>
