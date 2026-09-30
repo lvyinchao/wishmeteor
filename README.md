@@ -59,8 +59,12 @@ They require Qoder to be running on this machine; a closed laptop simply produce
 
 Local only, never shipped to the Worker (see `.env.example`):
 
-- `RESEND_API_KEY`, `RESEND_FROM` — blessing email delivery. Sending happens **after** a successful deploy,
-  because the email embeds the card image and entry URL served by this site.
+- `CF_API_TOKEN` (optional) — Cloudflare Email Service, Email Sending. `wishmeteor.net` is already
+  onboarded (Compute → Email Service → Email Sending), and Cloudflare manages the bounce SPF/DKIM/DMARC
+  records for the zone. Without an explicit token, `scripts/notify.mjs` uses the OAuth token wrangler
+  already keeps locally, which `pnpm ship` refreshes moments before it sends. `EMAIL_FROM` defaults to
+  `support@wishmeteor.net`. Sending happens **after** a successful deploy, because the email embeds the
+  card image and entry URL served by this site.
 - `GITHUB_TOKEN` — optional; unauthenticated GitHub search is capped at 10 requests/minute.
 
 Production resources: one Worker (`wishmeteor`) with static assets, one D1 database with a single
