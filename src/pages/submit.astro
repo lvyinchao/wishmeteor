@@ -29,6 +29,13 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
     )
   }
   {
+    status === 'queued-email-failed' && (
+      <p class="notice" role="status">
+        Your wish was saved and is pending review, but we could not send the confirmation email. If you submitted while signed in, you can still follow its status on your <a href="/account">account page</a>.
+      </p>
+    )
+  }
+  {
     status === 'duplicate' && (
       <p class="notice" role="status">
         That domain is already on the wall or already in the queue. One wish per product, please.
@@ -65,7 +72,7 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
         </div>
         <div>
           <label for="email">Email for your blessing</label>
-          <input id="email" name="email" type="email" required placeholder="you@yourproduct.com" />
+          <input id="email" name="email" type="email" data-submit-email required placeholder="you@yourproduct.com" />
           <p class="hint">
             Used once, to send the blessing and the card. Never published, never added to a list, deleted whenever you ask.
           </p>
@@ -117,3 +124,13 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
     </div>
   </div>
 </Base>
+
+<script>
+  const submitEmail = document.querySelector<HTMLInputElement>('[data-submit-email]');
+  fetch('/api/auth/me', { credentials: 'same-origin' })
+    .then((response) => response.ok ? response.json() as Promise<{ account?: { email?: string } | null }> : null)
+    .then((result) => {
+      if (submitEmail && !submitEmail.value && result?.account?.email) submitEmail.value = result.account.email;
+    })
+    .catch(() => {});
+</script>

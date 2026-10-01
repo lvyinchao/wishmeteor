@@ -19,8 +19,18 @@ const nav = [
     </a>
     <nav class="site-nav" aria-label="Main">
       {nav.map((item) => <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>)}
-      <a href="/account" aria-current={isActive('/account') ? 'page' : undefined}>Sign in</a>
+      <a href="/account" data-account-nav aria-current={isActive('/account') ? 'page' : undefined}>Sign in</a>
       <a class="btn btn-primary" href="/submit">Make a wish</a>
     </nav>
   </div>
 </header>
+
+<script>
+  const accountLink = document.querySelector<HTMLAnchorElement>('[data-account-nav]');
+  fetch('/api/auth/me', { credentials: 'same-origin' })
+    .then((response) => response.ok ? response.json() as Promise<{ account?: { name?: string } | null }> : null)
+    .then((result) => {
+      if (accountLink && result?.account) accountLink.textContent = result.account.name?.trim() || 'Account';
+    })
+    .catch(() => {});
+</script>

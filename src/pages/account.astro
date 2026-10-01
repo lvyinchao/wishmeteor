@@ -31,8 +31,8 @@ const description = 'Sign in or create a WishMeteor account with Google or email
           <label for="account-email">Email address</label>
           <input id="account-email" name="email" type="email" autocomplete="email" required maxlength="254" />
           <label for="account-password">Password</label>
-          <input id="account-password" name="password" type="password" autocomplete="current-password" required minlength="12" maxlength="256" />
-          <p class="account-form__hint" data-password-hint hidden>Use at least 12 characters. A longer phrase is easier to remember.</p>
+          <input id="account-password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="256" />
+          <p class="account-form__hint" data-password-hint hidden>Use at least 6 characters.</p>
         <button class="btn btn-primary account-submit" type="submit" data-submit>Sign in</button>
         </form>
         <p class="account-message" data-account-message role="status" aria-live="polite"></p>
@@ -43,6 +43,12 @@ const description = 'Sign in or create a WishMeteor account with Google or email
         <span class="eyebrow">Welcome back</span>
         <h2 data-account-name></h2>
         <p class="section-intro" data-account-email></p>
+        <section class="account-submissions" aria-labelledby="submission-heading">
+          <h3 id="submission-heading">Your product submissions</h3>
+          <p data-submissions-empty>No product submissions yet. <a href="/submit">Share your project</a>.</p>
+          <ul data-submission-list></ul>
+          <p class="account-form__hint" data-submissions-error hidden>Submission status could not be loaded. Please refresh to try again.</p>
+        </section>
         <button class="btn btn-quiet account-submit" type="button" data-logout>Sign out</button>
       </div>
     </div>
@@ -52,6 +58,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
 
 <script>
   interface AccountInfo { id: string; email: string; name: string }
+  interface SubmissionInfo { id: number; name: string; url: string; category: string; created_at: string; verdict: 'pending' | 'approved' | 'rejected'; verdict_at: string | null }
   interface GoogleCredentialResponse { credential: string }
   interface GoogleApi {
     accounts: {
@@ -71,6 +78,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
   const password = document.querySelector<HTMLInputElement>('#account-password');
   const submit = document.querySelector<HTMLButtonElement>('[data-submit]');
   const googleArea = document.querySelector<HTMLElement>('[data-google-area]');
+  const accountNav = document.querySelector<HTMLAnchorElement>('[data-account-nav]');
   let mode: 'login' | 'register' = 'login';
   let busy = false;
 
@@ -87,6 +95,45 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     const email = signedInView?.querySelector<HTMLElement>('[data-account-email]');
     if (name) name.textContent = account.name ? `Welcome, ${account.name}` : 'Welcome to the wish sky';
     if (email) email.textContent = account.email;
+    if (accountNav) accountNav.textContent = account.name?.trim() || 'Account';
+    void loadSubmissions();
+  }
+
+  async function loadSubmissions() {
+    const list = signedInView?.querySelector<HTMLUListElement>('[data-submission-list]');
+    const empty = signedInView?.querySelector<HTMLElement>('[data-submissions-empty]');
+    const error = signedInView?.querySelector<HTMLElement>('[data-submissions-error]');
+    if (!list || !empty || !error) return;
+    try {
+      const response = await fetch('/api/account/submissions', { credentials: 'same-origin' });
+      if (!response.ok) throw new Error('submissions-unavailable');
+      const result = await response.json() as { submissions?: SubmissionInfo[] };
+      const submissions = result.submissions ?? [];
+      list.replaceChildren(...submissions.map((submission) => {
+        const item = document.createElement('li');
+        const title = document.createElement('strong');
+        title.textContent = submission.name;
+        const state = document.createElement('span');
+        state.className = `submission-state submission-state--${submission.verdict}`;
+        state.textContent = submission.verdict === 'pending' ? 'Under review' : submission.verdict === 'approved' ? 'Accepted' : 'Not accepted';
+        const date = document.createElement('time');
+        date.dateTime = submission.created_at;
+        date.textContent = new Date(submission.created_at).toLocaleDateString();
+        const link = document.createElement('a');
+        link.href = submission.url;
+        link.textContent = new URL(submission.url).hostname.replace(/^www\./, '');
+        link.rel = 'noopener noreferrer';
+        const details = document.createElement('div');
+        details.append(link, date);
+        item.append(title, state, details);
+        return item;
+      }));
+      empty.hidden = submissions.length !== 0;
+      error.hidden = true;
+    } catch {
+      empty.hidden = true;
+      error.hidden = false;
+    }
   }
 
   function setMode(next: 'login' | 'register') {
@@ -97,6 +144,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     document.querySelector('#mode-login')?.setAttribute('aria-selected', String(!registering));
     document.querySelector('#mode-register')?.setAttribute('aria-selected', String(registering));
     if (password) password.autocomplete = registering ? 'new-password' : 'current-password';
+    if (password) password.minLength = registering ? 6 : 1;
     const hint = document.querySelector<HTMLElement>('[data-password-hint]');
     if (hint) hint.hidden = !registering;
     if (submit) submit.textContent = registering ? 'Create account' : 'Sign in';
@@ -108,7 +156,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
 
   function errorText(code: string): string {
     const messages: Record<string, string> = {
-      'invalid-input': 'Enter a valid email and a password with at least 12 characters.',
+      'invalid-input': 'Enter a valid email and a password with at least 6 characters.',
       'invalid-credentials': 'That email and password combination could not be verified.',
       'account-exists': 'An account already uses this email. Sign in or choose Google.',
       'email-not-verified': 'Please verify your email first. If the link expired, create the account again to send a fresh one.',
@@ -138,8 +186,8 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     const values = new FormData(form);
     const email = String(values.get('email') ?? '').trim();
     const passwordValue = String(values.get('password') ?? '');
-    if (mode === 'register' && passwordValue.length < 12) {
-      setMessage('Choose a password with at least 12 characters.', 'error');
+    if (mode === 'register' && passwordValue.length < 6) {
+      setMessage('Choose a password with at least 6 characters.', 'error');
       return;
     }
     busy = true;

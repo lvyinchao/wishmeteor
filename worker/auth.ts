@@ -118,6 +118,10 @@ async function sessionAccount(request: Request, env: AuthEnv): Promise<Account |
   ).bind(await sha256(token), new Date().toISOString()).first<Account>();
 }
 
+export async function getSessionAccountId(request: Request, env: AuthEnv): Promise<string | null> {
+  return (await sessionAccount(request, env))?.id ?? null;
+}
+
 function publicAccount(account: Account) {
   return { id: account.id, email: account.email, name: account.display_name };
 }
@@ -178,7 +182,7 @@ async function handleRegister(request: Request, env: AuthEnv): Promise<Response>
   const input = await body(request);
   const email = typeof input?.email === 'string' ? input.email.trim().toLowerCase() : '';
   const password = typeof input?.password === 'string' ? input.password : '';
-  if (!emailValid(email) || password.length < 12 || password.length > 256) return json({ error: 'invalid-input' }, 400);
+  if (!emailValid(email) || password.length < 6 || password.length > 256) return json({ error: 'invalid-input' }, 400);
   if (!(await rateLimit(request, env, 'register', email, 5))) return json({ error: 'try-later' }, 429);
   const existing = await env.DB.prepare('SELECT id, email, display_name, password_hash, password_salt, google_sub, email_verified_at FROM accounts WHERE email = ?').bind(email).first<Account>();
   if (existing?.email_verified_at) return json({ error: 'account-exists' }, 409);
@@ -211,6 +215,7 @@ async function handleLogin(request: Request, env: AuthEnv): Promise<Response> {
   const candidateHash = await derivePassword(password, account?.password_salt ?? '00000000000000000000000000000000');
   if (!account?.password_hash || !constantTimeEqual(candidateHash, account.password_hash)) return json({ error: 'invalid-credentials' }, 401);
   if (!account.email_verified_at) return json({ error: 'email-not-verified' }, 403);
+  await env.DB.prepare('UPDATE submissions SET account_id = ? WHERE account_id IS NULL AND email = ?').bind(account.id, account.email).run();
   const token = await createSession(account.id, env);
   return json({ ok: true, account: publicAccount(account) }, 200, { 'set-cookie': setSessionCookie(token) });
 }
@@ -247,6 +252,7 @@ async function handleGoogle(request: Request, env: AuthEnv): Promise<Response> {
     }
     account = { id, email: identity.email, display_name: displayName, password_hash: byEmail?.password_hash ?? null, password_salt: byEmail?.password_salt ?? null, google_sub: identity.sub, email_verified_at: byEmail?.email_verified_at ?? new Date().toISOString() };
   }
+  await env.DB.prepare('UPDATE submissions SET account_id = ? WHERE account_id IS NULL AND email = ?').bind(account.id, identity.email).run();
   const sessionToken = await createSession(account.id, env);
   return json({ ok: true, account: publicAccount(account) }, 200, { 'set-cookie': setSessionCookie(sessionToken) });
 }
@@ -261,6 +267,7 @@ async function handleVerify(request: Request, env: AuthEnv): Promise<Response> {
   if (!verification) return redirect('expired');
   await env.DB.batch([
     env.DB.prepare('UPDATE accounts SET email_verified_at = COALESCE(email_verified_at, ?) WHERE id = ?').bind(new Date().toISOString(), verification.account_id),
+    env.DB.prepare('UPDATE submissions SET account_id = ? WHERE account_id IS NULL AND email = (SELECT email FROM accounts WHERE id = ?)').bind(verification.account_id, verification.account_id),
     env.DB.prepare('DELETE FROM email_verifications WHERE account_id = ?').bind(verification.account_id),
   ]);
   return redirect('success');

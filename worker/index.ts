@@ -1,4 +1,4 @@
-import { handleAuth } from './auth';
+import { getSessionAccountId, handleAuth } from './auth';
 import { outboundRel } from '../src/lib/link-policy';
 import { getDomain } from 'tldts';
 
@@ -213,7 +213,21 @@ async function handleAdmin(request: Request, env: Env, pathname: string): Promis
     if (!row) return json({ error: 'submission-not-found' }, 404);
     if (row.verdict !== 'pending') return json({ error: 'submission-not-pending', verdict: row.verdict }, 409);
     if (action === 'reject') {
-      await env.DB.prepare("UPDATE submissions SET verdict = 'rejected', verdict_at = ? WHERE id = ? AND verdict = 'pending'").bind(new Date().toISOString(), id).run();
+      const decidedAt = new Date().toISOString();
+      await env.DB.prepare("UPDATE submissions SET verdict = 'rejected', verdict_at = ? WHERE id = ? AND verdict = 'pending'").bind(decidedAt, id).run();
+      const recipient = await env.DB.prepare('SELECT email FROM submissions WHERE id = ?').bind(id).first<{ email: string | null }>();
+      if (recipient?.email && env.EMAIL) {
+        try {
+          await env.EMAIL.send({
+            to: recipient.email,
+            from: 'support@wishmeteor.net',
+            subject: `An update on ${row.name} from WishMeteor`,
+            text: `Thank you for sharing ${row.name} with WishMeteor. We reviewed it, but cannot add it to the directory at this time. You can see its status in your account at ${(env.APP_ORIGIN ?? 'https://wishmeteor.net').replace(/\/$/, '')}/account.`,
+            html: `<p>Thank you for sharing ${htmlEscape(row.name)} with WishMeteor.</p><p>We reviewed it, but cannot add it to the directory at this time. You can see its status in your <a href="${htmlEscape((env.APP_ORIGIN ?? 'https://wishmeteor.net').replace(/\/$/, '') + '/account')}">account</a>.</p>`,
+          });
+          await env.DB.prepare('UPDATE submissions SET verdict_email_sent_at = ? WHERE id = ?').bind(decidedAt, id).run();
+        } catch (error) { console.error('submission decision email failed', error); }
+      }
       return json({ ok: true, id, verdict: 'rejected' });
     }
     const today = new Date().toISOString().slice(0, 10);
@@ -241,6 +255,20 @@ async function handleAdmin(request: Request, env: Env, pathname: string): Promis
         .bind(slug, JSON.stringify(value), now, now),
     ]);
     if (!result[0]?.meta.changes) return json({ error: 'submission-not-pending' }, 409);
+    const recipient = await env.DB.prepare('SELECT email FROM submissions WHERE id = ?').bind(id).first<{ email: string | null }>();
+    if (recipient?.email && env.EMAIL) {
+      const page = `${(env.APP_ORIGIN ?? 'https://wishmeteor.net').replace(/\/$/, '')}/tool/${slug}`;
+      try {
+        await env.EMAIL.send({
+          to: recipient.email,
+          from: 'support@wishmeteor.net',
+          subject: `${row.name} is live on WishMeteor`,
+          text: `${row.name} has been accepted and is now live on WishMeteor: ${page}\n\nThank you for sharing what you are building with us.`,
+          html: `<p><strong>${htmlEscape(row.name)}</strong> has been accepted and is now live on WishMeteor.</p><p><a href="${htmlEscape(page)}">See your listing</a></p><p>Thank you for sharing what you are building with us.</p>`,
+        });
+        await env.DB.prepare('UPDATE submissions SET verdict_email_sent_at = ? WHERE id = ?').bind(now, id).run();
+      } catch (error) { console.error('submission decision email failed', error); }
+    }
     return json({ ok: true, id, verdict: 'approved', tool: value });
   }
   return json({ error: 'not-found' }, 404);
@@ -404,18 +432,45 @@ async function handleSubmit(request: Request, env: Env): Promise<Response> {
   if ((pending.results ?? []).some((row) => (row.root_domain || getDomain(row.domain, { allowPrivateDomains: true }) || row.domain) === target.domain)) return redirect(request, 'duplicate');
 
   try {
-    await env.DB.prepare(
-      `INSERT INTO submissions (name, url, domain, root_domain, email, category, notes, make_a_wish, ip_hash, created_at, verdict)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`
+    const accountId = await getSessionAccountId(request, env);
+    const createdAt = new Date().toISOString();
+    const inserted = await env.DB.prepare(
+      `INSERT INTO submissions (name, url, domain, root_domain, email, category, notes, make_a_wish, ip_hash, created_at, verdict, account_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`
     )
-      .bind(submission.name, target.url, target.domain, target.domain, submission.email, submission.category, submission.notes, submission.makeAWish, ipHash, new Date().toISOString())
+      .bind(submission.name, target.url, target.domain, target.domain, submission.email, submission.category, submission.notes, submission.makeAWish, ipHash, createdAt, accountId)
       .run();
+    let mailSent = false;
+    if (env.EMAIL) {
+      try {
+        await env.EMAIL.send({
+          to: submission.email,
+          from: 'support@wishmeteor.net',
+          subject: `We received ${submission.name} for WishMeteor`,
+          text: `We received your WishMeteor submission for ${submission.name}. It is now pending review. We will email you when its status changes. You can check its status${accountId ? ` in your account: ${(env.APP_ORIGIN ?? 'https://wishmeteor.net').replace(/\/$/, '')}/account` : ''}.`,
+          html: `<p>We received your WishMeteor submission for <strong>${htmlEscape(submission.name)}</strong>.</p><p>It is now pending review. We will email you when its status changes.</p>${accountId ? `<p><a href="${htmlEscape((env.APP_ORIGIN ?? 'https://wishmeteor.net').replace(/\/$/, '') + '/account')}">Check its status in your account</a>.</p>` : ''}`,
+        });
+        await env.DB.prepare('UPDATE submissions SET submission_email_sent_at = ? WHERE id = ?')
+          .bind(new Date().toISOString(), inserted.meta.last_row_id).run();
+        mailSent = true;
+      } catch (error) { console.error('submission receipt email failed', error); }
+    }
+    return redirect(request, mailSent ? 'queued' : 'queued-email-failed');
   } catch (error) {
     if (String(error).includes('submissions.root_domain') || String(error).includes('submissions.domain')) return redirect(request, 'duplicate');
     throw error;
   }
 
-  return redirect(request, 'queued');
+}
+
+async function handleMySubmissions(request: Request, env: Env): Promise<Response> {
+  const accountId = await getSessionAccountId(request, env);
+  if (!accountId) return json({ error: 'not-signed-in' }, 401);
+  const result = await env.DB.prepare(
+    `SELECT id, name, url, category, created_at, verdict, verdict_at
+     FROM submissions WHERE account_id = ? ORDER BY created_at DESC LIMIT 100`
+  ).bind(accountId).all();
+  return json({ submissions: result.results ?? [] });
 }
 
 async function isPublishedWish(slug: string, request: Request, env: Env): Promise<boolean> {
@@ -489,6 +544,11 @@ export default {
         console.error('auth request failed', error);
         return new Response(JSON.stringify({ error: 'auth-unavailable' }), { status: 503, headers: JSON_HEADERS });
       }
+    }
+    if (pathname === '/api/account/submissions') {
+      if (request.method !== 'GET') return json({ error: 'method-not-allowed' }, 405);
+      try { return await handleMySubmissions(request, env); }
+      catch (error) { console.error('account submissions unavailable', error); return json({ error: 'account-unavailable' }, 503); }
     }
     if (pathname === '/api/submit') {
       if (request.method !== 'POST') return new Response(JSON.stringify({ error: 'method-not-allowed' }), { status: 405, headers: { 'content-type': 'application/json' } });
