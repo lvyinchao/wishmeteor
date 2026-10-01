@@ -1,0 +1,1706 @@
+{
+  "source": "TrustMRR public discovery; product facts and covers checked against official sites",
+  "checkedAt": "2026-10-01",
+  "products": [
+    {
+      "slug": "contextli",
+      "name": "Contextli",
+      "url": "https://contextli.com",
+      "category": "audio-voice",
+      "summary": "Privacy-aware voice dictation that formats speech for the app you are using.",
+      "description": "Contextli is listed in WishMeteor's audio and voice catalog. The maker's public page describes the product in these terms: Privacy-aware voice dictation that formats speech for the app you are using. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "voice-dictation",
+        "speech-to-text",
+        "writing"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://contextli.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/contextli",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/contextli.jpg"
+    },
+    {
+      "slug": "draftscreens",
+      "name": "DraftScreens",
+      "url": "https://draftscreens.com",
+      "category": "image-video",
+      "summary": "Design mobile app screens and visual concepts from a prompt.",
+      "description": "DraftScreens is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Design mobile app screens and visual concepts from a prompt. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "app-design",
+        "prototyping",
+        "mobile"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://draftscreens.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/draftscreens",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/draftscreens.jpg"
+    },
+    {
+      "slug": "pesky",
+      "name": "Pesky",
+      "url": "https://pesky.ai",
+      "category": "data-retrieval",
+      "summary": "Find competitors and monitor relevant online conversations for your product.",
+      "description": "Pesky is listed in WishMeteor's data and research catalog. The maker's public page describes the product in these terms: Find competitors and monitor relevant online conversations for your product. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "competitor-research",
+        "monitoring",
+        "marketing"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://pesky.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/pesky",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/pesky.jpg"
+    },
+    {
+      "slug": "forkest",
+      "name": "Forkest",
+      "url": "https://www.forkest.dev",
+      "category": "productivity",
+      "summary": "Turn a GitHub contribution calendar into a seasonal pixel-art garden.",
+      "description": "Forkest is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Turn a GitHub contribution calendar into a seasonal pixel-art garden. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "github",
+        "developer-tools",
+        "visualization"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.forkest.dev",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/forkest",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/forkest.jpg"
+    },
+    {
+      "slug": "loudship",
+      "name": "Loudship",
+      "url": "https://loudship.app",
+      "category": "agents-automation",
+      "summary": "Find online conversations about your product and draft replies for review.",
+      "description": "Loudship is listed in WishMeteor's AI and automation catalog. The maker's public page describes the product in these terms: Find online conversations about your product and draft replies for review. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "social-listening",
+        "marketing",
+        "writing"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://loudship.app",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/loudship",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/loudship.jpg"
+    },
+    {
+      "slug": "planes",
+      "name": "Planes",
+      "url": "https://useplanes.com",
+      "category": "ai-coding",
+      "summary": "Build interfaces from customizable React components and interactions.",
+      "description": "Planes is listed in WishMeteor's AI coding catalog. The maker's public page describes the product in these terms: Build interfaces from customizable React components and interactions. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "react",
+        "components",
+        "frontend"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://useplanes.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/planes",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/planes.jpg"
+    },
+    {
+      "slug": "proofedge",
+      "name": "ProofEdge",
+      "url": "https://proofedge.io",
+      "category": "agents-automation",
+      "summary": "Show real-time social proof signals on a website to support visitor conversion.",
+      "description": "ProofEdge is listed in WishMeteor's AI and automation catalog. The maker's public page describes the product in these terms: Show real-time social proof signals on a website to support visitor conversion. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "social-proof",
+        "conversion",
+        "website"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://proofedge.io",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/proofedge",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/proofedge.jpg"
+    },
+    {
+      "slug": "strainarena",
+      "name": "StrainArena",
+      "url": "https://strainarena.com",
+      "category": "productivity",
+      "summary": "Compare weekly strain and recovery stats synced from WHOOP with other builders.",
+      "description": "StrainArena is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Compare weekly strain and recovery stats synced from WHOOP with other builders. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "wellness",
+        "whoop",
+        "leaderboard"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://strainarena.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/strainarena",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/strainarena.jpg"
+    },
+    {
+      "slug": "attackerview",
+      "name": "AttackerView",
+      "url": "https://attackerview.com",
+      "category": "evals-observability",
+      "summary": "Assess a website through automated security checks and verified exploit tests.",
+      "description": "AttackerView is listed in WishMeteor's AI evaluation and observability catalog. The maker's public page describes the product in these terms: Assess a website through automated security checks and verified exploit tests. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "security",
+        "website-testing",
+        "vulnerability"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://attackerview.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/attackerview",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/attackerview.jpg"
+    },
+    {
+      "slug": "datool",
+      "name": "Datool",
+      "url": "https://www.trydatool.com",
+      "category": "evals-observability",
+      "summary": "Trace AI workflows, review examples and evaluate output quality.",
+      "description": "Datool is listed in WishMeteor's AI evaluation and observability catalog. The maker's public page describes the product in these terms: Trace AI workflows, review examples and evaluate output quality. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "ai-evaluation",
+        "observability",
+        "testing"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.trydatool.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/datool",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/datool.jpg"
+    },
+    {
+      "slug": "leadscope-ai",
+      "name": "LeadScope AI",
+      "url": "https://leadscope.pro",
+      "category": "agents-automation",
+      "summary": "Research local business leads and prepare website audits and outreach materials.",
+      "description": "LeadScope AI is listed in WishMeteor's AI and automation catalog. The maker's public page describes the product in these terms: Research local business leads and prepare website audits and outreach materials. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "lead-generation",
+        "seo",
+        "sales"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://leadscope.pro",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/leadscope-ai",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/leadscope-ai.jpg"
+    },
+    {
+      "slug": "soracai",
+      "name": "SoraCai",
+      "url": "https://soracai.com",
+      "category": "image-video",
+      "summary": "Create stylized AI-edited photos from a source image in a few seconds.",
+      "description": "SoraCai is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Create stylized AI-edited photos from a source image in a few seconds. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "photo-editing",
+        "image-generation",
+        "ai"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://soracai.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/soracai-com",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/soracai.jpg"
+    },
+    {
+      "slug": "aiwa",
+      "name": "AIWA",
+      "url": "https://aiwa.codes",
+      "category": "agents-automation",
+      "summary": "Plan, build, test and ship full-stack apps with an AI product team.",
+      "description": "AIWA is listed in WishMeteor's AI and automation catalog. The maker's public page describes the product in these terms: Plan, build, test and ship full-stack apps with an AI product team. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "app-builder",
+        "automation",
+        "no-code"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://aiwa.codes",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/aiwa",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/aiwa.jpg"
+    },
+    {
+      "slug": "interni-ia",
+      "name": "INTERNI IA",
+      "url": "https://interniia.com",
+      "category": "image-video",
+      "summary": "Refresh room, facade or garden designs from a photo using AI.",
+      "description": "INTERNI IA is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Refresh room, facade or garden designs from a photo using AI. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "interior-design",
+        "image-generation",
+        "home"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://interniia.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/interni-ia",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/interni-ia.jpg"
+    },
+    {
+      "slug": "appsignals",
+      "name": "AppSignals",
+      "url": "https://appsignals.io",
+      "category": "evals-observability",
+      "summary": "Track iOS app performance using App Store Connect analytics.",
+      "description": "AppSignals is listed in WishMeteor's AI evaluation and observability catalog. The maker's public page describes the product in these terms: Track iOS app performance using App Store Connect analytics. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "ios-analytics",
+        "app-store",
+        "metrics"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://appsignals.io",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/appsignals",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/appsignals.jpg"
+    },
+    {
+      "slug": "skillry",
+      "name": "Skillry",
+      "url": "https://skillry.dev",
+      "category": "ai-coding",
+      "summary": "Browse reusable agent skills for Claude Code, Codex and Cursor.",
+      "description": "Skillry is listed in WishMeteor's AI coding catalog. The maker's public page describes the product in these terms: Browse reusable agent skills for Claude Code, Codex and Cursor. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "agent-skills",
+        "developer-tools",
+        "workflows"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://skillry.dev",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/skillry",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/skillry.jpg"
+    },
+    {
+      "slug": "ranki",
+      "name": "Ranki",
+      "url": "https://ranki.io",
+      "category": "agents-automation",
+      "summary": "Automate SEO and answer-engine content publishing to grow organic discovery.",
+      "description": "Ranki is listed in WishMeteor's AI and automation catalog. The maker's public page describes the product in these terms: Automate SEO and answer-engine content publishing to grow organic discovery. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "seo",
+        "content-marketing",
+        "automation"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://ranki.io",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/next-labs-llc",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/ranki.jpg"
+    },
+    {
+      "slug": "viducer",
+      "name": "Viducer",
+      "url": "https://viducer.ai",
+      "category": "image-video",
+      "summary": "Turn a script or voiceover into a long-form video for YouTube.",
+      "description": "Viducer is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Turn a script or voiceover into a long-form video for YouTube. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "video-generation",
+        "youtube",
+        "content-creation"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://viducer.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/viducer-ai",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/viducer.jpg"
+    },
+    {
+      "slug": "glowy",
+      "name": "GLOWY",
+      "url": "https://www.glowy.pics",
+      "category": "image-video",
+      "summary": "Generate realistic AI photos using reference images and creative prompts.",
+      "description": "GLOWY is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Generate realistic AI photos using reference images and creative prompts. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "ai-photography",
+        "image-generation",
+        "creator-tools"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.glowy.pics",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/glowy",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/glowy.jpg"
+    },
+    {
+      "slug": "beauty-score",
+      "name": "Beauty Score",
+      "url": "https://beautyscore.zzstudio.io.vn",
+      "category": "image-video",
+      "summary": "Analyze a face photo and get an AI beauty score and personalized routine.",
+      "description": "Beauty Score is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Analyze a face photo and get an AI beauty score and personalized routine. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "face-analysis",
+        "skincare",
+        "mobile-app"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://beautyscore.zzstudio.io.vn",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/beauty-score",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/beauty-score.jpg"
+    },
+    {
+      "slug": "omninotch",
+      "name": "OmniNotch",
+      "url": "https://omninotch.app",
+      "category": "productivity",
+      "summary": "Access a collection of Mac utilities from the MacBook notch.",
+      "description": "OmniNotch is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Access a collection of Mac utilities from the MacBook notch. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "macos",
+        "utilities",
+        "clipboard"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://omninotch.app",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/omninotch",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/omninotch.jpg"
+    },
+    {
+      "slug": "brinkr",
+      "name": "Brinkr",
+      "url": "https://brinkr.com",
+      "category": "productivity",
+      "summary": "Digitize construction delivery slips, invoices and orders, then reconcile them.",
+      "description": "Brinkr is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Digitize construction delivery slips, invoices and orders, then reconcile them. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "construction",
+        "ocr",
+        "accounting"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://brinkr.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/brinkr-solutions",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/brinkr.jpg"
+    },
+    {
+      "slug": "ismalicious",
+      "name": "isMalicious",
+      "url": "https://www.ismalicious.com",
+      "category": "evals-observability",
+      "summary": "Check domains, URLs, IPs and other indicators against threat intelligence.",
+      "description": "isMalicious is listed in WishMeteor's AI evaluation and observability catalog. The maker's public page describes the product in these terms: Check domains, URLs, IPs and other indicators against threat intelligence. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "security",
+        "threat-intelligence",
+        "api"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.ismalicious.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/ismalicious",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/ismalicious.jpg"
+    },
+    {
+      "slug": "fixmyexport",
+      "name": "FixMyExport",
+      "url": "https://fixmyexport.com",
+      "category": "productivity",
+      "summary": "Repair Snapchat Memories exports with location data, overlays and joined clips.",
+      "description": "FixMyExport is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Repair Snapchat Memories exports with location data, overlays and joined clips. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "media-tools",
+        "snapchat",
+        "export"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://fixmyexport.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/fixmyexport",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/fixmyexport.jpg"
+    },
+    {
+      "slug": "orior-ai",
+      "name": "Orior AI",
+      "url": "https://oriorai.com",
+      "category": "image-video",
+      "summary": "Create consistent AI characters, generate media and prepare social posts.",
+      "description": "Orior AI is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Create consistent AI characters, generate media and prepare social posts. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "ai-characters",
+        "image-generation",
+        "social-media"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://oriorai.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/orior-ai",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/orior-ai.jpg"
+    },
+    {
+      "slug": "ugcraft",
+      "name": "UGCraft",
+      "url": "https://ugcraft.ai",
+      "category": "image-video",
+      "summary": "Create Roblox UGC accessories and clothing from text or image prompts.",
+      "description": "UGCraft is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Create Roblox UGC accessories and clothing from text or image prompts. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "roblox",
+        "3d-generation",
+        "creator-tools"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://ugcraft.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/ugcraft",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/ugcraft.jpg"
+    },
+    {
+      "slug": "dripmint",
+      "name": "Dripmint",
+      "url": "https://dripmint.ai",
+      "category": "agents-automation",
+      "summary": "Run cold email outreach with controls for sender reputation and delivery.",
+      "description": "Dripmint is listed in WishMeteor's AI and automation catalog. The maker's public page describes the product in these terms: Run cold email outreach with controls for sender reputation and delivery. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "cold-email",
+        "sales",
+        "deliverability"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://dripmint.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/dripmint",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/dripmint.jpg"
+    },
+    {
+      "slug": "the-anti-job-board",
+      "name": "The Anti Job Board",
+      "url": "https://theantijobboard.com",
+      "category": "data-retrieval",
+      "summary": "Explore startup job openings, including roles surfaced before they are widely posted.",
+      "description": "The Anti Job Board is listed in WishMeteor's data and research catalog. The maker's public page describes the product in these terms: Explore startup job openings, including roles surfaced before they are widely posted. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "jobs",
+        "startup",
+        "search"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://theantijobboard.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/the-anti-job-board",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/the-anti-job-board.jpg"
+    },
+    {
+      "slug": "viralcade",
+      "name": "Viralcade",
+      "url": "https://viralcade.com",
+      "category": "image-video",
+      "summary": "Generate animated videos, documentaries and recaps from an idea.",
+      "description": "Viralcade is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Generate animated videos, documentaries and recaps from an idea. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "video-generation",
+        "animation",
+        "creator-tools"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://viralcade.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/viralcade",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/viralcade.jpg"
+    },
+    {
+      "slug": "framenet",
+      "name": "Framenet",
+      "url": "https://www.framenet.ai",
+      "category": "image-video",
+      "summary": "Create animated motion graphics from a prompt with an AI design workflow.",
+      "description": "Framenet is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Create animated motion graphics from a prompt with an AI design workflow. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "motion-graphics",
+        "video-generation",
+        "design"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.framenet.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/framenet",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/framenet.jpg"
+    },
+    {
+      "slug": "pixfy",
+      "name": "Pixfy",
+      "url": "https://pixfy.io",
+      "category": "image-video",
+      "summary": "Create repeatable AI characters from text or a reference image.",
+      "description": "Pixfy is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Create repeatable AI characters from text or a reference image. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "ai-characters",
+        "image-generation",
+        "design"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://pixfy.io",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/pixfy",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/pixfy.jpg"
+    },
+    {
+      "slug": "scantrader",
+      "name": "Scantrader",
+      "url": "https://scantrader.app",
+      "category": "data-retrieval",
+      "summary": "Analyze stock-chart screenshots with AI to surface potential trade levels.",
+      "description": "Scantrader is listed in WishMeteor's data and research catalog. The maker's public page describes the product in these terms: Analyze stock-chart screenshots with AI to surface potential trade levels. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "stock-analysis",
+        "finance",
+        "mobile-app"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://scantrader.app",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/scantrader",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/scantrader.jpg"
+    },
+    {
+      "slug": "viral-by-doti",
+      "name": "Viral by DOTI",
+      "url": "https://viral.doti.gg",
+      "category": "image-video",
+      "summary": "Create an AI influencer persona and generate social video content.",
+      "description": "Viral by DOTI is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Create an AI influencer persona and generate social video content. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "ai-influencer",
+        "video-generation",
+        "social-media"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://viral.doti.gg",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/viraldoti",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/viral-by-doti.jpg"
+    },
+    {
+      "slug": "yadulink",
+      "name": "Yadulink",
+      "url": "https://yadulink.com",
+      "category": "agents-automation",
+      "summary": "Automate LinkedIn prospecting around engagement and interest signals.",
+      "description": "Yadulink is listed in WishMeteor's AI and automation catalog. The maker's public page describes the product in these terms: Automate LinkedIn prospecting around engagement and interest signals. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "linkedin",
+        "lead-generation",
+        "sales"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://yadulink.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/yadulink-aviclick",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/yadulink.jpg"
+    },
+    {
+      "slug": "rewired",
+      "name": "Rewired",
+      "url": "https://www.therewired.app",
+      "category": "productivity",
+      "summary": "Block distracting iPhone apps behind short challenges and mini-games.",
+      "description": "Rewired is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Block distracting iPhone apps behind short challenges and mini-games. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "focus",
+        "screen-time",
+        "ios"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.therewired.app",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/rewired-screen-time-blocker",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/rewired.jpg"
+    },
+    {
+      "slug": "sentrive",
+      "name": "Sentrive",
+      "url": "https://sentrive.ai",
+      "category": "agents-automation",
+      "summary": "Schedule marketing work such as lead research, posts and reports with AI.",
+      "description": "Sentrive is listed in WishMeteor's AI and automation catalog. The maker's public page describes the product in these terms: Schedule marketing work such as lead research, posts and reports with AI. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "marketing-automation",
+        "lead-generation",
+        "content"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://sentrive.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/sentrive",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/sentrive.jpg"
+    },
+    {
+      "slug": "tallyn-ai",
+      "name": "Tallyn AI",
+      "url": "https://tallyn.app",
+      "category": "productivity",
+      "summary": "Track sales, inventory, debts and profit through a conversational assistant.",
+      "description": "Tallyn AI is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Track sales, inventory, debts and profit through a conversational assistant. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "sales-tracking",
+        "inventory",
+        "small-business"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://tallyn.app",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/tallyn",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/tallyn-ai.jpg"
+    },
+    {
+      "slug": "cookshorts",
+      "name": "CookShorts",
+      "url": "https://app.cookshorts.video",
+      "category": "image-video",
+      "summary": "Produce short-form videos from a topic with scripted hooks and captions.",
+      "description": "CookShorts is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Produce short-form videos from a topic with scripted hooks and captions. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "short-video",
+        "content-creation",
+        "automation"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://app.cookshorts.video",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/cookshorts",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/cookshorts.jpg"
+    },
+    {
+      "slug": "vid-ai",
+      "name": "Vid.AI",
+      "url": "https://vid.ai",
+      "category": "image-video",
+      "summary": "Create ready-to-post videos with AI scripting, voice and editing.",
+      "description": "Vid.AI is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Create ready-to-post videos with AI scripting, voice and editing. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "video-generation",
+        "youtube",
+        "social-media"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://vid.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/vidai-llc",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/vid-ai.jpg"
+    },
+    {
+      "slug": "appalchemy",
+      "name": "AppAlchemy",
+      "url": "https://appalchemy.ai",
+      "category": "ai-coding",
+      "summary": "Build React Native apps in a browser and preview them on a phone.",
+      "description": "AppAlchemy is listed in WishMeteor's AI coding catalog. The maker's public page describes the product in these terms: Build React Native apps in a browser and preview them on a phone. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "react-native",
+        "app-builder",
+        "developer-tools"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://appalchemy.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/appalchemy",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/appalchemy.jpg"
+    },
+    {
+      "slug": "cliptude",
+      "name": "Cliptude",
+      "url": "https://cliptude.com",
+      "category": "image-video",
+      "summary": "Turn a prompt or script into a documentary-style video with narration and visuals.",
+      "description": "Cliptude is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Turn a prompt or script into a documentary-style video with narration and visuals. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "video-generation",
+        "documentary",
+        "creator-tools"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://cliptude.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/cliptude",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/cliptude.jpg"
+    },
+    {
+      "slug": "voicebrief",
+      "name": "VoiceBrief",
+      "url": "https://voicebrief.io",
+      "category": "audio-voice",
+      "summary": "Listen to PDFs and documents with speech, study prompts and quizzes.",
+      "description": "VoiceBrief is listed in WishMeteor's audio and voice catalog. The maker's public page describes the product in these terms: Listen to PDFs and documents with speech, study prompts and quizzes. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "text-to-speech",
+        "learning",
+        "pdf"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://voicebrief.io",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/voicebrief",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/voicebrief.jpg"
+    },
+    {
+      "slug": "neume",
+      "name": "Neume",
+      "url": "https://www.neume.io",
+      "category": "audio-voice",
+      "summary": "Generate full songs by describing a mood or creative direction.",
+      "description": "Neume is listed in WishMeteor's audio and voice catalog. The maker's public page describes the product in these terms: Generate full songs by describing a mood or creative direction. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "music-generation",
+        "audio",
+        "creator-tools"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.neume.io",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/neume",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/neume.jpg"
+    },
+    {
+      "slug": "myhair-ai",
+      "name": "MyHair AI",
+      "url": "https://www.myhair.ai",
+      "category": "image-video",
+      "summary": "Get an AI hair analysis and a routine tailored to hair goals.",
+      "description": "MyHair AI is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Get an AI hair analysis and a routine tailored to hair goals. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "hair-care",
+        "image-analysis",
+        "health"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.myhair.ai",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/hair-ai",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/myhair-ai.jpg"
+    },
+    {
+      "slug": "tai-chi-coach",
+      "name": "Tai Chi Coach",
+      "url": "https://taichi.help",
+      "category": "productivity",
+      "summary": "Follow a guided 28-day beginner Tai Chi routine with short daily sessions.",
+      "description": "Tai Chi Coach is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Follow a guided 28-day beginner Tai Chi routine with short daily sessions. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "tai-chi",
+        "fitness",
+        "wellness"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://taichi.help",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/taichi",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/tai-chi-coach.jpg"
+    },
+    {
+      "slug": "quotedeck",
+      "name": "QuoteDeck",
+      "url": "https://quotedeck.app",
+      "category": "productivity",
+      "summary": "Prepare insurance quotes with live rates, branded proposals and enrollment collection.",
+      "description": "QuoteDeck is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Prepare insurance quotes with live rates, branded proposals and enrollment collection. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "insurance",
+        "quoting",
+        "sales"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://quotedeck.app",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/quotedeck-llc",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/quotedeck.jpg"
+    },
+    {
+      "slug": "wheel-of-life",
+      "name": "Wheel of Life",
+      "url": "https://trywheeloflife.com",
+      "category": "productivity",
+      "summary": "Visualize life-balance areas, set goals and track personal progress.",
+      "description": "Wheel of Life is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Visualize life-balance areas, set goals and track personal progress. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "goals",
+        "wellness",
+        "planning"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://trywheeloflife.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/wheel-of-life",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/wheel-of-life.jpg"
+    },
+    {
+      "slug": "verbatik-ai",
+      "name": "Verbatik AI",
+      "url": "https://verbatik.com",
+      "category": "audio-voice",
+      "summary": "Create speech, voice, video, music and image content with AI tools.",
+      "description": "Verbatik AI is listed in WishMeteor's audio and voice catalog. The maker's public page describes the product in these terms: Create speech, voice, video, music and image content with AI tools. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "text-to-speech",
+        "voice",
+        "content-creation"
+      ],
+      "pricing": "freemium",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://verbatik.com",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/verbatik",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/verbatik-ai.jpg"
+    },
+    {
+      "slug": "ultrawideo",
+      "name": "UltraWideo",
+      "url": "https://uw.wtf",
+      "category": "productivity",
+      "summary": "Use a browser extension to remove letterboxing and fit video to a screen.",
+      "description": "UltraWideo is listed in WishMeteor's productivity catalog. The maker's public page describes the product in these terms: Use a browser extension to remove letterboxing and fit video to a screen. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "browser-extension",
+        "video",
+        "display"
+      ],
+      "pricing": "free",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://uw.wtf",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/ultrawideo",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/ultrawideo.jpg"
+    },
+    {
+      "slug": "draftly",
+      "name": "Draftly",
+      "url": "https://www.draftly.space",
+      "category": "image-video",
+      "summary": "Generate a cinematic video-led website from a business description.",
+      "description": "Draftly is listed in WishMeteor's image and video catalog. The maker's public page describes the product in these terms: Generate a cinematic video-led website from a business description. The official page is the place to check how the product currently works, its supported platforms, integrations and access terms. Capabilities and pricing may change as the maker updates the service. This profile summarizes public product information and links to the maker; it does not imply a business relationship, endorsement, revenue claim or investment recommendation.",
+      "tags": [
+        "website-builder",
+        "video-generation",
+        "design"
+      ],
+      "pricing": "paid",
+      "status": "active",
+      "origin": "curated",
+      "sources": [
+        {
+          "type": "official-page",
+          "url": "https://www.draftly.space",
+          "observedAt": "2026-10-01"
+        },
+        {
+          "type": "TrustMRR discovery",
+          "url": "https://trustmrr.com/startup/draftly-1",
+          "observedAt": "2026-10-01"
+        }
+      ],
+      "firstSeenAt": "2026-10-01",
+      "lastSeenAt": "2026-10-01",
+      "lastVerifiedAt": null,
+      "checksFailed": 0,
+      "approved": true,
+      "coverImage": "/tool-previews/draftly.jpg"
+    }
+  ]
+}
