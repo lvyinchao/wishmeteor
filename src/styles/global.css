@@ -1003,6 +1003,7 @@ main { padding-top: clamp(1.25rem, 3vw, 2.2rem); }
 .catalog-filter:hover,.catalog-filter[aria-pressed='true'] { border-color: rgba(231,191,120,.48); background: rgba(231,191,120,.08); color: #f3d99d; }
 .catalog-filter[aria-pressed='true'] span { color: #d5b873; }
 .catalog-results { min-height: 1.3rem; margin: 0 0 .8rem; color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
+.catalog-empty { margin: 0; border: 1px dashed rgba(190,205,225,.2); border-radius: .9rem; padding: 1.5rem; color: var(--muted); text-align: center; }
 .catalog-section [hidden] { display: none !important; }
 .catalog-pagination { display: flex; justify-content: center; align-items: center; gap: .38rem; margin-top: 1.6rem; }
 .catalog-page { display: inline-grid; place-items: center; min-width: 2.35rem; height: 2.35rem; border: 1px solid var(--line); border-radius: .68rem; background: rgba(255,255,255,.025); color: #b9c3d0; font: inherit; font-size: .78rem; cursor: pointer; }
