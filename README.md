@@ -124,8 +124,8 @@ community stars, accounts, email verification and sessions. Zone routes on `wish
   from `support@wishmeteor.net`. Cloudflare currently requires a paid Workers plan for outbound Email Service.
 - Apply `migrations/1003_accounts.sql` to D1 before enabling account endpoints in production:
   `pnpm exec wrangler d1 migrations apply wishmeteor --remote`.
-- Set `PUBLIC_GA_MEASUREMENT_ID=G-...` in the build environment to configure GA4. Analytics loads by default
-  when this value is set; keep it blank to disable GA4.
+- GA4 uses `G-QV8KGLLDXR` by default. Set `PUBLIC_GA_MEASUREMENT_ID` in the build environment to override it,
+  or set it to a blank value to disable analytics.
 - For local Worker testing, copy `.dev.vars.example` to `.dev.vars`; copy `.env.example` to `.env` for
   the Astro build settings. The local Email binding does not deliver verification messages unless Wrangler
   is explicitly configured to use the remote Email Service.
