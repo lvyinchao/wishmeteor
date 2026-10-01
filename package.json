@@ -17,7 +17,8 @@
     "ship": "node scripts/pipeline.mjs"
   },
   "dependencies": {
-    "astro": "^5.18.2"
+    "astro": "^5.18.2",
+    "tldts": "^7.4.16"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

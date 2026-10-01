@@ -78,5 +78,45 @@
     "description": "Tools that read a lot so you do not have to: research assistants, long-document analysis, meeting notes, writing aids and knowledge bases.",
     "hubCopy": "The productivity layer is crowded and mostly shallow, so the bar here is a specific workflow the tool genuinely shortens. Research assistants get judged on whether they cite verifiably, note tools on whether retrieval beats scrolling, and writing aids on whether the output still sounds like the author. Meeting summarisers are included only where the product handles multi-language transcripts or long calls, since the easy version is a feature rather than a product.",
     "order": 10
+  },
+  {
+    "id": "education-learning",
+    "name": "Education & Learning",
+    "title": "AI tutors, learning tools and study assistants",
+    "description": "Learning products for students, teachers and lifelong learners, including tutoring and subject-specific study tools.",
+    "hubCopy": "Find tools that make a subject easier to approach: explainers, tutors, study guides and learning experiences that adapt to the person using them.",
+    "order": 11
+  },
+  {
+    "id": "sports-fitness",
+    "name": "Sports & Fitness",
+    "title": "Sports training, fitness and performance tools",
+    "description": "Coaching, training and fitness products for athletes, clubs and active people.",
+    "hubCopy": "These products help people train with more focus, track progress and make coaching or sports knowledge easier to use.",
+    "order": 12
+  },
+  {
+    "id": "marketing-growth",
+    "name": "Marketing & Growth",
+    "title": "Marketing, advertising and growth tools",
+    "description": "Products for search visibility, advertising, audience growth, affiliate programs and marketing analysis.",
+    "hubCopy": "A home for tools that help teams understand their audience, improve discoverability, plan campaigns and measure growth.",
+    "order": 13
+  },
+  {
+    "id": "business-services",
+    "name": "Business Services",
+    "title": "Practical services for running a business",
+    "description": "Operational products for customer service, invoicing, menus and other everyday business needs.",
+    "hubCopy": "Explore products that help small teams serve customers and run the practical parts of a business with less friction.",
+    "order": 14
+  },
+  {
+    "id": "maker-tools",
+    "name": "Maker Tools",
+    "title": "Creative utilities and tools for independent makers",
+    "description": "Small creative utilities and playful tools that help people make, share and experiment.",
+    "hubCopy": "This collection celebrates focused tools made for the joy of building, sharing and trying something new.",
+    "order": 15
   }
 ]
