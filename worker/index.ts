@@ -192,7 +192,14 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
       productivity: 'Writing & Research',
       uncategorized: 'Uncategorized',
     };
-    const cards = fresh.map((tool) => `<article class="card"><h3><a class="card-title" href="/tool/${htmlEscape(tool.slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(tool.pricing)}</span><span class="pill">${htmlEscape(categoryNames[String(tool.category)] ?? tool.category)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></article>`).join('');
+    const previewSlugs = new Set(['ai-mizu', 'ai-memory-sdk', 'ai-media-studio', 'ai-math-solver', 'kitchendesign-io', 'superhumanizer', 'ai-headshot-generator', 'ai-girl-generator', 'ai-garden-design', 'ai-football', 'ai-detector-image-checker', 'wasitaigenerated']);
+    const cards = fresh.map((tool) => {
+      const slug = String(tool.slug);
+      const image = previewSlugs.has(slug)
+        ? `<a class="tool-showcase-card__preview" href="/tool/${htmlEscape(slug)}"><img src="/tool-previews/${htmlEscape(slug)}.jpg" alt="Website preview for ${htmlEscape(tool.name)}" loading="lazy" decoding="async"></a>`
+        : `<div class="tool-showcase-card__preview tool-showcase-card__preview--fallback" aria-hidden="true"><span>${htmlEscape(String(tool.name).slice(0, 1))}</span></div>`;
+      return `<article class="card tool-showcase-card">${image}<div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(categoryNames[String(tool.category)] ?? tool.category)}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></div></article>`;
+    }).join('');
     return new HTMLRewriter()
       .on('.recently-section .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
       .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '/tools'); element.setInnerContent(`Browse all ${curated.length} tools ↗`); } })
