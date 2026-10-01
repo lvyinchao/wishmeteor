@@ -121,6 +121,7 @@ const DETAIL_POLISH_CSS = `
   .related{margin-top:54px;padding-top:38px}
   @media(max-width:850px){.hero{grid-template-columns:minmax(0,1fr) minmax(270px,.8fr);padding:34px}.hero h1{font-size:clamp(3rem,7vw,4.5rem)}.fact-bar{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:680px){.detail-main{padding-block:10px 48px}.detail-main .crumbs{margin:14px 0 16px}.hero{grid-template-columns:1fr;gap:20px;padding:20px;border-radius:20px}.hero h1{max-width:11ch;font-size:clamp(2.8rem,13vw,4.4rem)}.media{grid-row:1;aspect-ratio:1.42;border-radius:16px}.hero-copy{grid-row:2}.fact-bar{gap:8px;margin:12px 0 30px}.fact,.fact:last-child{padding:13px 14px;border-radius:11px}.content-grid{gap:22px}.story{font-size:.98rem;line-height:1.8}.story p:first-child{padding:14px 16px;font-size:1rem}.related{margin-top:36px;padding-top:28px}}
+  @media(max-width:420px){.topbar-inner{gap:10px}.brand{font-size:1.05rem;white-space:nowrap}.nav{gap:8px;font-size:.68rem}.nav-cta{padding:6px 9px;white-space:nowrap}}
   @media(prefers-reduced-motion:reduce){.preview-image{transition:none}}
 `;
 
