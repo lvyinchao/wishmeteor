@@ -1,4 +1,5 @@
 import { handleAuth } from './auth';
+import { outboundRel } from '../src/lib/link-policy';
 
 /**
  * Dynamic endpoints for wish submissions, community stars, and account access.
@@ -175,6 +176,28 @@ async function handleAdmin(request: Request, env: Env, pathname: string): Promis
 
 async function handleManagedPublic(request: Request, env: Env, pathname: string): Promise<Response | null> {
   if (request.method !== 'GET') return null;
+  if (pathname === '/') {
+    const curated = (await managedTools(env)).filter((tool) => tool.approved === true && tool.status !== 'archived' && tool.origin === 'curated');
+    const fresh = curated.slice(0, 12);
+    const asset = await env.ASSETS.fetch(request);
+    if (!fresh.length) return asset;
+    const categoryNames: Record<string, string> = {
+      'agents-automation': 'Agents & Automation',
+      'ai-chat': 'Chat & Assistants',
+      'ai-coding': 'Coding',
+      'audio-voice': 'Voice & Music',
+      'data-retrieval': 'Search & RAG',
+      'evals-observability': 'Evals & Ops',
+      'image-video': 'Image & Video',
+      productivity: 'Writing & Research',
+      uncategorized: 'Uncategorized',
+    };
+    const cards = fresh.map((tool) => `<article class="card"><h3><a class="card-title" href="/tool/${htmlEscape(tool.slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(tool.pricing)}</span><span class="pill">${htmlEscape(categoryNames[String(tool.category)] ?? tool.category)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></article>`).join('');
+    return new HTMLRewriter()
+      .on('.recently-section .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
+      .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '/tools'); element.setInnerContent(`Browse all ${curated.length} tools ↗`); } })
+      .transform(asset);
+  }
   if (pathname === '/api/content') return json({ tools: await managedTools(env) });
   if (pathname === '/tools' || pathname === '/tools/') {
     const tools = await managedTools(env);
