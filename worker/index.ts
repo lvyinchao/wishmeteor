@@ -467,10 +467,67 @@ async function handleMySubmissions(request: Request, env: Env): Promise<Response
   const accountId = await getSessionAccountId(request, env);
   if (!accountId) return json({ error: 'not-signed-in' }, 401);
   const result = await env.DB.prepare(
-    `SELECT id, name, url, category, created_at, verdict, verdict_at
+    `SELECT id, name, url, email, category, notes, make_a_wish, created_at, verdict, verdict_at
      FROM submissions WHERE account_id = ? ORDER BY created_at DESC LIMIT 100`
   ).bind(accountId).all();
   return json({ submissions: result.results ?? [] });
+}
+
+async function handleAccountSubmissionMutation(request: Request, env: Env, id: number): Promise<Response> {
+  const accountId = await getSessionAccountId(request, env);
+  if (!accountId) return json({ error: 'not-signed-in' }, 401);
+  if (request.headers.get('origin') !== new URL(request.url).origin) return json({ error: 'origin-mismatch' }, 403);
+
+  const owned = await env.DB.prepare(
+    "SELECT id, verdict FROM submissions WHERE id = ? AND account_id = ?"
+  ).bind(id, accountId).first<{ id: number; verdict: string }>();
+  if (!owned) return json({ error: 'submission-not-found' }, 404);
+  if (owned.verdict !== 'pending') return json({ error: 'submission-locked' }, 409);
+
+  if (request.method === 'DELETE') {
+    const removed = await env.DB.prepare(
+      "DELETE FROM submissions WHERE id = ? AND account_id = ? AND verdict = 'pending'"
+    ).bind(id, accountId).run();
+    return removed.meta.changes ? json({ ok: true }) : json({ error: 'submission-locked' }, 409);
+  }
+  if (request.method !== 'PATCH') return json({ error: 'method-not-allowed' }, 405);
+
+  const body = await request.json().catch(() => null) as Record<string, unknown> | null;
+  if (!body || typeof body.name !== 'string' || typeof body.url !== 'string' || typeof body.email !== 'string' || typeof body.category !== 'string' || typeof body.notes !== 'string' || typeof body.makeAWish !== 'string') {
+    return json({ error: 'invalid-input' }, 400);
+  }
+  const name = body.name.trim();
+  const category = body.category.trim();
+  const email = body.email.trim().toLowerCase();
+  const notes = body.notes.trim();
+  const makeAWish = body.makeAWish.trim();
+  const target = canonicalise(body.url);
+  if (!name || name.length > 80 || !isEmail(email) || !category || category.length > 40 || notes.length > 600 || makeAWish.length > 320 || !target) {
+    return json({ error: 'invalid-input' }, 400);
+  }
+  if (TRUST_HOSTS.has(target.domain) || BLOCKED.some((blocked) => target.domain.includes(blocked))) return json({ error: 'invalid-link' }, 400);
+
+  const published = await managedTools(env);
+  const isSameRoot = (value: unknown) => {
+    try { return typeof value === 'string' && (getDomain(new URL(value).hostname, { allowPrivateDomains: true }) ?? new URL(value).hostname) === target.domain; }
+    catch { return false; }
+  };
+  if (published.some((tool) => isSameRoot(tool.url))) return json({ error: 'duplicate' }, 409);
+  const duplicate = await env.DB.prepare(
+    "SELECT id FROM submissions WHERE verdict = 'pending' AND id != ? AND (root_domain = ? OR (root_domain IS NULL AND domain = ?)) LIMIT 1"
+  ).bind(id, target.domain, target.domain).first<{ id: number }>();
+  if (duplicate) return json({ error: 'duplicate' }, 409);
+
+  try {
+    const updated = await env.DB.prepare(
+      `UPDATE submissions SET name = ?, url = ?, domain = ?, root_domain = ?, email = ?, category = ?, notes = ?, make_a_wish = ?
+       WHERE id = ? AND account_id = ? AND verdict = 'pending'`
+    ).bind(name, target.url, target.domain, target.domain, email, category, notes, makeAWish, id, accountId).run();
+    return updated.meta.changes ? json({ ok: true }) : json({ error: 'submission-locked' }, 409);
+  } catch (error) {
+    if (String(error).includes('submissions.root_domain') || String(error).includes('submissions.domain')) return json({ error: 'duplicate' }, 409);
+    throw error;
+  }
 }
 
 async function isPublishedWish(slug: string, request: Request, env: Env): Promise<boolean> {
@@ -566,6 +623,13 @@ export default {
         console.error('stars failed', error);
         return new Response(JSON.stringify({ error: 'storage-unavailable' }), { status: 503, headers: JSON_HEADERS });
       }
+    }
+    const accountSubmissionMatch = pathname.match(/^\/api\/account\/submissions\/(\d+)$/);
+    if (accountSubmissionMatch) {
+      const id = Number(accountSubmissionMatch[1]);
+      if (!Number.isSafeInteger(id) || id < 1) return json({ error: 'submission-not-found' }, 404);
+      try { return await handleAccountSubmissionMutation(request, env, id); }
+      catch (error) { console.error('account submission update unavailable', error); return json({ error: 'account-unavailable' }, 503); }
     }
     if (pathname.startsWith('/api/')) {
       return new Response(JSON.stringify({ error: 'not-found' }), { status: 404, headers: { 'content-type': 'application/json' } });

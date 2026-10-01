@@ -104,8 +104,8 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
     notice.className = 'notice';
     notice.setAttribute('role', 'status');
     notice.append(document.createTextNode(statusMessages[submitStatus]));
-    if (submitStatus === 'queued-email-failed') {
-      notice.append(document.createTextNode(' If you submitted while signed in, follow its status on your '));
+    if (submitStatus === 'queued' || submitStatus === 'queued-email-failed') {
+      notice.append(document.createTextNode(' If you submitted while signed in, see the full details and status in your '));
       const link = document.createElement('a');
       link.href = '/account';
       link.textContent = 'account page';

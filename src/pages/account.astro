@@ -44,8 +44,11 @@ const description = 'Sign in or create a WishMeteor account with Google or email
         <h2 data-account-name></h2>
         <p class="section-intro" data-account-email></p>
         <section class="account-submissions" aria-labelledby="submission-heading">
-          <h3 id="submission-heading">Your product submissions</h3>
-          <p data-submissions-empty>No product submissions yet. <a href="/submit">Share your project</a>.</p>
+          <div class="account-submissions__heading">
+            <h3 id="submission-heading">Your product submissions</h3>
+            <a class="btn btn-quiet account-submissions__new" href="/submit">Submit another</a>
+          </div>
+          <p data-submissions-empty>No product submissions yet. Share your project whenever you are ready.</p>
           <ul data-submission-list></ul>
           <p class="account-form__hint" data-submissions-error hidden>Submission status could not be loaded. Please refresh to try again.</p>
         </section>
@@ -58,7 +61,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
 
 <script>
   interface AccountInfo { id: string; email: string; name: string }
-  interface SubmissionInfo { id: number; name: string; url: string; category: string; created_at: string; verdict: 'pending' | 'approved' | 'rejected'; verdict_at: string | null }
+  interface SubmissionInfo { id: number; name: string; url: string; email: string | null; category: string; notes: string; make_a_wish: string; created_at: string; verdict: 'pending' | 'approved' | 'rejected'; verdict_at: string | null }
   interface GoogleCredentialResponse { credential: string }
   interface GoogleApi {
     accounts: {
@@ -111,6 +114,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
       const submissions = result.submissions ?? [];
       list.replaceChildren(...submissions.map((submission) => {
         const item = document.createElement('li');
+        item.className = 'submission-card';
         const title = document.createElement('strong');
         title.textContent = submission.name;
         const state = document.createElement('span');
@@ -118,14 +122,143 @@ const description = 'Sign in or create a WishMeteor account with Google or email
         state.textContent = submission.verdict === 'pending' ? 'Under review' : submission.verdict === 'approved' ? 'Accepted' : 'Not accepted';
         const date = document.createElement('time');
         date.dateTime = submission.created_at;
-        date.textContent = new Date(submission.created_at).toLocaleDateString();
+        date.textContent = `Submitted ${new Date(submission.created_at).toLocaleDateString()}`;
         const link = document.createElement('a');
         link.href = submission.url;
-        link.textContent = new URL(submission.url).hostname.replace(/^www\./, '');
+        link.textContent = submission.url;
         link.rel = 'noopener noreferrer';
-        const details = document.createElement('div');
-        details.append(link, date);
-        item.append(title, state, details);
+        const meta = document.createElement('div');
+        meta.className = 'submission-card__meta';
+        meta.append(date);
+        if (submission.verdict_at) {
+          const reviewed = document.createElement('time');
+          reviewed.dateTime = submission.verdict_at;
+          reviewed.textContent = `Updated ${new Date(submission.verdict_at).toLocaleDateString()}`;
+          meta.append(reviewed);
+        }
+        const content = document.createElement('div');
+        content.className = 'submission-card__content';
+        const category = document.createElement('p');
+        category.textContent = `Category: ${submission.category || 'Not specified'}`;
+        const contact = document.createElement('p');
+        contact.textContent = `Blessing email: ${submission.email || 'Not provided'}`;
+        const urlLine = document.createElement('p');
+        urlLine.append(document.createTextNode('Link: '), link);
+        content.append(category, contact, urlLine);
+        if (submission.notes) {
+          const notes = document.createElement('p');
+          notes.textContent = `About the project: ${submission.notes}`;
+          content.append(notes);
+        }
+        if (submission.make_a_wish) {
+          const wish = document.createElement('p');
+          wish.textContent = `Your wish: ${submission.make_a_wish}`;
+          content.append(wish);
+        }
+        const controls = document.createElement('div');
+        controls.className = 'submission-card__actions';
+        const feedback = document.createElement('p');
+        feedback.className = 'submission-card__message';
+        feedback.setAttribute('role', 'status');
+        feedback.setAttribute('aria-live', 'polite');
+        if (submission.verdict === 'pending') {
+          const edit = document.createElement('button');
+          edit.type = 'button';
+          edit.className = 'btn btn-quiet';
+          edit.textContent = 'Edit';
+          const withdraw = document.createElement('button');
+          withdraw.type = 'button';
+          withdraw.className = 'btn btn-quiet submission-card__withdraw';
+          withdraw.textContent = 'Withdraw';
+          controls.append(edit, withdraw);
+          const editor = document.createElement('form');
+          editor.className = 'submission-edit';
+          editor.hidden = true;
+          const fields: Array<[string, string, string, number]> = [
+            ['name', 'Product name', submission.name, 80],
+            ['url', 'Link', submission.url, 2048],
+            ['email', 'Email for your blessing', submission.email ?? '', 254],
+            ['category', 'Category', submission.category, 40],
+          ];
+          for (const [key, labelText, value, maxLength] of fields) {
+            const label = document.createElement('label');
+            label.textContent = labelText;
+            const input = document.createElement('input');
+            input.name = key;
+            input.value = value;
+            input.maxLength = maxLength;
+            input.required = true;
+            if (key === 'url') input.type = 'url';
+            if (key === 'email') input.type = 'email';
+            label.append(input);
+            editor.append(label);
+          }
+          for (const [key, labelText, value, maxLength] of [
+            ['notes', 'What it does', submission.notes, 600],
+            ['makeAWish', 'Make a wish', submission.make_a_wish, 320],
+          ] as Array<[string, string, string, number]>) {
+            const label = document.createElement('label');
+            label.textContent = labelText;
+            const area = document.createElement('textarea');
+            area.name = key;
+            area.value = value;
+            area.maxLength = maxLength;
+            area.rows = key === 'notes' ? 4 : 3;
+            label.append(area);
+            editor.append(label);
+          }
+          const save = document.createElement('button');
+          save.type = 'submit';
+          save.className = 'btn btn-primary';
+          save.textContent = 'Save changes';
+          const cancel = document.createElement('button');
+          cancel.type = 'button';
+          cancel.className = 'btn btn-quiet';
+          cancel.textContent = 'Cancel';
+          const editActions = document.createElement('div');
+          editActions.className = 'submission-card__actions';
+          editActions.append(save, cancel);
+          editor.append(editActions);
+          edit.addEventListener('click', () => { editor.hidden = !editor.hidden; feedback.textContent = ''; });
+          cancel.addEventListener('click', () => { editor.hidden = true; feedback.textContent = ''; });
+          editor.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const payload = Object.fromEntries(new FormData(editor).entries());
+            save.disabled = true;
+            feedback.textContent = 'Saving your changes…';
+            try {
+              const changed = await fetch(`/api/account/submissions/${submission.id}`, {
+                method: 'PATCH', credentials: 'same-origin',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload),
+              });
+              const data = await changed.json().catch(() => ({})) as { error?: string };
+              if (!changed.ok) throw new Error(data.error ?? 'save-failed');
+              await loadSubmissions();
+            } catch (error) {
+              const code = error instanceof Error ? error.message : '';
+              feedback.textContent = code === 'duplicate' ? 'Another submission or listed product already uses that domain.' : code === 'submission-locked' ? 'This submission has already been reviewed and can no longer be changed.' : 'We could not save those changes. Check the details and try again.';
+            } finally { save.disabled = false; }
+          });
+          withdraw.addEventListener('click', async () => {
+            if (!window.confirm(`Withdraw “${submission.name}” from review? This removes the submission from your queue.`)) return;
+            withdraw.disabled = true;
+            feedback.textContent = 'Withdrawing your submission…';
+            try {
+              const removed = await fetch(`/api/account/submissions/${submission.id}`, { method: 'DELETE', credentials: 'same-origin' });
+              const data = await removed.json().catch(() => ({})) as { error?: string };
+              if (!removed.ok) throw new Error(data.error ?? 'withdraw-failed');
+              await loadSubmissions();
+            } catch (error) {
+              const code = error instanceof Error ? error.message : '';
+              feedback.textContent = code === 'submission-locked' ? 'This submission has already been reviewed and can no longer be withdrawn.' : 'We could not withdraw the submission. Please try again.';
+              withdraw.disabled = false;
+            }
+          });
+          item.append(title, state, meta, content, controls, editor, feedback);
+        } else {
+          item.append(title, state, meta, content);
+        }
         return item;
       }));
       empty.hidden = submissions.length !== 0;
