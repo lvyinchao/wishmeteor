@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-import ToolCard from '../components/ToolCard.astro';
+import ShowcaseCard from '../components/ShowcaseCard.astro';
 import { sortNewest, inCategory } from '../lib/catalog.mjs';
 import { loadPublicCatalog } from '../lib/public-content.ts';
 import { SITE } from '../lib/site.ts';
@@ -27,7 +27,7 @@ const description = `Meet the latest wishes to reach the sky and thoughtful AI p
   </div>
 
   <div class="grid grid-cards">
-    {recent.map((entry) => <ToolCard entry={entry} categoryName={nameOf(entry.category)} />)}
+    {recent.map((entry) => <ShowcaseCard entry={entry} categoryName={nameOf(entry.category)} stars={false} />)}
   </div>
 
   <p style="margin-top:2rem">

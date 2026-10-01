@@ -191,20 +191,10 @@ function renderManagedToolCard(tool: Record<string, unknown>): string {
   const slug = String(tool.slug ?? '');
   const category = String(tool.category ?? 'uncategorized');
   const categoryName = category.replace(/-/g, ' ');
-  const submitted = tool.origin === 'submitted' ? '<span class="pill pill-live">a wish in the sky</span>' : '';
-  return `<article class="card"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="/category/${htmlEscape(category)}">${htmlEscape(categoryName)}</a>${submitted}<a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></article>`;
-}
-
-function renderWishCard(tool: Record<string, unknown>, index: number): string {
-  const slug = String(tool.slug ?? '');
-  const name = String(tool.name ?? '');
+  const coverImage = `/tool-previews/${slug}.jpg`;
   const wish = tool.wish && typeof tool.wish === 'object' ? tool.wish as Record<string, unknown> : {};
-  const submittedAt = typeof wish.submittedAt === 'string' ? wish.submittedAt : '';
-  const makerWish = typeof wish.makerWish === 'string' ? wish.makerWish.trim() : '';
-  const blessing = typeof wish.blessingShort === 'string' ? wish.blessingShort.trim() : '';
-  const excerpt = blessing || makerWish || String(tool.summary ?? '');
-  const dateLabel = submittedAt ? `A wish sent into the sky · ${htmlEscape(submittedAt)}` : 'A thoughtful project, gathered under this sky';
-  return `<article class="wish-card" data-slug="${htmlEscape(slug)}" data-rank="${index}"><span class="wish-card__index">${String(index + 1).padStart(2, '0')}</span><div class="wish-card__body"><p class="wish-card__date">${dateLabel}</p><h3><a href="/tool/${htmlEscape(slug)}">${htmlEscape(name)}</a></h3><p class="wish-card__blessing">&ldquo;${htmlEscape(excerpt)}&rdquo;</p><a class="wish-card__more" href="/tool/${htmlEscape(slug)}">Read the story <span aria-hidden="true">↗</span></a></div><button class="star-vote" type="button" data-star-button aria-label="Light a star for ${htmlEscape(name)}" aria-pressed="false"><span class="star-vote__icon" aria-hidden="true">✦</span><span class="star-vote__count" data-star-count>—</span><span class="star-vote__label" data-star-label>Light a star</span></button></article>`;
+  const makerWish = typeof wish.makerWish === 'string' && wish.makerWish.trim() ? wish.makerWish.trim() : String(tool.summary ?? '');
+  return `<article class="card tool-showcase-card"><a class="tool-showcase-card__preview" href="/tool/${htmlEscape(slug)}"><img src="${htmlEscape(coverImage)}" alt="Product cover for ${htmlEscape(tool.name)}" loading="lazy" decoding="async"></a><div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(makerWish)}</p><div class="card-meta"><span class="pill">${htmlEscape(categoryName)}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></div></article>`;
 }
 
 async function handleAdmin(request: Request, env: Env, pathname: string): Promise<Response> {
@@ -330,8 +320,6 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
         return `<button class="catalog-filter" type="button" data-category-filter="${htmlEscape(id)}" aria-pressed="false">${htmlEscape(label)} <span>${count}</span></button>`;
       }),
     ].join('');
-    const wishCards = fresh.slice(0, 9).map(renderWishCard).join('');
-    const wishWall = `<div class="wish-wall" data-wish-wall>${wishCards}</div>`;
     const cards = fresh.map((tool, index) => {
       const slug = String(tool.slug);
       const categoryId = String(tool.category ?? 'uncategorized');
@@ -339,15 +327,15 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
       const searchText = [tool.name, tool.summary, categoryName, ...(Array.isArray(tool.tags) ? tool.tags : [])].join(' ').toLowerCase();
       const coverImage = typeof tool.coverImage === 'string' && tool.coverImage === `/tool-previews/${slug}.jpg` ? tool.coverImage : `/tool-previews/${slug}.jpg`;
       const image = `<a class="tool-showcase-card__preview" href="/tool/${htmlEscape(slug)}"><img src="${htmlEscape(coverImage)}" alt="Product cover for ${htmlEscape(tool.name)}" loading="lazy" decoding="async"></a>`;
-      return `<article class="card tool-showcase-card" data-catalog-item data-category="${htmlEscape(categoryId)}" data-search="${htmlEscape(searchText)}"${index >= 12 ? ' hidden' : ''}>${image}<div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(categoryName)}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></div></article>`;
+      const wish = tool.wish && typeof tool.wish === 'object' ? tool.wish as Record<string, unknown> : {};
+      const excerpt = typeof wish.makerWish === 'string' && wish.makerWish.trim() ? wish.makerWish.trim() : String(tool.summary ?? '');
+      return `<article class="card tool-showcase-card" data-catalog-item data-slug="${htmlEscape(slug)}" data-category="${htmlEscape(categoryId)}" data-search="${htmlEscape(`${searchText} ${excerpt}`)}"${index >= 12 ? ' hidden' : ''}>${image}<div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(excerpt)}</p><div class="card-meta"><span class="pill">${htmlEscape(categoryName)}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div><button class="star-vote" type="button" data-star-button aria-label="Light a star for ${htmlEscape(tool.name)}" aria-pressed="false"><span class="star-vote__icon" aria-hidden="true">✦</span><span class="star-vote__count" data-star-count>—</span><span class="star-vote__label" data-star-label>Light a star</span></button></div></article>`;
     }).join('');
     return new HTMLRewriter()
-      .on('.wish-wall', { element(element) { element.setInnerContent(wishCards, { html: true }); } })
-      .on('.empty-sky', { element(element) { element.replace(wishWall, { html: true }); } })
-      .on('.recently-section .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
+      .on('.wish-sky-catalog .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
       .on('.catalog-filters', { element(element) { element.setInnerContent(categoryFilters, { html: true }); } })
       .on('.catalog-results', { element(element) { element.setInnerContent(`${fresh.length} products · 12 per page`); } })
-      .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '#catalog-grid'); element.setInnerContent(`Browse all ${fresh.length} products here ↓`); } })
+      .on('.wish-sky-catalog .text-link', { element(element) { element.setAttribute('href', '#catalog-grid'); element.setInnerContent(`Browse all ${fresh.length} projects here ↓`); } })
       .transform(asset);
   }
   if (pathname === '/new' || pathname === '/new/') {
