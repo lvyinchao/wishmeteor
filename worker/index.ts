@@ -277,8 +277,7 @@ async function handleAdmin(request: Request, env: Env, pathname: string): Promis
 async function handleManagedPublic(request: Request, env: Env, pathname: string): Promise<Response | null> {
   if (request.method !== 'GET') return null;
   if (pathname === '/') {
-    const curated = (await managedTools(env)).filter((tool) => tool.approved === true && tool.status !== 'archived' && tool.origin === 'curated');
-    const fresh = curated;
+    const fresh = (await managedTools(env)).filter((tool) => tool.approved === true && tool.status !== 'archived');
     const asset = await env.ASSETS.fetch(request);
     if (!fresh.length) return asset;
     const categoryNames: Record<string, string> = {
@@ -319,8 +318,8 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
     return new HTMLRewriter()
       .on('.recently-section .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
       .on('.catalog-filters', { element(element) { element.setInnerContent(categoryFilters, { html: true }); } })
-      .on('.catalog-results', { element(element) { element.setInnerContent(`${curated.length} products · 12 per page`); } })
-      .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '#catalog-grid'); element.setInnerContent(`Browse all ${curated.length} products here ↓`); } })
+      .on('.catalog-results', { element(element) { element.setInnerContent(`${fresh.length} products · 12 per page`); } })
+      .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '#catalog-grid'); element.setInnerContent(`Browse all ${fresh.length} products here ↓`); } })
       .transform(asset);
   }
   if (pathname === '/api/content') return json({ tools: await managedTools(env) });
