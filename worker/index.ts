@@ -216,9 +216,15 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
   if (request.method !== 'GET') return null;
   if (pathname === '/') {
     const curated = (await managedTools(env)).filter((tool) => tool.approved === true && tool.status !== 'archived' && tool.origin === 'curated');
-    const fresh = curated.slice(0, 12);
+    const editorPickSlugs = ['ai-mizu', 'ai-memory-sdk', 'ai-media-studio', 'kitchendesign-io', 'ai-math-solver', 'agentscan', 'agentguild-games-kit', 'advanced-gsc-mcp', 'afterfeed', '1lookup'];
+    const editorPickSet = new Set(editorPickSlugs);
+    const editorPicks = editorPickSlugs.flatMap((slug) => {
+      const tool = curated.find((item) => item.slug === slug);
+      return tool ? [tool] : [];
+    });
+    const fresh = curated.filter((tool) => !editorPickSet.has(String(tool.slug))).slice(0, 12);
     const asset = await env.ASSETS.fetch(request);
-    if (!fresh.length) return asset;
+    if (!fresh.length && !editorPicks.length) return asset;
     const categoryNames: Record<string, string> = {
       'agents-automation': 'Agents & Automation',
       'ai-chat': 'Chat & Assistants',
@@ -238,9 +244,19 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
         : `<div class="tool-showcase-card__preview tool-showcase-card__preview--fallback" aria-hidden="true"><span>${htmlEscape(String(tool.name).slice(0, 1))}</span></div>`;
       return `<article class="card tool-showcase-card">${image}<div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(categoryNames[String(tool.category)] ?? tool.category)}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></div></article>`;
     }).join('');
+    const editorCards = editorPicks.map((tool) => {
+      const slug = String(tool.slug);
+      const image = previewSlugs.has(slug)
+        ? `<a class="tool-showcase-card__preview" href="/tool/${htmlEscape(slug)}"><img src="/tool-previews/${htmlEscape(slug)}.jpg" alt="Website preview for ${htmlEscape(tool.name)}" loading="lazy" decoding="async"></a>`
+        : `<div class="tool-showcase-card__preview tool-showcase-card__preview--fallback" aria-hidden="true"><span>${htmlEscape(String(tool.name).slice(0, 1))}</span></div>`;
+      return `<article class="card tool-showcase-card">${image}<div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill pill-live">WishMeteor pick</span><span class="pill">${htmlEscape(categoryNames[String(tool.category)] ?? String(tool.category).replace(/-/g, ' '))}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="noopener nofollow ugc" target="_blank">Visit project ↗</a></div></div></article>`;
+    }).join('');
+    const editorialSection = `<section class="editorial-sky" aria-labelledby="editorial-sky-title"><div class="editorial-sky__head"><div><p class="eyebrow">Curated by WishMeteor</p><h3 id="editorial-sky-title">A few projects we believe deserve a little light</h3></div><p>Editor selections · not community submissions</p></div><div class="grid grid-cards">${editorCards}</div></section>`;
     return new HTMLRewriter()
       .on('.recently-section .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
       .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '/tools'); element.setInnerContent(`Browse all ${curated.length} tools ↗`); } })
+      .on('.wish-wall-section .empty-sky', { element(element) { element.after(editorialSection, { html: true }); } })
+      .on('.wish-wall-section .wish-wall__note', { element(element) { element.remove(); } })
       .transform(asset);
   }
   if (pathname === '/api/content') return json({ tools: await managedTools(env) });
