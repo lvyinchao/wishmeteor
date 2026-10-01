@@ -19,18 +19,77 @@ const nav = [
     </a>
     <nav class="site-nav" aria-label="Main">
       {nav.map((item) => <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>)}
-      <a href="/account" data-account-nav aria-current={isActive('/account') ? 'page' : undefined}>Sign in</a>
       <a class="btn btn-primary" href="/submit">Make a wish</a>
+      <a href="/account" data-account-nav aria-current={isActive('/account') ? 'page' : undefined}>Sign in</a>
+      <details class="account-menu" data-account-menu hidden>
+        <summary class="account-menu__trigger" aria-label="Account menu" aria-haspopup="true">
+          <svg class="account-menu__icon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.25" />
+            <path d="M5.25 19a6.75 6.75 0 0 1 13.5 0" />
+          </svg>
+          <span class="account-menu__identity" data-account-identity></span>
+          <svg class="account-menu__chevron" aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m4 6 4 4 4-4" /></svg>
+        </summary>
+        <div class="account-menu__panel">
+          <a href="/account">Your account</a>
+          <button type="button" data-logout>Sign out</button>
+        </div>
+      </details>
     </nav>
   </div>
 </header>
 
 <script>
   const accountLink = document.querySelector<HTMLAnchorElement>('[data-account-nav]');
+  const accountMenu = document.querySelector<HTMLDetailsElement>('[data-account-menu]');
+  const accountIdentity = document.querySelector<HTMLElement>('[data-account-identity]');
+  const accountTrigger = accountMenu?.querySelector<HTMLElement>('.account-menu__trigger');
+
+  function showAccountMenu(account: { name?: string; email?: string }) {
+    if (!accountMenu || !accountLink) return;
+    const identity = account.name?.trim() || account.email?.trim() || 'Account';
+    if (accountIdentity) accountIdentity.textContent = identity;
+    accountTrigger?.setAttribute('aria-label', `Account menu for ${identity}`);
+    accountLink.hidden = true;
+    accountMenu.hidden = false;
+  }
+
   fetch('/api/auth/me', { credentials: 'same-origin' })
-    .then((response) => response.ok ? response.json() as Promise<{ account?: { name?: string } | null }> : null)
+    .then((response) => response.ok ? response.json() as Promise<{ account?: { name?: string; email?: string } | null }> : null)
     .then((result) => {
-      if (accountLink && result?.account) accountLink.textContent = result.account.name?.trim() || 'Account';
+      if (result?.account) showAccountMenu(result.account);
     })
     .catch(() => {});
+
+  window.addEventListener('wishmeteor:account', (event) => {
+    const account = (event as CustomEvent<{ name?: string; email?: string }>).detail;
+    if (account) showAccountMenu(account);
+  });
+
+  accountMenu?.addEventListener('toggle', () => {
+    if (accountMenu.open) return;
+    const signOut = accountMenu.querySelector<HTMLButtonElement>('[data-logout]');
+    if (signOut) signOut.disabled = false;
+  });
+
+  document.addEventListener('click', (event) => {
+    if (accountMenu?.open && event.target instanceof Node && !accountMenu.contains(event.target)) accountMenu.open = false;
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && accountMenu?.open) {
+      accountMenu.open = false;
+      accountTrigger?.focus();
+    }
+  });
+
+  accountMenu?.querySelector<HTMLButtonElement>('[data-logout]')?.addEventListener('click', async (event) => {
+    const button = event.currentTarget as HTMLButtonElement;
+    button.disabled = true;
+    try {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+    } finally {
+      window.location.reload();
+    }
+  });
 </script>

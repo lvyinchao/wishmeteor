@@ -107,7 +107,7 @@ const DETAIL_POLISH_CSS = `
   .hero .eyebrow::before{content:'✦';display:grid;place-items:center;width:28px;height:28px;border:1px solid rgba(231,191,120,.35);border-radius:50%;color:var(--gold);font-size:.72rem}
   .media{aspect-ratio:1.12;border-radius:22px;border-color:rgba(231,191,120,.3);box-shadow:0 30px 80px rgba(0,0,0,.42),0 0 0 8px rgba(255,255,255,.018)}
   .media--screenshot::after{content:'Official site preview';position:absolute;left:14px;bottom:14px;padding:6px 10px;border:1px solid rgba(255,255,255,.2);border-radius:99px;background:rgba(8,13,22,.78);backdrop-filter:blur(10px);color:#f3f0e8;font-size:.63rem;letter-spacing:.06em}
-  .preview-image{object-fit:cover;transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+  .preview-image{object-fit:cover;filter:brightness(1.52) saturate(1.12) contrast(1.04);transition:transform .55s cubic-bezier(.2,.7,.2,1)}
   .media:hover .preview-image{transform:scale(1.035)}
   .hero-actions .button-primary{min-height:50px;padding-inline:21px}
   .rating-note{margin-top:22px;color:#acb6c5}
