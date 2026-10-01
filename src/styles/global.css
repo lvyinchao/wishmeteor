@@ -945,6 +945,7 @@ main { padding-top: clamp(1.25rem, 3vw, 2.2rem); }
 .constellation__count span { color: #ddb872; }
 .constellation:hover .constellation__content strong { color: #f1cd84; }
 .recently-section { padding-top: 1.4rem; }
+.wish-sky-catalog { scroll-margin-top: 6.5rem; }
 .recently-section .section-head, .logbook-section .section-head { align-items: end; }
 .recently-section .section-head .eyebrow, .logbook-section .section-head .eyebrow { margin-bottom: .2rem; }
 .recently-section .section-head h2, .logbook-section .section-head h2 { margin: 0; }
