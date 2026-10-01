@@ -331,6 +331,7 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
       }),
     ].join('');
     const wishCards = fresh.slice(0, 9).map(renderWishCard).join('');
+    const wishWall = `<div class="wish-wall" data-wish-wall>${wishCards}</div>`;
     const cards = fresh.map((tool, index) => {
       const slug = String(tool.slug);
       const categoryId = String(tool.category ?? 'uncategorized');
@@ -342,6 +343,7 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
     }).join('');
     return new HTMLRewriter()
       .on('.wish-wall', { element(element) { element.setInnerContent(wishCards, { html: true }); } })
+      .on('.empty-sky', { element(element) { element.replace(wishWall, { html: true }); } })
       .on('.recently-section .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
       .on('.catalog-filters', { element(element) { element.setInnerContent(categoryFilters, { html: true }); } })
       .on('.catalog-results', { element(element) { element.setInnerContent(`${fresh.length} products · 12 per page`); } })
