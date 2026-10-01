@@ -5,7 +5,6 @@ import { loadCatalog } from '../lib/catalog.mjs';
 import { SITE } from '../lib/site.ts';
 
 const { categories } = loadCatalog();
-const status = new URL(Astro.request.url).searchParams.get('status');
 const title = `Share your AI product wish | ${SITE.name}`;
 const description = `Bring your AI product into the WishMeteor sky. Share what you are building, receive a personal blessing, and let the community help your launch shine.`;
 ---
@@ -21,42 +20,7 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
     </p>
   </div>
 
-  {
-    status === 'queued' && (
-      <p class="notice" role="status">
-        Your wish found its way to us. We will review it with care and send a note when it is ready to shine.
-      </p>
-    )
-  }
-  {
-    status === 'queued-email-failed' && (
-      <p class="notice" role="status">
-        Your wish was saved and is pending review, but we could not send the confirmation email. If you submitted while signed in, you can still follow its status on your <a href="/account">account page</a>.
-      </p>
-    )
-  }
-  {
-    status === 'duplicate' && (
-      <p class="notice" role="status">
-        That domain is already on the wall or already in the queue. One wish per product, please.
-      </p>
-    )
-  }
-  {
-    status === 'throttled' && (
-      <p class="notice" role="status">
-        We have received a few wishes from this address recently. Please give the sky a little time, then try again.
-      </p>
-    )
-  }
-  {
-    status === 'rejected' && (
-      <p class="notice" role="status">
-        That link did not pass the checks — it was unreachable, off-topic, or looked like a link farm. Fix the page and wish
-        again in a week.
-      </p>
-    )
-  }
+  <div data-submit-feedback aria-live="polite"></div>
 
   <div class="split">
     <div>
@@ -126,6 +90,30 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
 </Base>
 
 <script>
+  const feedback = document.querySelector<HTMLElement>('[data-submit-feedback]');
+  const statusMessages: Record<string, string> = {
+    queued: 'Your wish found its way to us. We will review it with care and send a note when it is ready to shine.',
+    duplicate: 'That domain is already on the wall or already in the queue. One wish per product, please.',
+    throttled: 'We have received a few wishes from this address recently. Please give the sky a little time, then try again.',
+    rejected: 'That link did not pass the checks — it was unreachable, off-topic, or looked like a link farm. Fix the page and wish again in a week.',
+    'queued-email-failed': 'Your wish was saved and is pending review, but we could not send the confirmation email.',
+  };
+  const submitStatus = new URLSearchParams(window.location.search).get('status') ?? '';
+  if (feedback && statusMessages[submitStatus]) {
+    const notice = document.createElement('p');
+    notice.className = 'notice';
+    notice.setAttribute('role', 'status');
+    notice.append(document.createTextNode(statusMessages[submitStatus]));
+    if (submitStatus === 'queued-email-failed') {
+      notice.append(document.createTextNode(' If you submitted while signed in, follow its status on your '));
+      const link = document.createElement('a');
+      link.href = '/account';
+      link.textContent = 'account page';
+      notice.append(link, document.createTextNode('.'));
+    }
+    feedback.append(notice);
+  }
+
   const submitEmail = document.querySelector<HTMLInputElement>('[data-submit-email]');
   fetch('/api/auth/me', { credentials: 'same-origin' })
     .then((response) => response.ok ? response.json() as Promise<{ account?: { email?: string } | null }> : null)
