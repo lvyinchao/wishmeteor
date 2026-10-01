@@ -97,6 +97,7 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
     throttled: 'We have received a few wishes from this address recently. Please give the sky a little time, then try again.',
     rejected: 'That link did not pass the checks — it was unreachable, off-topic, or looked like a link farm. Fix the page and wish again in a week.',
     'queued-email-failed': 'Your wish was saved and is pending review, but we could not send the confirmation email.',
+    'queued-support-email-failed': 'Your wish was saved, but our team could not be notified automatically. Please email support@wishmeteor.net with your product link.',
   };
   const submitStatus = new URLSearchParams(window.location.search).get('status') ?? '';
   if (feedback && statusMessages[submitStatus]) {
@@ -104,7 +105,7 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
     notice.className = 'notice';
     notice.setAttribute('role', 'status');
     notice.append(document.createTextNode(statusMessages[submitStatus]));
-    if (submitStatus === 'queued' || submitStatus === 'queued-email-failed') {
+    if (submitStatus === 'queued' || submitStatus === 'queued-email-failed' || submitStatus === 'queued-support-email-failed') {
       notice.append(document.createTextNode(' If you submitted while signed in, see the full details and status in your '));
       const link = document.createElement('a');
       link.href = '/account';

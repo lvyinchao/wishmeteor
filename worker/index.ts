@@ -511,7 +511,36 @@ async function handleSubmit(request: Request, env: Env): Promise<Response> {
       .bind(submission.name, target.url, target.domain, target.domain, submission.email, submission.category, submission.notes, submission.makeAWish, ipHash, createdAt, accountId)
       .run();
     let mailSent = false;
+    let supportMailSent = false;
     if (env.EMAIL) {
+      const supportText = [
+        'A new product was submitted to WishMeteor and is waiting for review.',
+        '',
+        `Product: ${submission.name}`,
+        `Homepage: ${target.url}`,
+        `Submitter email: ${submission.email}`,
+        `Category: ${submission.category}`,
+        `Submitted at: ${createdAt}`,
+        `Account ID: ${accountId ?? 'anonymous'}`,
+        '',
+        'What it does:',
+        submission.notes || 'Not provided',
+        '',
+        'Maker wish:',
+        submission.makeAWish || 'Not provided',
+      ].join('\n');
+      const supportHtml = `<p>A new product was submitted to WishMeteor and is waiting for review.</p><dl><dt>Product</dt><dd>${htmlEscape(submission.name)}</dd><dt>Homepage</dt><dd><a href="${htmlEscape(target.url)}">${htmlEscape(target.url)}</a></dd><dt>Submitter email</dt><dd><a href="mailto:${htmlEscape(submission.email)}">${htmlEscape(submission.email)}</a></dd><dt>Category</dt><dd>${htmlEscape(submission.category)}</dd><dt>Submitted at</dt><dd>${htmlEscape(createdAt)}</dd><dt>Account ID</dt><dd>${htmlEscape(accountId ?? 'anonymous')}</dd></dl><h2>What it does</h2><p>${htmlEscape(submission.notes || 'Not provided').replace(/\n/g, '<br>')}</p><h2>Maker wish</h2><p>${htmlEscape(submission.makeAWish || 'Not provided').replace(/\n/g, '<br>')}</p>`;
+      try {
+        await env.EMAIL.send({
+          to: 'support@wishmeteor.net',
+          from: 'support@wishmeteor.net',
+          replyTo: submission.email,
+          subject: 'New product submission for WishMeteor',
+          text: supportText,
+          html: supportHtml,
+        });
+        supportMailSent = true;
+      } catch (error) { console.error('support submission notification failed', error); }
       try {
         await env.EMAIL.send({
           to: submission.email,
@@ -525,7 +554,8 @@ async function handleSubmit(request: Request, env: Env): Promise<Response> {
         mailSent = true;
       } catch (error) { console.error('submission receipt email failed', error); }
     }
-    return redirect(request, mailSent ? 'queued' : 'queued-email-failed');
+    const status = !supportMailSent ? 'queued-support-email-failed' : mailSent ? 'queued' : 'queued-email-failed';
+    return redirect(request, status);
   } catch (error) {
     if (String(error).includes('submissions.root_domain') || String(error).includes('submissions.domain')) return redirect(request, 'duplicate');
     throw error;
