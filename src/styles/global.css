@@ -894,12 +894,6 @@ main { padding-top: clamp(1.25rem, 3vw, 2.2rem); }
 .wish-card--celebrate .star-vote__icon { animation: star-pop .44s cubic-bezier(.2,1.7,.4,1) both; }
 @keyframes star-pop { 0% { transform: scale(.8) rotate(-20deg); } 60% { transform: scale(1.6) rotate(15deg); } 100% { transform: scale(1) rotate(0); } }
 .wish-wall__note { color: #8f9db0; font-size: .75rem; margin: 1rem 0 0; }
-.editorial-sky { margin-top: 2rem; }
-.editorial-sky__head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; border-bottom: 1px solid rgba(190,205,225,.14); padding-bottom: .85rem; margin-bottom: 1.2rem; }
-.editorial-sky__head .eyebrow { margin: 0 0 .25rem; }
-.editorial-sky__head h3 { margin: 0; font: 500 clamp(1.25rem,2.8vw,1.7rem)/1.2 Georgia,serif; letter-spacing: -.025em; }
-.editorial-sky__head > p { max-width: 18rem; margin: 0; color: #9ca9bb; font-size: .72rem; text-align: right; }
-.editorial-sky .grid-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: 1rem; }
 .empty-sky { display: flex; gap: 1.15rem; align-items: flex-start; padding: clamp(1.4rem,4vw,2.5rem); border: 1px dashed rgba(230,196,130,.32); border-radius: 1.1rem; background: radial-gradient(28rem 16rem at 10% 0,rgba(217,170,94,.09),transparent 80%),#0e1725; }
 .empty-sky > span { color: var(--meteor); font-size: 1.4rem; }
 .empty-sky h3 { margin: 0 0 .35rem; font-family: Georgia,serif; font-weight: 500; }
@@ -957,8 +951,6 @@ main { padding-top: clamp(1.25rem, 3vw, 2.2rem); }
   .section-head > .text-link { white-space: normal; }
   .wish-wall { grid-template-columns: 1fr; }
   .wish-card { min-height: 15rem; }
-  .editorial-sky__head { align-items: flex-start; flex-direction: column; }
-  .editorial-sky__head > p { text-align: left; }
   .constellation-grid { grid-template-columns: 1fr; }
   .constellation { min-height: 5.8rem; }
   .closing-wish { align-items: flex-start; flex-direction: column; gap: .9rem; margin-top: 2.8rem; }
