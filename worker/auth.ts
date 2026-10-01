@@ -84,9 +84,23 @@ async function rateLimit(request: Request, env: AuthEnv, action: string, identit
 
 async function derivePassword(password: string, saltHex: string): Promise<string> {
   const salt = Uint8Array.from(saltHex.match(/.{2}/g) ?? [], (byte) => Number.parseInt(byte, 16));
-  const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 600_000 }, key, 256);
-  return [...new Uint8Array(bits)].map((value) => value.toString(16).padStart(2, '0')).join('');
+  // Workers rejects any single PBKDF2 WebCrypto operation above 100,000
+  // iterations. Chain six domain-separated 100,000-round operations to keep
+  // the intended 600,000-round work factor within that per-operation limit.
+  let input = encoder.encode(password);
+  for (let round = 0; round < 6; round += 1) {
+    const key = await crypto.subtle.importKey('raw', input, 'PBKDF2', false, ['deriveBits']);
+    const roundSalt = new Uint8Array(salt.length + 1);
+    roundSalt.set(salt);
+    roundSalt[salt.length] = round;
+    const bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', hash: 'SHA-256', salt: roundSalt, iterations: 100_000 },
+      key,
+      256,
+    );
+    input = new Uint8Array(bits);
+  }
+  return [...input].map((value) => value.toString(16).padStart(2, '0')).join('');
 }
 
 async function createSession(accountId: string, env: AuthEnv): Promise<string> {
