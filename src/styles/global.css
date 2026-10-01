@@ -866,7 +866,7 @@ main { padding-top: clamp(1.25rem, 3vw, 2.2rem); }
 .site-footer { background: #0a101d; border-color: rgba(190,205,225,.12); }
 
 .wish-hero {
-  position: relative; isolation: isolate; overflow: hidden; min-height: clamp(20rem, 34vw, 28rem);
+  position: relative; isolation: isolate; overflow: hidden; min-height: clamp(17rem, 23vw, 20rem);
   display: grid; align-items: center; border: 1px solid rgba(219,194,140,.22); border-radius: 1.5rem;
   padding: clamp(1.6rem, 4vw, 3.4rem); margin: 0 0 clamp(1.2rem, 2.5vw, 2rem);
   background: linear-gradient(111deg, rgba(9,15,28,.99) 0%, rgba(9,15,28,.95) 38%, rgba(11,19,33,.5) 75%, rgba(12,18,30,.24) 100%),
@@ -874,7 +874,7 @@ main { padding-top: clamp(1.25rem, 3vw, 2.2rem); }
     linear-gradient(135deg, #18263a, #101a2c 60%, #1e2633);
 }
 .wish-hero__copy { position: relative; z-index: 2; max-width: 46rem; }
-.wish-hero h1 { max-width: 16ch; margin: .25rem 0 .8rem; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(2.8rem, 2.2rem + 3.2vw, 4.2rem); line-height: .99; letter-spacing: -.055em; font-weight: 500; text-wrap: balance; }
+.wish-hero h1 { max-width: 18ch; margin: .25rem 0 .8rem; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(2.6rem, 2rem + 3vw, 3.8rem); line-height: .99; letter-spacing: -.055em; font-weight: 500; text-wrap: balance; }
 .wish-hero .eyebrow, .eyebrow { color: #e8bd73; letter-spacing: .17em; font-size: .69rem; }
 .wish-hero .lede { max-width: 39rem; font-size: clamp(1.05rem, .98rem + .5vw, 1.28rem); color: #c4ccda; line-height: 1.7; }
 .wish-hero .hero-cta { margin-top: 1.25rem; }
@@ -1082,6 +1082,12 @@ main { padding-top: clamp(1.25rem, 3vw, 2.2rem); }
 .catalog-page:hover:not(:disabled),.catalog-page.is-current { border-color: rgba(231,191,120,.5); background: rgba(231,191,120,.1); color: #f3d99d; }
 .catalog-page:disabled { opacity: .4; cursor: default; }
 .catalog-page-gap { padding-inline: .2rem; color: #8793a5; }
+@media (min-width: 43.01rem) {
+  .wish-sky-catalog .catalog-controls { grid-template-columns: minmax(16rem,.8fr) minmax(0,1.2fr); align-items: start; gap: .75rem; }
+  .wish-sky-catalog .catalog-search { width: 100%; }
+  .wish-sky-catalog .catalog-filters { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .2rem; scrollbar-width: thin; }
+  .wish-sky-catalog .catalog-filter { flex: 0 0 auto; }
+}
 @media (max-width: 43rem) {
   .catalog-section .section-head { align-items: flex-start; flex-direction: column; }
   .catalog-section .section-head .text-link { margin-left: 0; }
