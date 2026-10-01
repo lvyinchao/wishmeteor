@@ -246,7 +246,7 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
   if (request.method !== 'GET') return null;
   if (pathname === '/') {
     const curated = (await managedTools(env)).filter((tool) => tool.approved === true && tool.status !== 'archived' && tool.origin === 'curated');
-    const fresh = curated.slice(0, 12);
+    const fresh = curated;
     const asset = await env.ASSETS.fetch(request);
     if (!fresh.length) return asset;
     const categoryNames: Record<string, string> = {
@@ -261,16 +261,31 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
       uncategorized: 'Uncategorized',
     };
     const previewSlugs = new Set(['ai-mizu', 'ai-memory-sdk', 'ai-media-studio', 'ai-math-solver', 'kitchendesign-io', 'superhumanizer', 'ai-headshot-generator', 'ai-girl-generator', 'ai-garden-design', 'ai-football', 'ai-detector-image-checker', 'wasitaigenerated']);
-    const cards = fresh.map((tool) => {
+    const categoryIds = [...new Set(fresh.map((tool) => String(tool.category ?? 'uncategorized')))]
+      .sort((a, b) => (categoryNames[a] ?? a).localeCompare(categoryNames[b] ?? b));
+    const categoryFilters = [
+      `<button class="catalog-filter is-active" type="button" data-category-filter="all" aria-pressed="true">All products <span>${fresh.length}</span></button>`,
+      ...categoryIds.map((id) => {
+        const count = fresh.filter((tool) => String(tool.category ?? 'uncategorized') === id).length;
+        const label = categoryNames[id] ?? id.replace(/-/g, ' ');
+        return `<button class="catalog-filter" type="button" data-category-filter="${htmlEscape(id)}" aria-pressed="false">${htmlEscape(label)} <span>${count}</span></button>`;
+      }),
+    ].join('');
+    const cards = fresh.map((tool, index) => {
       const slug = String(tool.slug);
+      const categoryId = String(tool.category ?? 'uncategorized');
+      const categoryName = categoryNames[categoryId] ?? categoryId.replace(/-/g, ' ');
+      const searchText = [tool.name, tool.summary, categoryName, ...(Array.isArray(tool.tags) ? tool.tags : [])].join(' ').toLowerCase();
       const image = previewSlugs.has(slug)
         ? `<a class="tool-showcase-card__preview" href="/tool/${htmlEscape(slug)}"><img src="/tool-previews/${htmlEscape(slug)}.jpg" alt="Website preview for ${htmlEscape(tool.name)}" loading="lazy" decoding="async"></a>`
         : `<div class="tool-showcase-card__preview tool-showcase-card__preview--fallback" aria-hidden="true"><span>${htmlEscape(String(tool.name).slice(0, 1))}</span></div>`;
-      return `<article class="card tool-showcase-card">${image}<div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(categoryNames[String(tool.category)] ?? tool.category)}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></div></article>`;
+      return `<article class="card tool-showcase-card" data-catalog-item data-category="${htmlEscape(categoryId)}" data-search="${htmlEscape(searchText)}"${index >= 12 ? ' hidden' : ''}>${image}<div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(categoryName)}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></div></article>`;
     }).join('');
     return new HTMLRewriter()
       .on('.recently-section .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
-      .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '/tools'); element.setInnerContent(`Browse all ${curated.length} tools ↗`); } })
+      .on('.catalog-filters', { element(element) { element.setInnerContent(categoryFilters, { html: true }); } })
+      .on('.catalog-results', { element(element) { element.setInnerContent(`${curated.length} products · 12 per page`); } })
+      .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '#catalog-grid'); element.setInnerContent(`Browse all ${curated.length} products here ↓`); } })
       .transform(asset);
   }
   if (pathname === '/api/content') return json({ tools: await managedTools(env) });
@@ -437,7 +452,7 @@ export default {
         return json({ error: 'admin-api-unavailable' }, 503);
       }
     }
-    if (pathname === '/api/content' || pathname === '/tools' || pathname === '/tools/' || pathname.startsWith('/tool/')) {
+    if (pathname === '/' || pathname === '/api/content' || pathname === '/tools' || pathname === '/tools/' || pathname.startsWith('/tool/')) {
       try {
         const response = await handleManagedPublic(request, env, pathname);
         if (response) return response;
