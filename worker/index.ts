@@ -183,6 +183,30 @@ async function managedTools(env: Env): Promise<Record<string, unknown>[]> {
   return (rows.results ?? []).flatMap((row) => { try { return [JSON.parse(row.content_json) as Record<string, unknown>]; } catch { return []; } });
 }
 
+function isLiveManagedTool(tool: Record<string, unknown>): boolean {
+  return tool.approved === true && tool.status !== 'archived';
+}
+
+function renderManagedToolCard(tool: Record<string, unknown>): string {
+  const slug = String(tool.slug ?? '');
+  const category = String(tool.category ?? 'uncategorized');
+  const categoryName = category.replace(/-/g, ' ');
+  const submitted = tool.origin === 'submitted' ? '<span class="pill pill-live">a wish in the sky</span>' : '';
+  return `<article class="card"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="/category/${htmlEscape(category)}">${htmlEscape(categoryName)}</a>${submitted}<a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></article>`;
+}
+
+function renderWishCard(tool: Record<string, unknown>, index: number): string {
+  const slug = String(tool.slug ?? '');
+  const name = String(tool.name ?? '');
+  const wish = tool.wish && typeof tool.wish === 'object' ? tool.wish as Record<string, unknown> : {};
+  const submittedAt = typeof wish.submittedAt === 'string' ? wish.submittedAt : '';
+  const makerWish = typeof wish.makerWish === 'string' ? wish.makerWish.trim() : '';
+  const blessing = typeof wish.blessingShort === 'string' ? wish.blessingShort.trim() : '';
+  const excerpt = blessing || makerWish || String(tool.summary ?? '');
+  const dateLabel = submittedAt ? `A wish sent into the sky · ${htmlEscape(submittedAt)}` : 'A thoughtful project, gathered under this sky';
+  return `<article class="wish-card" data-slug="${htmlEscape(slug)}" data-rank="${index}"><span class="wish-card__index">${String(index + 1).padStart(2, '0')}</span><div class="wish-card__body"><p class="wish-card__date">${dateLabel}</p><h3><a href="/tool/${htmlEscape(slug)}">${htmlEscape(name)}</a></h3><p class="wish-card__blessing">&ldquo;${htmlEscape(excerpt)}&rdquo;</p><a class="wish-card__more" href="/tool/${htmlEscape(slug)}">Read the story <span aria-hidden="true">↗</span></a></div><button class="star-vote" type="button" data-star-button aria-label="Light a star for ${htmlEscape(name)}" aria-pressed="false"><span class="star-vote__icon" aria-hidden="true">✦</span><span class="star-vote__count" data-star-count>—</span><span class="star-vote__label" data-star-label>Light a star</span></button></article>`;
+}
+
 async function handleAdmin(request: Request, env: Env, pathname: string): Promise<Response> {
   if (!isAdmin(request, env)) return json({ error: 'unauthorized' }, 401);
   if (pathname === '/api/admin/submissions' && request.method === 'GET') {
@@ -306,6 +330,7 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
         return `<button class="catalog-filter" type="button" data-category-filter="${htmlEscape(id)}" aria-pressed="false">${htmlEscape(label)} <span>${count}</span></button>`;
       }),
     ].join('');
+    const wishCards = fresh.slice(0, 9).map(renderWishCard).join('');
     const cards = fresh.map((tool, index) => {
       const slug = String(tool.slug);
       const categoryId = String(tool.category ?? 'uncategorized');
@@ -316,10 +341,20 @@ async function handleManagedPublic(request: Request, env: Env, pathname: string)
       return `<article class="card tool-showcase-card" data-catalog-item data-category="${htmlEscape(categoryId)}" data-search="${htmlEscape(searchText)}"${index >= 12 ? ' hidden' : ''}>${image}<div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${htmlEscape(slug)}">${htmlEscape(tool.name)}</a></h3><p>${htmlEscape(tool.summary)}</p><div class="card-meta"><span class="pill">${htmlEscape(categoryName)}</span><span class="pill">${htmlEscape(tool.pricing)}</span><a class="pill" href="${htmlEscape(tool.url)}" rel="${outboundRel(tool)}" target="_blank">Visit project ↗</a></div></div></article>`;
     }).join('');
     return new HTMLRewriter()
+      .on('.wish-wall', { element(element) { element.setInnerContent(wishCards, { html: true }); } })
       .on('.recently-section .grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
       .on('.catalog-filters', { element(element) { element.setInnerContent(categoryFilters, { html: true }); } })
       .on('.catalog-results', { element(element) { element.setInnerContent(`${fresh.length} products · 12 per page`); } })
       .on('.recently-section .text-link', { element(element) { element.setAttribute('href', '#catalog-grid'); element.setInnerContent(`Browse all ${fresh.length} products here ↓`); } })
+      .transform(asset);
+  }
+  if (pathname === '/new' || pathname === '/new/') {
+    const recent = (await managedTools(env)).filter(isLiveManagedTool).slice(0, 60);
+    const asset = await env.ASSETS.fetch(request);
+    if (!recent.length) return asset;
+    const cards = recent.map(renderManagedToolCard).join('');
+    return new HTMLRewriter()
+      .on('.grid.grid-cards', { element(element) { element.setInnerContent(cards, { html: true }); } })
       .transform(asset);
   }
   if (pathname === '/api/content') return json({ tools: await managedTools(env) });
@@ -529,8 +564,16 @@ async function handleAccountSubmissionMutation(request: Request, env: Env, id: n
   }
 }
 
-async function isPublishedWish(slug: string, request: Request, env: Env): Promise<boolean> {
+async function isPublishedWish(slug: string, request: Request, env: Env, knownTools?: Map<string, Record<string, unknown>>): Promise<boolean> {
   if (!SLUG_RE.test(slug)) return false;
+  const known = knownTools?.get(slug);
+  if (known) return isLiveManagedTool(known);
+  if (!knownTools) {
+    const row = await env.DB.prepare('SELECT content_json FROM managed_tools WHERE slug = ?').bind(slug).first<{ content_json: string }>();
+    if (row) {
+      try { return isLiveManagedTool(JSON.parse(row.content_json) as Record<string, unknown>); } catch { return false; }
+    }
+  }
   const assetUrl = new URL(`/tool/${slug}`, request.url);
   const response = await env.ASSETS.fetch(new Request(assetUrl, { method: 'HEAD' }));
   return response.ok;
@@ -541,7 +584,8 @@ async function handleStars(request: Request, env: Env): Promise<Response> {
     const requested = new URL(request.url).searchParams.get('slugs') ?? '';
     const slugs = [...new Set(requested.split(',').filter((slug) => SLUG_RE.test(slug)))].slice(0, 40);
     if (!slugs.length) return Response.json({ counts: {} }, { headers: JSON_HEADERS });
-    const published = (await Promise.all(slugs.map(async (slug) => (await isPublishedWish(slug, request, env)) ? slug : null))).filter((slug): slug is string => !!slug);
+    const knownTools = new Map((await managedTools(env)).map((tool) => [String(tool.slug), tool]));
+    const published = (await Promise.all(slugs.map(async (slug) => (await isPublishedWish(slug, request, env, knownTools)) ? slug : null))).filter((slug): slug is string => !!slug);
     if (!published.length) return Response.json({ counts: {} }, { headers: JSON_HEADERS });
     const placeholders = published.map(() => '?').join(',');
     const result = await env.DB.prepare(`SELECT slug, COUNT(*) AS count FROM wish_stars WHERE slug IN (${placeholders}) GROUP BY slug`)
@@ -583,7 +627,7 @@ export default {
         return json({ error: 'admin-api-unavailable' }, 503);
       }
     }
-    if (pathname === '/' || pathname === '/api/content' || pathname === '/tools' || pathname === '/tools/' || pathname.startsWith('/tool/')) {
+    if (pathname === '/' || pathname === '/new' || pathname === '/new/' || pathname === '/api/content' || pathname === '/tools' || pathname === '/tools/' || pathname.startsWith('/tool/')) {
       try {
         const response = await handleManagedPublic(request, env, pathname);
         if (response) return response;
