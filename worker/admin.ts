@@ -142,11 +142,20 @@ async function approveSubmission(request:Request,env:Env,id:number,action:string
   const proof=await proofFor(input.verification,value,env);
   value.lastVerifiedAt=null;value.checksFailed=0;if(proof)applyVerification(value,proof);value.submittedAt=row.created_at;value.approvedAt=now;value.publishedAt=now;value.updatedAt=now;value.contentVersion=randomToken().slice(0,16);
   const day=now.slice(0,10),operation=crypto.randomUUID();
+  // A temporary deployment allowance is restricted to the explicitly reviewed IDs
+  // and UTC day. Every publication still increments the normal daily counter.
+  let batchException=false;
+  if(input.approvalBatch&&env.APPROVAL_BATCH) {
+    try {
+      const batch=JSON.parse(env.APPROVAL_BATCH);
+      batchException=typeof batch.key==='string'&&input.approvalBatch===batch.key&&batch.day===day&&Array.isArray(batch.ids)&&batch.ids.includes(id);
+    } catch { /* Invalid or expired deployment allowances use the normal cap. */ }
+  }
   const statements=[
     env.DB.prepare('INSERT INTO publication_days(day,used) VALUES(?,0) ON CONFLICT(day) DO NOTHING').bind(day),
-    env.DB.prepare(`UPDATE publication_days SET used=used+1 WHERE day=? AND used<9
+    env.DB.prepare(`UPDATE publication_days SET used=used+1 WHERE day=? AND (used<9 OR ?=1)
       AND EXISTS(SELECT 1 FROM submissions WHERE id=? AND verdict='pending')
-      AND NOT EXISTS(SELECT 1 FROM managed_tools WHERE slug=? OR dedupe_key=?)`).bind(day,id,slug,target.projectKey),
+      AND NOT EXISTS(SELECT 1 FROM managed_tools WHERE slug=? OR dedupe_key=?)`).bind(day,batchException?1:0,id,slug,target.projectKey),
     env.DB.prepare(`UPDATE submissions SET verdict='approved',verdict_at=?,approved_slug=?,publication_operation=? WHERE id=? AND verdict='pending' AND changes()=1`).bind(now,slug,operation,id),
     env.DB.prepare(`INSERT INTO managed_tools(slug,content_json,root_domain,dedupe_key,created_at,updated_at)
       SELECT ?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM submissions WHERE id=? AND publication_operation=?)`).bind(slug,JSON.stringify(value),target.domain,target.projectKey,now,now,id,operation),

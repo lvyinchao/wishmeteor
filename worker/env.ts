@@ -8,6 +8,7 @@ export interface Env {
   LINK_VERIFIER_PUBLIC_KEY?:string;
   GA_MEASUREMENT_ID?:string;
   RELEASE_REVISION?:string;
+  APPROVAL_BATCH?:string;
   TURNSTILE_SITE_KEY?:string;
   TURNSTILE_SECRET?:string;
   TURNSTILE_HOSTNAMES?:string;
