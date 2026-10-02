@@ -14,7 +14,7 @@ const evergreen = [
   { path: '/blog', lastmod: '' },
   { path: '/new', lastmod: '' },
   { path: '/tools', lastmod: '' },
-  { path: '/collections', lastmod: '' },
+  { path: '/news', lastmod: '' },
   { path: '/updates', lastmod: '' },
 ];
 

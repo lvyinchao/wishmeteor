@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import entries from '../../data/news.json';
+import { SITE } from '../../lib/site.ts';
+const news = [...entries].sort((a,b)=>b.date.localeCompare(a.date));
+const reviewedAt = news.map(item=>item.reviewedAt).sort().at(-1);
+---
+<Base title={`News — AI releases, research and open source | ${SITE.name}`} description="A considered selection of AI releases, research and open-source announcements. Read a short summary, see the original publication date, and follow the source.">
+  <Breadcrumbs trail={[{name:'Home',path:'/'},{name:'News'}]} />
+  <div class="page-head">
+    <p class="eyebrow">Signals from the wider AI world</p>
+    <h1>News</h1>
+    <p class="lede">A few developments worth a closer look, with the date and the original source always in view.</p>
+    <p class="section-intro">Selection reviewed {reviewedAt} · Looking for our own stories? <a href="/blog">Read the Blog ↗</a></p>
+  </div>
+  <section class="news-list" aria-label="AI news">
+    {news.map(item=>(
+      <article class="news-entry" id={item.id}>
+        <div class="news-entry__date"><time datetime={item.date}>{new Date(item.date+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'})}</time><span class="pill">{item.category}</span></div>
+        <div class="news-entry__body">
+          <p class="eyebrow">{item.publisher}</p>
+          <h2><a href={item.url} target="_blank" rel="noopener noreferrer">{item.title}</a></h2>
+          <p>{item.summary}</p>
+          <a class="text-link" href={item.url} target="_blank" rel="noopener noreferrer">Read the original announcement <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+    ))}
+  </section>
+</Base>

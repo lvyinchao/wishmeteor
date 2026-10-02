@@ -87,7 +87,7 @@ async function readPosts() {
   const posts = [];
   for (const file of files.filter((f) => f.endsWith('.md'))) {
     const { data } = parseFrontmatter(await readFile(join(dir, file), 'utf8'));
-    if (data.approved === true && data.title && data.description) posts.push({ id: file.replace(/\.md$/, ''), data });
+    if (data.approved === 'true' && data.title && data.description) posts.push({ id: file.replace(/\.md$/, ''), data });
   }
   return posts;
 }
@@ -115,7 +115,7 @@ export function blessingCards() {
         }
         for (const post of await readPosts()) {
           await renderCard(out(OG.post(post.id)), {
-            eyebrow: 'logbook',
+            eyebrow: 'Blog',
             title: post.data.title,
             body: post.data.description,
             footer: `wishmeteor.net/blog/${post.id}`,

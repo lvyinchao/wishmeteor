@@ -15,9 +15,7 @@ export const getStaticPaths = async () => {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const { tools } = loadPublicCatalog();
-const referenced = post.data.toolRefs
-  .map((slug) => tools.find((entry) => entry.slug === slug))
-  .filter((entry): entry is (typeof tools)[number] => Boolean(entry));
+const referenced = post.data.toolRefs.map((slug: string) => ({slug,name:tools.find((entry) => entry.slug === slug)?.name ?? slug.split('-').map(word=>word.charAt(0).toUpperCase()+word.slice(1)).join(' ')}));
 const pubDate = post.data.pubDate.toISOString().slice(0, 10);
 const updated = post.data.updatedDate ? post.data.updatedDate.toISOString().slice(0, 10) : null;
 const path = `/blog/${post.id}`;
@@ -46,9 +44,9 @@ const trail = [
         <p class="lede">{post.data.description}</p>
       </header>
       <p class="meta-row">
-        <span>Published <dt>{pubDate}</dt></span>
-        {updated && <span>Updated <dt>{updated}</dt></span>}
-        <span>Tools covered <dt>{referenced.length}</dt></span>
+        <span>Published <time datetime={pubDate}>{pubDate}</time></span>
+        {updated && <span>Updated <time datetime={updated!}>{updated}</time></span>}
+        <span>Projects referenced <span>{referenced.length}</span></span>
       </p>
       <Content />
     </div>

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "olmo-core-3",
+    "title": "Ai2 releases Olmo-core 3 for large mixture-of-experts training",
+    "summary": "Ai2 has released an open training stack designed to distribute mixture-of-experts models across GPU clusters. The announcement explains its routing and parallelism changes, with code and a technical report for researchers to inspect.",
+    "date": "2026-10-01",
+    "publisher": "Ai2",
+    "category": "Open source",
+    "url": "https://huggingface.co/blog/allenai/olmocore3",
+    "reviewedAt": "2026-10-02"
+  },
+  {
+    "id": "open-tts-leaderboard",
+    "title": "Open TTS Leaderboard adds multilingual speech comparisons",
+    "summary": "A new leaderboard compares speech intelligibility, inference speed and voice similarity, with audio samples to listen to. Its authors explain that these measurements complement human listening preferences rather than capturing every aspect of speech quality.",
+    "date": "2026-09-30",
+    "publisher": "Open TTS Leaderboard authors · Hugging Face",
+    "category": "Voice AI",
+    "url": "https://huggingface.co/blog/open-tts-leaderboard",
+    "reviewedAt": "2026-10-02"
+  },
+  {
+    "id": "gemini-live-avatar",
+    "title": "Google makes Gemini 3.8 Live with Live Avatar generally available",
+    "summary": "Google Cloud announced conversational video avatars for enterprise applications, alongside speech, visual input and tool calling. Custom avatars require allowlisting; the separate Extended Thinking offering remains in private preview.",
+    "date": "2026-09-25",
+    "publisher": "Google Cloud",
+    "category": "Product release",
+    "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemini-3-8-live-with-live-avatar-is-now-generally-available/",
+    "reviewedAt": "2026-10-02"
+  }
+]

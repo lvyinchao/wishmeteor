@@ -11,18 +11,17 @@ for (const post of posts) {
   byMonth.set(key, [...(byMonth.get(key) ?? []), post]);
 }
 
-const title = `The logbook — AI tool launches, models and what actually shipped | ${SITE.name}`;
-const description = `Notes from the collection jobs: which AI tools, models and open-source projects turned up this week, what changed, and what we decided not to index.`;
+const title = `Blog — ideas, discovery and building with care | ${SITE.name}`;
+const description = `Stories and practical notes from WishMeteor about discovering AI projects, sharing a maker’s wish, and building something worth bringing into the world.`;
 ---
 
 <Base title={title} description={description}>
   <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Blog' }]} />
   <div class="page-head">
-    <p class="eyebrow">Written after the collection runs</p>
-    <h1>The logbook</h1>
+    <p class="eyebrow">Notes for people building something</p>
+    <h1>Blog</h1>
     <p class="lede">
-      Every entry in the index has a date it was checked. These are the pieces where the checking is the story: launches worth
-      arguing about, categories that moved, and the occasional decision to leave something out.
+      Ideas, field notes and thoughtful questions from our sky of projects. Read about the people and choices behind a launch.
     </p>
   </div>
 
