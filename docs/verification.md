@@ -32,7 +32,7 @@ GA event assertions confirmed local `product_view`, `share_listing` and `submiss
 
 Read-only collection ran against the copied D1 snapshot. Hacker News, Hugging Face and vendor sources completed. GitHub initially reported a changed markup parser as a partial failure rather than success with zero results. After fixing attributes before the repository href, the live Trending page parsed 15 repositories and the GitHub dry run completed with 51 candidates and zero source failures. Candidates retain canonical URL, root domain, hosted project identity, source and observation timestamps; news entries retain their published date when available.
 
-## Production readback and remaining gate
+## Production readback
 
 - The deployed root and public API now report revision `063e69abda8bed337f98cc9c7e6a90dce78664d3` (Cloudflare version `e433ae9e-cc59-4989-a76d-dc0490c882cd`). Read-only admin metrics on 2026-10-02 returned 159 public products, zero pending submissions, 36 published that day, five incomplete legacy blessings, and six accepted outbox records. The migration, guarded backfill, push and deployment have been completed; release records are available from the admin metrics endpoint.
 - Production Google sign-in, account recovery, provider acceptance, inbox delivery, and a controlled publication were recorded as passed in the release log. The 35 researched entries are published; no contact address or maker ownership was invented for them. The nine-per-day maker allowance remained in place; a separately authorized, audited exception covered 27 of the 35-item batch.

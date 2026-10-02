@@ -33,4 +33,4 @@ Implement and verify all requirements in an isolated worktree. No production wri
 
 ## Acceptance evidence
 
-Implementation and isolated behavior checks are complete; see `verification.md` for evidence. The checked requirements refer to implemented/local verified behavior. Production GA receipt, real Google login, delivery/inbox and release readback retain the explicit gates in `production-release.md`.
+Implementation, isolated behavior checks and production acceptance are complete; see `verification.md` and `production-release.md` for evidence. Production Google login, account recovery, provider/inbox delivery, the controlled publication, live readback and GA4 receipt were verified. Turnstile remains an optional, unconfigured challenge; five legacy listings remain in the blessing-review backlog.
