@@ -1,145 +1,57 @@
 # WishMeteor
 
-An English-language index of AI tools, models and open-source projects at
-[wishmeteor.net](https://wishmeteor.net). Founders submit a product link — a *wish* — and once it clears
-review the entry goes live with a **dofollow** backlink plus a blessing written for that specific product,
-emailed to the submitter and printed on the entry page.
+A directory and wishing sky for builders at [wishmeteor.net](https://wishmeteor.net). A reviewed maker submission receives an approved listing, a reviewed blessing and a versioned downloadable card. Official links earn dofollow only while the shared verification policy is satisfied.
 
-Pages are prerendered; the Worker handles submissions, community stars, account endpoints, and
-admin-managed tool entries stored in D1.
+## Architecture
 
-## How it works
+D1 is the authoritative product catalog and workflow store. `worker/catalog.ts` supplies the directory, search, categories, detail pages, comparison, collections, recommendations, weekly changes, RSS, sitemaps and public API. Indexed queries return bounded pages and summaries. Content and star version counters invalidate the Worker cache; public responses carry ETags. Approved, nonarchived listings are public regardless of their outbound link status.
 
-```
-scripts/ingest/*  →  data/inbox/*.jsonl        collect candidates (never touches content)
-Qoder cron jobs   →  data/drafts/{tools,blessings,posts}   draft entries, blessings, articles
-pnpm approve      →  src/content/tools/*.json  human gate, enforces the daily cap
-pnpm ship         →  build → commit → deploy → blessing emails
-```
+Astro builds account, moderation, submission, articles and informational pages. `src/lib/public-shell.ts` supplies the same head, navigation, footer and analytics configuration to Astro and dynamic Worker pages. `public/site.js` handles URL filters, request cancellation, browser stars, comparison, saved projects and follow controls. Preview WebP variants are generated in `dist/`. Cards are rendered from the exact D1 content version, with PNG rasterization in the Worker.
 
-Content is files in git, one JSON entry per tool (`src/content/tools/`) and one Markdown article per post
-(`src/content/posts/`), plus `src/content/categories.json`. There is no database-backed rendering; D1 holds
-only the submission queue.
+Files under `src/content/tools` are legacy drafts/archive material, not another live directory. Articles require `approved: true` independently of product approval. Ingest refreshes a read-only D1 snapshot before deduplication. Hosted repositories and app listings use project identities; reviewers can record aliases for the official site and its repository.
 
-### Which links are dofollow
+## Local commands
 
-`src/lib/links.mjs` derives it — there is no `dofollow` flag to set by hand:
-
-> approved **and** `checksFailed === 0` **and** checked within `SITE.staleAfterDays` days **and** at least
-> `SITE.minDescriptionChars` characters of description.
-
-`scripts/verify-links.mjs` is the only thing that moves those fields. A site that refuses scripted checks
-answers 403 and is reported as **blocked**: open it yourself, then `node scripts/verify-links.mjs -- --confirm=<slug>`.
-Unverified entries are rendered `rel="nofollow ugc"` and stay out of the sitemap.
-
-## Commands
-
-| Command | What it does |
+| Command | Result |
 | --- | --- |
-| `pnpm dev` | local dev server |
-| `pnpm check` | `astro check` (site) — `pnpm check:worker` for `worker/index.ts` |
-| `pnpm build` | prerender every page into `dist/`, then generate every `og:image` |
-| `pnpm ingest` | run all four collection sources into `data/inbox/` |
-| `pnpm moderate` | list pending wishes from the production queue (`-- --local`, `-- --show=ID`, `-- --reject=ID`) |
-| `pnpm approve` | publish a wish (`-- --submission=ID`) or a curated draft (`-- --draft=path`) |
-| `pnpm verify-links` | re-check outbound links and grant/revoke dofollow |
-| `pnpm notify` | send blessing emails for published-but-unnotified wishes |
-| `pnpm ship` | check → build → commit → deploy → notify, with a lock so runs cannot overlap |
+| `pnpm install --frozen-lockfile` | Install pinned dependencies |
+| `pnpm check` / `pnpm check:worker` | Astro and Worker type checks |
+| `pnpm test` | Isolated SQLite tests; all migrations applied; email and Google mocked |
+| `pnpm build` | Static assets, modern preview images and article/default social cards |
+| `pnpm exec wrangler dev --local` | Local Worker with D1 and static assets |
+| `pnpm ingest -- --dry` | D1 snapshot and source collection, no catalog publication |
+| `pnpm moderate` | Read pending review queue through authenticated admin API |
+| `pnpm approve -- --submission=ID --draft=PATH` | Preview a reviewed approval; set `blessingApproved: true` in the reviewed draft and add `--write` to publish |
+| `pnpm verify-links` | Inspect outbound sites; add `--write` with a configured signer to store signed outcomes |
+| `pnpm notify` | Inspect notification status; `--write` requests outbox dispatch |
+| `pnpm ship` | Check, tests, build and deployment dry run only |
 
-## Scheduled jobs (local Qoder cron)
+The authoritative approval/verification CLI options are shown in their scripts. Mutating admin CLI operations require `--write`. Admin tokens are read from `WISHMETEOR_ADMIN_TOKEN`, `ADMIN_API_TOKEN`, or the owner-only file `~/.config/wishmeteor/admin-token`. Use `--base=http://127.0.0.1:PORT` for isolated local review.
 
-Three durable, permanent jobs, all **draft-only** — none of them publishes or deploys:
+## Moderation and operations
 
-1. every 6 hours — collect candidates and draft up to 5 index entries
-2. 08:30 and 20:30 — review the submission queue and draft up to 3 blessings
-3. Monday 05:00 — re-check links, confirm blocked ones, draft the week's article
+Open `/admin`, enter the admin token once, and use the expiring HttpOnly session. Reviewers edit the product and full blessing, explicitly confirm the blessing, then approve. Approval atomically claims one of nine maker publication slots per UTC day and cannot overwrite an existing slug. Submitted, approved and published dates remain distinct. Product updates require the loaded `expectedVersion`; URL changes reset verification and retain the old product identity as an alias.
 
-They require Qoder to be running on this machine; a closed laptop simply produces no drafts.
+The workbench includes correction requests, curated collection editing, alias review, notification status/retry and metrics. Metrics separate registrations, verified accounts and recent account activity; also show publication usage, review latency, verification age, source outcomes and release stages.
 
-## Secrets
+Notifications are inserted in the same transaction as their event. A five-minute scheduled handler cleans expired state and dispatches queued events with leases, retry/backoff and eligibility checks. `accepted` and a provider message ID mean provider acceptance; they do not prove inbox delivery. A crash after acceptance but before the database acknowledgement can resend a message. Submitter addresses remain available for essential service follow-up; never erase addresses to pretend delivery succeeded.
 
-Local only, never shipped to the Worker (see `.env.example`):
+## Accounts and stars
 
-- `CF_API_TOKEN` (optional) — Cloudflare Email Service, Email Sending. `wishmeteor.net` is already
-  onboarded (Compute → Email Service → Email Sending), and Cloudflare manages the bounce SPF/DKIM/DMARC
-  records for the zone. Without an explicit token, `scripts/notify.mjs` uses the OAuth token wrangler
-  already keeps locally, which `pnpm ship` refreshes moments before it sends. `EMAIL_FROM` defaults to
-  `support@wishmeteor.net`. Sending happens **after** a successful deploy, because the email embeds the
-  card image and entry URL served by this site.
-- `GITHUB_TOKEN` — optional; unauthenticated GitHub search is capped at 10 requests/minute.
-- `ADMIN_API_TOKEN` — required to use the admin content and submission endpoints. Send it only in
-  `Authorization: Bearer <token>`; never put it in a URL or browser bundle.
+Email passwords remain pending until the owner verifies a single-use link. Google links to verified accounts only with an existing password or account session. Google third-party addresses require a separate email challenge. Recovery supports resend, password setup/reset and revoking all sessions. The security migration clears ambiguous legacy Google/password combinations and revokes their sessions; affected owners can use Google or a recovery email.
 
-### Admin API
+Stars use an opaque server-issued browser cookie, per-IP and per-identity limits and an idempotent product vote. They measure browser encouragement, not people. Legacy votes stay visible; new verified browser votes determine popular order. Following a product is explicit and reversible; it enables essential listing update emails. If an IP repeatedly requests new identities, an optional configured Turnstile challenge is required; normal encouragement does not load the widget. Configure `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET` and an exact deployment-specific `TURNSTILE_HOSTNAMES` allowlist to enable it.
 
-The API-managed directory starts empty and is served at `/tools` and `/tool/{slug}`. Content
-changes take effect immediately without rebuilding the static site.
+## Verification, secrets and analytics
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `GET` | `/api/admin/submissions` | List pending applications |
-| `POST` | `/api/admin/submissions/{id}/approve` | Approve and publish the supplied tool entry |
-| `POST` | `/api/admin/submissions/{id}/reject` | Reject a pending application |
-| `GET` | `/api/admin/content` | List API-managed entries |
-| `PUT` | `/api/admin/content/{slug}` | Create or update an entry |
-| `GET` | `/api/content` | Public JSON feed for managed entries |
+`LINK_VERIFIER_PUBLIC_KEY` stores the base64 SPKI Ed25519 public key. The private key stays in an owner-only local file selected with `WISHMETEOR_VERIFIER_KEY` or `--key`. The signing client checks public DNS addresses, pins the actual connection, bounds redirects and accepts HTML success responses only. Signed outcomes bind the URL, slug, observed state and expiry; nonce replay is rejected atomically. Failed or expired checks render nofollow.
 
-Content writes accept a JSON object with `name`, `url`, `category`, `summary` (40–160 characters),
-`description` (300–12,000 characters), `tags` (1–12 strings), `pricing` (`free`, `freemium`,
-`paid`, `open-source`), and `status` (`active`, `beta`, `stale`, `archived`). For example:
+Existing bindings: D1 `DB`, static assets `ASSETS`, Email Service `EMAIL`. Keep `ADMIN_API_TOKEN`, `GOOGLE_CLIENT_ID` and verifier configuration in Worker secret storage. Google Console must authorize the site's actual origins. Sender eligibility and inbox delivery require production checks. Local checks use an isolated configuration without an Email binding.
 
-```http
-PUT /api/admin/content/example-tool
-Authorization: Bearer <token>
-Content-Type: application/json
+Public GA4 defaults to `G-QV8KGLLDXR` and records product views, outbound clicks, submission start/success, stars and listing shares using product slugs only. Account/admin and password reset pages suppress analytics. Configure `GA_MEASUREMENT_ID` for Worker pages and `PUBLIC_GA_MEASUREMENT_ID` for Astro. Real GA delivery requires Realtime/DebugView evidence; a local `dataLayer` event alone is not that evidence.
 
-{"name":"Example Tool","url":"https://example.com","category":"assistants","summary":"A concise description between forty and one hundred sixty characters long for this example tool.","description":"A fuller description of at least 300 characters explaining what the product does, who it helps, and what makes it useful in a real workflow. Include accurate details such as its main capabilities, supported platforms, and relevant limitations. This text appears on the public listing page, so it should help visitors decide whether the product is worth exploring before they follow the official link.","tags":["assistant"],"pricing":"freemium","status":"active"}
-```
+## Release
 
-Approval uses the same content fields plus a `slug` in the request body. It records the
-application verdict and publishes the entry together, and keeps the existing daily launch cap of
-9 submissions:
+Read [production-release.md](docs/production-release.md) before release. `docs/release-manifest.json` lists exactly the allowed paths and migrations. The pipeline checks staging and uses argument arrays, preserves unrelated files, and reports check, build, commit, push, migration, backfill, deployment, readback and notification states separately. Production actions require explicit authorization and a reviewed backfill plan. The default pipeline performs no commit, push, production database mutation or notification dispatch.
 
-```json
-{"slug":"example-tool","content":{"name":"Example Tool","url":"https://example.com","category":"assistants","summary":"A concise description between forty and one hundred sixty characters long for this example tool.","description":"A fuller description of at least 300 characters explaining what the product does, who it helps, and what makes it useful in a real workflow. Include accurate details such as its main capabilities, supported platforms, and relevant limitations. This text appears on the public listing page, so it should help visitors decide whether the product is worth exploring before they follow the official link.","tags":["assistant"],"pricing":"freemium","status":"active"}}
-```
-
-Apply the content migration before deploying this API:
-`pnpm exec wrangler d1 migrations apply wishmeteor --remote`.
-
-Production resources: one Worker (`wishmeteor`) with static assets and a D1 database for submissions,
-community stars, accounts, email verification and sessions. Zone routes on `wishmeteor.net` and `www`.
-
-## Accounts and analytics
-
-- `/account` supports Google sign-in / One Tap and email + password registration and sign-in. New email
-  accounts must verify a single-use link sent through the Cloudflare Email Service binding. Passwords
-  are stored as salted PBKDF2-SHA-256 hashes; session tokens are opaque, HttpOnly cookies whose hashes
-  are stored in D1.
-- Add a Google OAuth **Web application** client in Google Cloud Console and authorize the JavaScript origins
-  `https://wishmeteor.net` and `https://www.wishmeteor.net`. Set the client ID as a Worker secret with
-  `pnpm exec wrangler secret put GOOGLE_CLIENT_ID`. The client ID is public, but keeping it in the Worker
-  secret store lets the page read it from `/api/auth/config` without committing environment-specific values.
-- Cloudflare Email Service must have `wishmeteor.net` onboarded. The Worker binding is restricted to send
-  from `support@wishmeteor.net`. Cloudflare currently requires a paid Workers plan for outbound Email Service.
-- Apply `migrations/1003_accounts.sql` to D1 before enabling account endpoints in production:
-  `pnpm exec wrangler d1 migrations apply wishmeteor --remote`.
-- GA4 uses `G-QV8KGLLDXR` by default. Set `PUBLIC_GA_MEASUREMENT_ID` in the build environment to override it,
-  or set it to a blank value to disable analytics.
-- For local Worker testing, copy `.dev.vars.example` to `.dev.vars`; copy `.env.example` to `.env` for
-  the Astro build settings. The local Email binding does not deliver verification messages unless Wrangler
-  is explicitly configured to use the remote Email Service.
-
-## Layout
-
-```
-src/content/{tools,posts,categories.json}   the published index
-src/content.config.ts                       post schema (Astro content collections)
-src/lib/catalog.mjs                         tools loader + publish validation
-src/lib/links.mjs                           canonicalisation, dofollow rule, daily quota
-src/lib/{jsonld,sitemap,og,pagination}.ts   SEO plumbing
-src/pages/                                  index, tools, category, tool, blog, submit, legal, sitemaps
-integrations/blessing-cards.mjs             satori + resvg: generates every og:image at build
-worker/index.ts                             POST /api/submit, honeypot, throttle, dedupe
-scripts/                                    ingest, moderate, approve, verify-links, notify, ship
-```
+See [optimization-plan.md](docs/optimization-plan.md) and [verification.md](docs/verification.md) for scope and evidence.

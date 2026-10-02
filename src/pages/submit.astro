@@ -1,10 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-import { loadCatalog } from '../lib/catalog.mjs';
+import { CATEGORY_NAMES } from '../lib/tool-schema.ts';
 import { SITE } from '../lib/site.ts';
 
-const { categories } = loadCatalog();
+const categories=Object.entries(CATEGORY_NAMES).map(([id,name])=>({id,name}));
 const title = `Share your AI product wish | ${SITE.name}`;
 const description = `Bring your AI product into the WishMeteor sky. Share what you are building, receive a personal blessing, and let the community help your launch shine.`;
 ---
@@ -32,13 +32,13 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
         <div>
           <label for="url">Link</label>
           <input id="url" name="url" type="url" required placeholder="https://yourproduct.com" />
-          <p class="hint">The homepage, not a affiliate or tracking link. We canonicalise it and drop parameters.</p>
+          <p class="hint">The homepage, not an affiliate link. We canonicalise it and remove known tracking parameters.</p>
         </div>
         <div>
           <label for="email">Email for your blessing</label>
           <input id="email" name="email" type="email" data-submit-email required placeholder="you@yourproduct.com" />
           <p class="hint">
-            Used once, to send the blessing and the card. Never published, never added to a list, deleted whenever you ask.
+            Used for receipt, review and essential service messages, including your blessing and card. Never published or added to a marketing list. Request removal through support.
           </p>
         </div>
         <div>
@@ -93,9 +93,9 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
   const feedback = document.querySelector<HTMLElement>('[data-submit-feedback]');
   const statusMessages: Record<string, string> = {
     queued: 'Your wish found its way to us. We will review it with care and send a note when it is ready to shine.',
-    duplicate: 'That domain is already on the wall or already in the queue. One wish per product, please.',
+    duplicate: 'That project is already published or already in the queue. One wish per product, please.',
     throttled: 'We have received a few wishes from this address recently. Please give the sky a little time, then try again.',
-    rejected: 'That link did not pass the checks — it was unreachable, off-topic, or looked like a link farm. Fix the page and wish again in a week.',
+    rejected: 'This submission did not pass validation. Check the required fields, public homepage URL and ownership declaration.',
     'queued-email-failed': 'Your wish was saved and is pending review, but we could not send the confirmation email.',
     'queued-support-email-failed': 'Your wish was saved, but our team could not be notified automatically. Please email support@wishmeteor.net with your product link.',
   };

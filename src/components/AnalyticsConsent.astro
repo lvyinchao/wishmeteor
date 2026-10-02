@@ -1,26 +1,5 @@
 ---
-interface Props {
-  measurementId: string;
-}
-const { measurementId } = Astro.props;
+import { publicScripts } from '../lib/public-shell.ts';
+interface Props {measurementId:string}
 ---
-
-{measurementId && <div data-measurement-id={measurementId} id="analytics-config" hidden></div>}
-
-<script>
-  declare global { interface Window { dataLayer?: unknown[][]; gtag?: (...args: unknown[]) => void } }
-  const config = document.querySelector<HTMLElement>('#analytics-config');
-  const measurementId = config?.dataset.measurementId;
-  if (measurementId && !document.querySelector('[data-wishmeteor-ga]')) {
-    window.dataLayer = window.dataLayer ?? [];
-    window.gtag = (...args: unknown[]) => { window.dataLayer?.push(args); };
-    window.gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
-    window.gtag('js', new Date());
-    window.gtag('config', measurementId, { anonymize_ip: true, allow_google_signals: false, allow_ad_personalization_signals: false });
-    const script = document.createElement('script');
-    script.async = true;
-    script.dataset.wishmeteorGa = 'true';
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
-    document.head.append(script);
-  }
-</script>
+<Fragment set:html={publicScripts(Astro.props.measurementId,Astro.url.pathname==='/account'||Astro.url.pathname==='/admin')} />

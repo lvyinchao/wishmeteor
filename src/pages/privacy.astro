@@ -16,15 +16,8 @@ const description = `What ${SITE.name} stores when you share a wish or light a s
 
   <article class="prose">
     <h2>What a submission stores</h2>
-    <p>
-      When you use <a href="/submit">the wish form</a>, four things are written to a single database table: the product name,
-      the canonical URL, the category you chose, and the free-text description you wrote. Your email address is stored next to
-      them for one purpose — sending the blessing and the card — and it is never rendered on any public page.
-    </p>
-    <p>
-      We also store a keyed hash of the submitting IP address to limit rapid repeat submissions. It is a throttle, not a
-      security control, and it is deleted along with the rest of the row.
-    </p>
+    <p>We store the project name, public homepage, category, description, optional maker wish, review state and relevant dates. Your email is used for receipt, review and essential service messages and is never shown on public pages. Submissions made while signed in are linked to your account so you can see progress and edit a pending submission.</p>
+    <p>A one-way hash of the submitting IP address helps limit rapid repeated submissions. Rate limit records expire automatically.</p>
 
     <h2>What is published</h2>
     <p>
@@ -33,11 +26,9 @@ const description = `What ${SITE.name} stores when you share a wish or light a s
     </p>
 
     <h2>Community stars</h2>
-    <p>
-      If you light a star, your browser keeps a random identifier and a record of which project you chose, so it can remember
-      your choice. We store a one-way hash of that identifier alongside the project and vote date. It is not linked to your
-      submission email or account, and you can clear it from your browser at any time.
-    </p>
+    <p>The server issues an opaque HttpOnly browser cookie. We store its hash, expiry, project choices and vote dates for up to a year of browser identity validity. It is separate from your account and submission email. One star per project is recorded for that identity; it does not identify one natural person. Issuance and voting are rate limited.</p>
+    <h2>Saved and followed projects</h2>
+    <p>Saved projects and followed projects are associated with your account. Following a project enables essential email messages when its listing changes. You can stop following it from its project page. Correction requests and review decisions are kept with your account.</p>
 
     <h2>Tracking, cookies and analytics</h2>
     <p>
@@ -49,19 +40,15 @@ const description = `What ${SITE.name} stores when you share a wish or light a s
 
     <h2>Accounts</h2>
     <p>
-      Email accounts store your email address and a salted password hash. Email verification links are single-use and expire
+      Email accounts store your email address and a salted password hash. Email verification and password recovery links are single-use and expire
       after one day. Sign-in sessions are stored as one-way token hashes in D1 and use a necessary, HttpOnly, Secure cookie.
       Google sign-in stores the Google account identifier, verified email and display name needed to maintain your account.
       You can request account removal at <a href={'mailto:' + SITE.email}>{SITE.email}</a>.
     </p>
 
     <h2>Retention and deletion</h2>
-    <p>
-      Pending submissions are cleared automatically after the review period. Published entries keep the blessing record but not the
-      email: once the notification is confirmed delivered, the address is dropped from the row and only a delivery date
-      remains. Ask for removal at <a href={'mailto:' + SITE.email}>{SITE.email}</a> and the entry comes down in the next
-      review round; ask twice and the domain is blocked from resubmission.
-    </p>
+    <p>Submissions and their contact email are retained for review, service notifications and correction handling. Notification records track attempts, provider acceptance and errors; provider acceptance does not confirm inbox delivery. Expired sessions, email tokens, browser identities, rate limits and verification nonces are cleaned up automatically.</p>
+    <p>You can withdraw a pending submission from your account. Contact <a href={'mailto:' + SITE.email}>{SITE.email}</a> to request removal of a published listing, account or retained contact information. These requests are handled by review.</p>
 
     <h2>Where it lives</h2>
     <p>

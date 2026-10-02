@@ -31,10 +31,12 @@ const description = 'Sign in or create a WishMeteor account with Google or email
           <label for="account-email">Email address</label>
           <input id="account-email" name="email" type="email" autocomplete="email" required maxlength="254" />
           <label for="account-password">Password</label>
-          <input id="account-password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="256" />
-          <p class="account-form__hint" data-password-hint hidden>Use at least 6 characters.</p>
+          <input id="account-password" name="password" type="password" autocomplete="current-password" required minlength="1" maxlength="256" />
+          <p class="account-form__hint" data-password-hint hidden>Use at least 8 characters.</p>
         <button class="btn btn-primary account-submit" type="submit" data-submit>Sign in</button>
         </form>
+        <div class="account-recovery-actions"><button class="btn btn-quiet" type="button" data-resend>Resend verification</button><button class="btn btn-quiet" type="button" data-reset-request>Forgot password?</button></div>
+        <form class="account-form" data-reset-form hidden><h2>Set a new password</h2><label>New password<input name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="256" /></label><label>Confirm password<input name="confirmation" type="password" autocomplete="new-password" required minlength="8" maxlength="256" /></label><button class="btn btn-primary" type="submit">Save new password</button></form>
         <p class="account-message" data-account-message role="status" aria-live="polite"></p>
         <p class="account-legal">We use your email for account access and essential service messages. Read our <a href="/privacy">privacy details</a>.</p>
       </div>
@@ -52,15 +54,17 @@ const description = 'Sign in or create a WishMeteor account with Google or email
           <ul data-submission-list></ul>
           <p class="account-form__hint" data-submissions-error hidden>Submission status could not be loaded. Please refresh to try again.</p>
         </section>
+        <section class="account-projects"><h3>Saved and followed projects</h3><ul data-project-list></ul><p data-project-list-status role="status"></p></section>
+        <div class="account-recovery-actions"><button class="btn btn-quiet" type="button" data-password-setup>Reset or add a password</button><button class="btn btn-quiet" type="button" data-revoke>Sign out all sessions</button></div><button class="btn btn-quiet" type="button" data-connect-google>Connect Google</button><div data-google-connect-area hidden><div id="google-connect-button"></div></div><p data-security-status role="status"></p>
       </div>
     </div>
-    <p class="account-footnote">Your account can use the same verified email across both sign-in methods.</p>
+    <p class="account-footnote">Connect sign-in methods using an existing account credential and a verified email.</p>
   </section>
 </Base>
 
 <script>
   interface AccountInfo { id: string; email: string; name: string }
-  interface SubmissionInfo { id: number; name: string; url: string; email: string | null; category: string; notes: string; make_a_wish: string; created_at: string; verdict: 'pending' | 'approved' | 'rejected'; verdict_at: string | null }
+  interface SubmissionInfo { id: number; name: string; url: string; email: string | null; category: string; notes: string; make_a_wish: string; created_at: string; verdict: 'pending' | 'approved' | 'rejected'; verdict_at: string | null; slug: string | null; notification_state: string | null }
   interface GoogleCredentialResponse { credential: string }
   interface GoogleApi {
     accounts: {
@@ -82,6 +86,9 @@ const description = 'Sign in or create a WishMeteor account with Google or email
   const googleArea = document.querySelector<HTMLElement>('[data-google-area]');
   let mode: 'login' | 'register' = 'login';
   let busy = false;
+  let currentEmail = '';
+  const resetToken = new URLSearchParams(location.search).get('reset');
+  if (resetToken) { history.replaceState(null,'','/account'); document.querySelector<HTMLFormElement>('[data-reset-form]')!.hidden=false; if(form)form.hidden=true; document.querySelector<HTMLElement>('.account-tabs')!.hidden=true; document.querySelector<HTMLElement>('.account-recovery-actions')!.hidden=true; }
 
   function setMessage(text: string, kind: 'info' | 'error' | 'success' = 'info') {
     if (!message) return;
@@ -90,6 +97,8 @@ const description = 'Sign in or create a WishMeteor account with Google or email
   }
 
   function showAccount(account: AccountInfo) {
+    currentEmail=account.email;
+    if(password)password.value='';
     if (formView) formView.hidden = true;
     if (signedInView) signedInView.hidden = false;
     const name = signedInView?.querySelector<HTMLElement>('[data-account-name]');
@@ -98,6 +107,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     if (email) email.textContent = account.email;
     window.dispatchEvent(new CustomEvent('wishmeteor:account', { detail: account }));
     void loadSubmissions();
+    void loadProjects();
   }
 
   async function loadSubmissions() {
@@ -117,7 +127,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
         title.textContent = submission.name;
         const state = document.createElement('span');
         state.className = `submission-state submission-state--${submission.verdict}`;
-        state.textContent = submission.verdict === 'pending' ? 'Under review' : submission.verdict === 'approved' ? 'Accepted' : 'Not accepted';
+        state.textContent = submission.verdict === 'pending' ? 'Under review' : submission.verdict === 'approved' ? (submission.slug?'Published':'Reviewed; listing not public') : 'Not accepted';
         const date = document.createElement('time');
         date.dateTime = submission.created_at;
         date.textContent = `Submitted ${new Date(submission.created_at).toLocaleDateString()}`;
@@ -128,6 +138,8 @@ const description = 'Sign in or create a WishMeteor account with Google or email
         const meta = document.createElement('div');
         meta.className = 'submission-card__meta';
         meta.append(date);
+        const delivery=document.createElement('span'); delivery.textContent=`Service notification: ${submission.notification_state ?? 'not queued'}`; meta.append(delivery);
+        if(submission.slug) { const published=document.createElement('a');published.href=`/tool/${submission.slug}`;published.textContent='View published listing and blessing';meta.append(published); }
         if (submission.verdict_at) {
           const reviewed = document.createElement('time');
           reviewed.dateTime = submission.verdict_at;
@@ -235,7 +247,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
               await loadSubmissions();
             } catch (error) {
               const code = error instanceof Error ? error.message : '';
-              feedback.textContent = code === 'duplicate' ? 'Another submission or listed product already uses that domain.' : code === 'submission-locked' ? 'This submission has already been reviewed and can no longer be changed.' : 'We could not save those changes. Check the details and try again.';
+              feedback.textContent = code === 'duplicate' ? 'Another submission or listed product already uses that product identity.' : code === 'submission-busy-or-locked' ? 'A service message is being sent, or this submission was reviewed. Refresh and try again.' : code === 'submission-locked' ? 'This submission has already been reviewed and can no longer be changed.' : 'We could not save those changes. Check the details and try again.';
             } finally { save.disabled = false; }
           });
           withdraw.addEventListener('click', async () => {
@@ -275,7 +287,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     document.querySelector('#mode-login')?.setAttribute('aria-selected', String(!registering));
     document.querySelector('#mode-register')?.setAttribute('aria-selected', String(registering));
     if (password) password.autocomplete = registering ? 'new-password' : 'current-password';
-    if (password) password.minLength = registering ? 6 : 1;
+    if (password) password.minLength = registering ? 8 : 1;
     const hint = document.querySelector<HTMLElement>('[data-password-hint]');
     if (hint) hint.hidden = !registering;
     if (submit) submit.textContent = registering ? 'Create account' : 'Sign in';
@@ -287,15 +299,17 @@ const description = 'Sign in or create a WishMeteor account with Google or email
 
   function errorText(code: string): string {
     const messages: Record<string, string> = {
-      'invalid-input': 'Enter a valid email and a password with at least 6 characters.',
+      'invalid-input': 'Enter a valid email and a password with at least 8 characters.',
       'invalid-credentials': 'That email and password combination could not be verified.',
       'account-exists': 'An account already uses this email. Sign in or choose Google.',
-      'email-not-verified': 'Please verify your email first. If the link expired, create the account again to send a fresh one.',
+      'email-not-verified': 'Please verify your email first. Use Resend verification if the link expired.',
       'email-unavailable': 'The verification email could not be sent right now. Please try again shortly.',
       'try-later': 'Too many attempts. Please wait a little and try again.',
       'google-not-configured': 'Google sign-in is being set up. Use your email for now.',
       'google-unavailable': 'Google sign-in is temporarily unavailable. Please try again.',
       'account-conflict': 'This Google account is already linked to another account.',
+      'account-link-credential-required': 'Enter your existing password, then choose Google again to connect it.',
+      'invalid-reset': 'This password link is invalid or expired. Request a new password link.',
     };
     return messages[code] ?? 'We could not complete that request. Please try again.';
   }
@@ -317,8 +331,8 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     const values = new FormData(form);
     const email = String(values.get('email') ?? '').trim();
     const passwordValue = String(values.get('password') ?? '');
-    if (mode === 'register' && passwordValue.length < 6) {
-      setMessage('Choose a password with at least 6 characters.', 'error');
+    if (mode === 'register' && passwordValue.length < 8) {
+      setMessage('Choose a password with at least 8 characters.', 'error');
       return;
     }
     busy = true;
@@ -345,10 +359,10 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     }
   });
 
-  async function startGoogle() {
-    if (!googleArea) return;
+  async function startGoogle(connect=false) {
+    if (!googleArea || resetToken) return;
     const current = await request('/api/auth/me');
-    if (current.data.account) {
+    if (current.data.account && !connect) {
       showAccount(current.data.account as AccountInfo);
       return;
     }
@@ -358,24 +372,27 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     if (!config.googleClientId || !config.nonce) return;
     const loadScript = () => {
       if (!window.google) { window.setTimeout(loadScript, 100); return; }
-      googleArea.hidden = false;
+      const area=connect?document.querySelector<HTMLElement>('[data-google-connect-area]'):googleArea;
+      if(area)area.hidden=false;
       window.google.accounts.id.initialize({
         client_id: config.googleClientId ?? '',
         nonce: config.nonce ?? '',
         context: 'signin',
         use_fedcm_for_prompt: true,
         callback: async ({ credential }) => {
-          setMessage('Connecting your Google account…');
+          const status=connect?document.querySelector<HTMLElement>('[data-security-status]'):message;
+          if(status)status.textContent='Connecting your Google account…';
           try {
-            const result = await request('/api/auth/google', { credential });
-            if (!result.ok) setMessage(errorText(String(result.data.error ?? 'unknown')), 'error');
-            else showAccount(result.data.account as AccountInfo);
+            const result = await request('/api/auth/google', { credential, ...(password?.value ? {password:password.value} : {}) });
+            if (!result.ok) {if(status)status.textContent=errorText(String(result.data.error ?? 'unknown'));}
+            else if(result.data.account) {showAccount(result.data.account as AccountInfo);if(connect&&status)status.textContent='Google sign-in is connected.';}
+            else setMessage('Check your inbox to confirm your email before signing in.','success');
           } catch {
             setMessage('Connection trouble. Please try again.', 'error');
           }
         },
       });
-      const button = document.querySelector<HTMLElement>('#google-signin-button');
+      const button = document.querySelector<HTMLElement>(connect?'#google-connect-button':'#google-signin-button');
       if (button) window.google.accounts.id.renderButton(button, { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', width: Math.min(360, Math.max(240, Math.round(button.getBoundingClientRect().width))) });
       window.google.accounts.id.prompt();
     };
@@ -385,16 +402,45 @@ const description = 'Sign in or create a WishMeteor account with Google or email
     script.defer = true;
     script.onload = loadScript;
     script.onerror = () => setMessage('Google sign-in could not load. Use the email form instead.', 'error');
-    document.head.append(script);
+    if(window.google)loadScript();else document.head.append(script);
   }
 
   const result = new URLSearchParams(window.location.search).get('verified');
   if (result === 'success') setMessage('Your email is verified. You can sign in now.', 'success');
-  else if (result === 'expired') setMessage('That verification link has expired. Create the account again to send a fresh link.', 'error');
+  else if (result === 'expired') setMessage('That verification link has expired. Use Resend verification to send a fresh link.', 'error');
   else if (result === 'invalid') setMessage('That verification link is not valid.', 'error');
 
-  request('/api/auth/me').then(({ data }) => {
+  if(!resetToken) request('/api/auth/me').then(({ data }) => {
     if (data.account) showAccount(data.account as AccountInfo);
     else void startGoogle().catch(() => setMessage('Google sign-in could not load. Use the email form instead.', 'error'));
   }).catch(() => setMessage('Account status could not be loaded. You can still try signing in.', 'error'));
+
+  async function requestEmailAction(path:string,email:string,status:HTMLElement|null) {
+    if(!email) { if(status)status.textContent='Enter your email address first.'; return; }
+    try { const result=await request(path,{email});if(status)status.textContent=result.ok?'If this email is eligible, an email link has been queued. Please check your inbox.':errorText(String(result.data.error)); }
+    catch { if(status)status.textContent='The request could not be completed. Please try again.'; }
+  }
+  document.querySelector('[data-resend]')?.addEventListener('click',()=>requestEmailAction('/api/auth/resend',document.querySelector<HTMLInputElement>('#account-email')?.value ?? '',message));
+  document.querySelector('[data-reset-request]')?.addEventListener('click',()=>requestEmailAction('/api/auth/reset/request',document.querySelector<HTMLInputElement>('#account-email')?.value ?? '',message));
+  document.querySelector('[data-connect-google]')?.addEventListener('click',()=>startGoogle(true).catch(()=>{const status=document.querySelector('[data-security-status]');if(status)status.textContent='Google sign-in could not load. Please try again.';}));
+  document.querySelector('[data-password-setup]')?.addEventListener('click',()=>requestEmailAction('/api/auth/reset/request',currentEmail,document.querySelector('[data-security-status]')));
+  document.querySelector('[data-revoke]')?.addEventListener('click',async()=>{const response=await request('/api/auth/sessions/revoke',{});if(response.ok)location.reload();});
+  const resetForm=document.querySelector<HTMLFormElement>('[data-reset-form]');
+  resetForm?.addEventListener('submit',async event=>{
+    event.preventDefault();const data=new FormData(resetForm);const value=String(data.get('password') ?? '');
+    if(value!==data.get('confirmation')){setMessage('The two passwords must match.','error');return;}
+    const button=resetForm.querySelector<HTMLButtonElement>('button')!;button.disabled=true;
+    try{const result=await request('/api/auth/reset/complete',{token:resetToken ?? '',password:value});if(result.ok){setMessage('Your password was updated and all previous sessions were signed out. You can sign in now.','success');resetForm.hidden=true;if(form)form.hidden=false;document.querySelector<HTMLElement>('.account-tabs')!.hidden=false;}else setMessage(errorText(String(result.data.error)),'error');}
+    catch{setMessage('Your password could not be updated. Please try again.','error');}finally{button.disabled=false;}
+  });
+  async function loadProjects() {
+    const list=document.querySelector<HTMLUListElement>('[data-project-list]'),status=document.querySelector<HTMLElement>('[data-project-list-status]');if(!list||!status)return;
+    try {
+      const response=await fetch('/api/account/projects');if(!response.ok)throw new Error();
+      const data=await response.json() as {projects:Array<{tool:{slug:string;name:string};bookmarked:boolean;following:boolean}>};
+      list.replaceChildren(...data.projects.map(project=>{const item=document.createElement('li'),link=document.createElement('a');link.href=`/tool/${project.tool.slug}`;link.textContent=project.tool.name;const state=document.createElement('span');state.textContent=` — ${project.bookmarked?'Saved':''}${project.bookmarked&&project.following?' · ':''}${project.following?'Following':''}`;item.append(link,state);return item;}));status.textContent=data.projects.length?'':'No saved or followed projects yet. Explore the directory to add one.';
+    }catch{status.textContent='Saved projects could not be loaded.';}
+  }
+  const tabs=[...document.querySelectorAll<HTMLButtonElement>('.account-tab')];
+  tabs.forEach((tab,index)=>tab.addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?1:1-index;tabs[next].focus();tabs[next].click();}}));
 </script>

@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import { sortNewest } from '../lib/catalog.mjs';
 import { loadPublicCatalog } from '../lib/public-content.ts';
-import { SITE } from '../lib/site.ts';
 
 const { tools } = loadPublicCatalog();
 const picks = sortNewest(tools.filter((t) => t.status !== 'archived')).slice(0, 6);

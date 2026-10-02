@@ -6,10 +6,13 @@
  *   node scripts/ingest/huggingface.mjs [--dry] [--limit=100]
  */
 import { parseArgs } from '../lib/cli.mjs';
+import { recordSourceOutcome,normalizeCandidates } from '../lib/source-outcome.mjs';
 import { getJson } from '../lib/http.mjs';
 import { loadState, saveState, mark, inboxFile, writeInbox } from '../lib/state.mjs';
 import { isAiRelated, score } from '../lib/relevance.mjs';
 
+import { knownEntries,isKnown } from '../lib/dedupe.mjs';
+const known=knownEntries();
 const args = parseArgs();
 const DRY = Boolean(args.dry);
 const LIMIT = Math.min(Number(args.limit ?? 100), 500);
@@ -68,7 +71,7 @@ try {
   failures.push(`daily_papers: ${error.message}`);
 }
 
-const fresh = rows.sort((a, b) => b.score - a.score);
+const fresh = normalizeCandidates(rows).filter(row=>!isKnown(known,row)).sort((a,b)=>b.score-a.score);
 if (DRY) {
   console.log(`${fresh.length} candidates:\n${fresh.map((r) => `  ${String(r.score).padStart(4)} ${r.kind.padEnd(6)} ${r.name.slice(0, 74)}`).join('\n')}`);
 } else {
@@ -78,4 +81,5 @@ if (DRY) {
   console.log(`${written} new candidate(s) → ${file}`);
 }
 for (const failure of failures) console.error(`  warn: ${failure}`);
-process.exit(failures.length && !fresh.length ? 2 : 0);
+await recordSourceOutcome(args,'huggingface',fresh.length,failures);
+process.exit(failures.length ? 2 : 0);

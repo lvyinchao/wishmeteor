@@ -6,10 +6,11 @@
  *   node scripts/ingest/hn.mjs [--dry] [--points=45]
  */
 import { parseArgs } from '../lib/cli.mjs';
+import { recordSourceOutcome,normalizeCandidates } from '../lib/source-outcome.mjs';
 import { getJson } from '../lib/http.mjs';
 import { loadState, saveState, mark, since, inboxFile, writeInbox } from '../lib/state.mjs';
 import { isAiRelated, score } from '../lib/relevance.mjs';
-import { knownEntries } from '../lib/dedupe.mjs';
+import { knownEntries,isKnown } from '../lib/dedupe.mjs';
 
 const args = parseArgs();
 const DRY = Boolean(args.dry);
@@ -58,7 +59,7 @@ for (const query of queries) {
   }
 }
 
-const fresh = rows.sort((a, b) => b.score - a.score);
+const fresh = normalizeCandidates(rows).filter(row=>!isKnown(known,row)).sort((a,b)=>b.score-a.score);
 if (DRY) {
   console.log(`${fresh.length} candidates:\n${fresh.map((r) => `  ${String(r.score).padStart(4)} ${r.kind.padEnd(5)} ${r.name.slice(0, 78)}`).join('\n')}`);
 } else {
@@ -68,4 +69,5 @@ if (DRY) {
   console.log(`${written} new candidate(s) → ${file}`);
 }
 for (const failure of failures) console.error(`  warn: ${failure}`);
-process.exit(failures.length && !fresh.length ? 2 : 0);
+await recordSourceOutcome(args,'hn',fresh.length,failures);
+process.exit(failures.length ? 2 : 0);

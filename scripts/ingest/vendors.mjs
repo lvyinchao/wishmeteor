@@ -7,6 +7,7 @@
  *   node scripts/ingest/vendors.mjs [--dry] [--force]
  */
 import { parseArgs } from '../lib/cli.mjs';
+import { recordSourceOutcome,normalizeCandidates } from '../lib/source-outcome.mjs';
 import { getConditional, getText } from '../lib/http.mjs';
 import { loadState, saveState, mark, inboxFile, writeInbox, loadValidators, saveValidators } from '../lib/state.mjs';
 import { isAiRelated, score } from '../lib/relevance.mjs';
@@ -14,6 +15,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { PATHS } from '../../src/lib/catalog.mjs';
 
+import { knownEntries,isKnown } from '../lib/dedupe.mjs';
+const known=knownEntries();
 const args = parseArgs();
 const DRY = Boolean(args.dry);
 const today = new Date().toISOString().slice(0, 10);
@@ -89,10 +92,12 @@ for (const source of sources) {
         continue;
       }
       validators[source.url] = result.validator;
-      for (const item of parseRss(result.text, source.name, source.url)) rows.push(item);
+      const parsed=parseRss(result.text, source.name, source.url);if(!parsed.length)throw new Error('rss-parser-returned-zero-items');
+      for (const item of parsed) rows.push(item);
     } else {
       const html = await getText(source.url, { timeout: 20_000 });
-      for (const item of parseHtmlLinks(html, source)) rows.push(item);
+      const parsed=parseHtmlLinks(html,source);if(!parsed.length)throw new Error('html-parser-returned-zero-items');
+      for (const item of parsed) rows.push(item);
     }
   } catch (error) {
     failures.push(`${source.name}: ${error.message.slice(0, 80)}`);
@@ -117,7 +122,7 @@ for (const item of rows) {
   });
 }
 
-const unique = [...new Map(fresh.map((row) => [row.key, row])).values()];
+const unique = [...new Map(normalizeCandidates(fresh).filter(row=>!isKnown(known,row)).map(row=>[row.key,row])).values()];
 if (DRY) {
   console.log(`${unique.length} candidates:\n${unique.map((r) => `  ${r.name.slice(0, 84)}`).join('\n')}`);
 } else {
@@ -128,4 +133,5 @@ if (DRY) {
   console.log(`${written} new candidate(s) → ${file}`);
 }
 for (const failure of failures) console.error(`  warn: ${failure}`);
-process.exit(failures.length && !unique.length ? 2 : 0);
+await recordSourceOutcome(args,'vendors',unique.length,failures);
+process.exit(failures.length ? 2 : 0);

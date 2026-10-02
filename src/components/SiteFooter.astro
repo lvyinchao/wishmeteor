@@ -1,24 +1,4 @@
 ---
-import { SITE } from '../lib/site.ts';
-const year = new Date().getFullYear();
-const links = [
-  { href: '/new', label: 'Wish sky' },
-  { href: '/tools', label: 'Explore projects' },
-  { href: '/submit', label: 'Make a wish' },
-  { href: '/dofollow-policy', label: 'Community agreement' },
-  { href: '/blog', label: 'Logbook' },
-  { href: '/about', label: 'Our story' },
-  { href: '/privacy', label: 'Privacy' },
-];
+import { publicFooter } from '../lib/public-shell.ts';
 ---
-
-<footer class="site-footer">
-  <div class="shell">
-    <div>
-      <strong>{SITE.name}</strong> — {SITE.tagline}<br />
-      <span>A wishing well and gathering place for people building AI.</span>
-    </div>
-    <nav aria-label="Footer">{links.map((l) => <a href={l.href}>{l.label}</a>)}</nav>
-    <div>© {year} {SITE.name}</div>
-  </div>
-</footer>
+<Fragment set:html={publicFooter()} />

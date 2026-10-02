@@ -14,6 +14,8 @@ const evergreen = [
   { path: '/blog', lastmod: '' },
   { path: '/new', lastmod: '' },
   { path: '/tools', lastmod: '' },
+  { path: '/collections', lastmod: '' },
+  { path: '/updates', lastmod: '' },
 ];
 
 export const GET: APIRoute = ({ site }) => {

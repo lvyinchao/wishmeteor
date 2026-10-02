@@ -1,44 +1,20 @@
 ---
-import SEOHead from '../components/SEOHead.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import SiteFooter from '../components/SiteFooter.astro';
-import JsonLd from '../components/JsonLd.astro';
-import AnalyticsConsent from '../components/AnalyticsConsent.astro';
-import '../styles/global.css';
-
+import { publicHead,publicHeader,publicFooter,publicScripts } from '../lib/public-shell.ts';
 interface Props {
-  title: string;
-  description: string;
-  image?: string;
-  imageAlt?: string;
-  type?: 'website' | 'article';
-  publishedTime?: string;
-  modifiedTime?: string;
-  noindex?: boolean;
-  jsonLd?: object[];
+ title:string; description:string; image?:string; imageAlt?:string; type?:'website'|'article';
+ publishedTime?:string; modifiedTime?:string; noindex?:boolean; jsonLd?:object[];
 }
-
-const { jsonLd = [], ...head } = Astro.props;
+const head=publicHead({...Astro.props,path:Astro.url.pathname});
+const privatePage=Astro.props.noindex===true || Astro.url.searchParams.has('reset');
 ---
-
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="WishMeteor blog" href="/rss.xml" />
-    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
-    <SEOHead {...head} />
-    {jsonLd.map((block) => <JsonLd data={block} />)}
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <SiteHeader />
-    <main id="main" class="shell">
-      <slot />
-    </main>
-    <SiteFooter />
-    <AnalyticsConsent measurementId={import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? 'G-QV8KGLLDXR'} />
-  </body>
+ <head><Fragment set:html={head}/></head>
+ <body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <Fragment set:html={publicHeader(Astro.url.pathname)}/>
+  <main id="main" class="shell"><slot/></main>
+  <Fragment set:html={publicFooter()}/>
+  <Fragment set:html={publicScripts(import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? 'G-QV8KGLLDXR',privatePage)}/>
+ </body>
 </html>

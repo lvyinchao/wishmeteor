@@ -1,4 +1,6 @@
-import { loadCatalog } from '../../src/lib/catalog.mjs';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { parseArgs } from './cli.mjs';
 import { canonicalizeUrl, domainKey, slugify } from '../../src/lib/links.mjs';
 
 /**
@@ -6,26 +8,32 @@ import { canonicalizeUrl, domainKey, slugify } from '../../src/lib/links.mjs';
  * a source-native key (github:owner/repo, hf:model-id), a domain hash, or a slug.
  */
 export function knownEntries() {
-  const { tools } = loadCatalog();
+  const args=parseArgs();
+  const snapshotFile=resolve(String(args.snapshot ?? process.env.WISHMETEOR_SNAPSHOT ?? 'data/cache/catalog-snapshot.json'));
+  const snapshot=JSON.parse(readFileSync(snapshotFile,'utf8'));
+  if(snapshot.source!=='d1'||!Array.isArray(snapshot.tools)||!Number.isFinite(Date.parse(snapshot.observedAt))||(!args['allow-stale-snapshot']&&Date.now()-Date.parse(snapshot.observedAt)>3600000))throw new Error('fresh-d1-snapshot-required');
+  const tools=[...snapshot.tools,...(snapshot.pending ?? []).map(row=>({...row,slug:'pending-'+row.id,sources:[]}))];
   const keys = new Set();
   const domains = new Set();
+  const projects=new Set(),urls=new Set();
   const slugs = new Set();
   const names = new Set();
   for (const entry of tools) {
     slugs.add(entry.slug);
     names.add(normaliseName(entry.name));
     const canonical = canonicalizeUrl(entry.url);
-    if (canonical) domains.add(domainKey(canonical.domain));
+    if (canonical) {domains.add(domainKey(canonical.domain));projects.add(canonical.projectKey);urls.add(canonical.url);}
     for (const source of entry.sources ?? []) {
       const repo = /github\.com\/([^/]+\/[^/]+)/.exec(source.url);
       if (repo) keys.add(`github:${repo[1].toLowerCase()}`);
-      const hub = /huggingface\.co\/models\/([^/]+\/[^/]+)/.exec(source.url);
+      const hub = /huggingface\.co\/(?:models\/)?([^/]+\/[^/]+)/.exec(source.url);
       if (hub) keys.add(`hf:${hub[1].toLowerCase()}`);
     }
     const repoUrl = /github\.com\/([^/]+\/[^/]+)/.exec(entry.url);
     if (repoUrl) keys.add(`github:${repoUrl[1].toLowerCase()}`);
   }
-  return { keys, domains, slugs, names, tools };
+  for(const alias of snapshot.aliases ?? []){const target=canonicalizeUrl(alias.source_url);if(target){projects.add(target.projectKey);urls.add(target.url);}}
+  return { keys, domains, projects, urls, slugs, names, tools };
 }
 
 const normaliseName = (name) => String(name).toLowerCase().replace(/[^a-z0-9]+/g, '');
@@ -35,8 +43,9 @@ export function isKnown(known, candidate) {
   if (candidate.key && known.keys.has(candidate.key)) return 'key';
   const canonical = canonicalizeUrl(candidate.url);
   if (!canonical) return 'invalid-url';
-  if (known.domains.has(domainKey(canonical.domain))) return 'domain';
-  if (known.names.has(normaliseName(candidate.name))) return 'name';
+  if(known.urls.has(canonical.url))return 'url';
+  if(candidate.kind!=='news'&&known.projects.has(canonical.projectKey))return 'project';
+  if (candidate.kind!=='news'&&known.names.has(normaliseName(candidate.name))) return 'name';
   return null;
 }
 

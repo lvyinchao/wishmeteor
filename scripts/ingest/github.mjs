@@ -8,7 +8,8 @@
  */
 import { request, getText } from '../lib/http.mjs';
 import { parseArgs } from '../lib/cli.mjs';
-import { loadState, saveState, mark, since, inboxFile, writeInbox } from '../lib/state.mjs';
+import { recordSourceOutcome,normalizeCandidates } from '../lib/source-outcome.mjs';
+import { loadState, saveState, mark, inboxFile, writeInbox } from '../lib/state.mjs';
 import { isAiRelated, score } from '../lib/relevance.mjs';
 import { knownEntries, isKnown } from '../lib/dedupe.mjs';
 
@@ -19,20 +20,7 @@ const state = loadState();
 const known = knownEntries();
 const observedAt = today;
 
-/** The trending page has no API, so parse the markup we are given. */
-function parseTrending(html) {
-  const rows = [];
-  for (const block of html.split(/<article class="Box-row">/).slice(1)) {
-    const href = /<h2 class="h3 lh-condensed">\s*<a href="\/([^"]+)"/.exec(block)?.[1];
-    if (!href) continue;
-    const [owner, repo] = href.split('/');
-    const description = /<p class="col-9[^"]*">([\s\S]*?)<\/p>/.exec(block)?.[1]?.replace(/<[^>]+>/g, '').trim();
-    const stars = Number(/stargazers[^>]*>\s*(?:<svg[\s\S]*?<\/svg>)?\s*([\d,]+)/.exec(block)?.[1]?.replace(/,/g, '') ?? 0);
-    const language = /itemprop="programmingLanguage">([^<]+)</.exec(block)?.[1]?.trim();
-    rows.push({ owner, repo: `${owner}/${repo}`, href, url: `https://github.com/${repo}`, description, stars, language });
-  }
-  return rows;
-}
+import { parseTrending } from '../lib/github-trending.mjs';
 
 const collected = [];
 const failures = [];
@@ -40,7 +28,8 @@ const failures = [];
 for (const window of ['daily', 'weekly']) {
   try {
     const html = await getText(`https://github.com/trending?since=${window}`);
-    for (const row of parseTrending(html)) {
+    const parsed=parseTrending(html);if(!parsed.length)throw new Error('trending-parser-returned-zero-repositories');
+    for (const row of parsed) {
       if (!isAiRelated(row.repo, row.description, row.language)) continue;
       collected.push(row);
     }
@@ -103,7 +92,7 @@ for (const item of collected) {
 
 const deduped = new Map();
 for (const row of rows) if (!deduped.has(row.key)) deduped.set(row.key, row);
-const fresh = [...deduped.values()].sort((a, b) => b.score - a.score);
+const fresh = normalizeCandidates([...deduped.values()]).sort((a,b)=>b.score-a.score);
 
 if (DRY) {
   console.log(`${fresh.length} candidates:\n${fresh.map((r) => `  ${String(r.score).padStart(4)} ${r.key} — ${r.summary.slice(0, 70)}`).join('\n')}`);
@@ -115,4 +104,5 @@ if (DRY) {
 }
 
 for (const failure of failures) console.error(`  warn: ${failure}`);
-process.exit(failures.length && !fresh.length ? 2 : 0);
+await recordSourceOutcome(args,'github',fresh.length,failures);
+process.exit(failures.length ? 2 : 0);

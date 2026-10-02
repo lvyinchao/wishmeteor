@@ -5,7 +5,7 @@
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { canonicalizeUrl } from './links.mjs';
-import { SITE } from './site.ts';
+import { validateTool as validateSharedTool } from './tool-schema.ts';
 
 export const PRICING = ['free', 'freemium', 'paid', 'open-source'];
 export const STATUS = ['active', 'beta', 'stale', 'archived'];
@@ -48,39 +48,9 @@ const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
  * @property {{ submittedAt: string, blessingShort: string, blessingLong: string, cardPath?: string, notifiedAt?: string | null }} [wish]
  */
 
-const isDate = (v) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
-
 /** Collect human-readable problems for one entry. @returns {string[]} */
-export function validateTool(raw, slug, categoryIds) {
-  const errors = [];
-  const need = (ok, msg) => { if (!ok) errors.push(msg); };
-  need(typeof raw.name === 'string' && raw.name.length > 0 && raw.name.length <= 80, 'name must be 1-80 chars');
-  need(typeof raw.summary === 'string' && raw.summary.length >= 40 && raw.summary.length <= 160, 'summary must be 40-160 chars');
-  need(typeof raw.description === 'string' && raw.description.length >= SITE.minDescriptionChars, `description must be >= ${SITE.minDescriptionChars} chars`);
-  need(PRICING.includes(raw.pricing), `pricing must be one of ${PRICING.join('|')}`);
-  need(STATUS.includes(raw.status), `status must be one of ${STATUS.join('|')}`);
-  need(ORIGIN.includes(raw.origin), `origin must be one of ${ORIGIN.join('|')}`);
-  need(Array.isArray(raw.tags) && raw.tags.length > 0, 'tags must be a non-empty array');
-  need(categoryIds.has(raw.category), `category "${raw.category}" is not defined in categories.json`);
-  need(Array.isArray(raw.sources) && raw.sources.length > 0, 'sources must cite at least one URL');
-  need(raw.approved === true, 'only approved entries may live in src/content/tools');
-  need(isDate(raw.firstSeenAt) && isDate(raw.lastSeenAt), 'firstSeenAt/lastSeenAt must be YYYY-MM-DD');
-  need(raw.lastVerifiedAt === null || isDate(raw.lastVerifiedAt), 'lastVerifiedAt must be YYYY-MM-DD or null when never checked');
-  need(Number.isInteger(raw.checksFailed) && raw.checksFailed >= 0, 'checksFailed must be an integer >= 0');
-  const canonical = canonicalizeUrl(raw.url);
-  need(!!canonical, 'url must be a valid http(s) URL');
-  if (canonical) need(canonical.url === raw.url, `url is not canonical, expected ${canonical.url}`);
-  const wish = raw.wish;
-  if (raw.origin === 'submitted') {
-    need(!!wish, 'submitted entries must carry a wish object');
-  }
-  if (wish) {
-    need(isDate(wish.submittedAt), 'wish.submittedAt must be YYYY-MM-DD');
-    need(typeof wish.blessingShort === 'string' && wish.blessingShort.length <= 120, 'wish.blessingShort must be <= 120 chars');
-    need(typeof wish.blessingLong === 'string' && wish.blessingLong.length >= 120 && wish.blessingLong.length <= 600, 'wish.blessingLong must be 120-600 chars');
-    need('notifiedAt' in wish, 'wish.notifiedAt must be present (null until the blessing email is sent)');
-  }
-  return errors.map((e) => `${slug}: ${e}`);
+export function validateTool(raw, slug, _categoryIds) {
+  return validateSharedTool(raw,slug).errors;
 }
 
 /**

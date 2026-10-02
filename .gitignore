@@ -15,3 +15,9 @@ data/.lock
 
 .DS_Store
 *.log
+.env.local
+data/.release-lock/
+data/drafts/blessings/
+
+.playwright-cli/
+output/playwright/

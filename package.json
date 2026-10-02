@@ -14,9 +14,13 @@
     "approve": "node scripts/approve.mjs",
     "verify-links": "node scripts/verify-links.mjs",
     "notify": "node scripts/notify.mjs",
-    "ship": "node scripts/pipeline.mjs"
+    "ship": "node scripts/pipeline.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "snapshot-catalog": "node scripts/snapshot-catalog.mjs",
+    "backfill-catalog": "node scripts/backfill-catalog.mjs"
   },
   "dependencies": {
+    "@resvg/resvg-wasm": "2.6.2",
     "astro": "^5.18.2",
     "tldts": "^7.4.16"
   },
@@ -26,6 +30,7 @@
     "@fontsource/inter": "^5.2.5",
     "@resvg/resvg-js": "^2.6.2",
     "satori": "^0.15.0",
+    "sharp": "0.34.5",
     "typescript": "^5.9.2",
     "wrangler": "^4.29.1"
   },

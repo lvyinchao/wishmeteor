@@ -87,7 +87,7 @@ async function readPosts() {
   const posts = [];
   for (const file of files.filter((f) => f.endsWith('.md'))) {
     const { data } = parseFrontmatter(await readFile(join(dir, file), 'utf8'));
-    if (data.title && data.description) posts.push({ id: file.replace(/\.md$/, ''), data });
+    if (data.approved === true && data.title && data.description) posts.push({ id: file.replace(/\.md$/, ''), data });
   }
   return posts;
 }
@@ -98,41 +98,21 @@ export function blessingCards() {
     name: 'wishmeteor:blessing-cards',
     hooks: {
       'astro:build:done': async ({ dir, logger }) => {
-        const { loadCatalog } = await import('../src/lib/catalog.mjs');
         const { SITE } = await import('../src/lib/site.ts');
-        const { tools, categories } = loadCatalog();
         const out = (rel) => join(dir.pathname, rel.replace(/^\//, ''));
         let count = 0;
-
         await renderCard(out(OG.home), {
-          eyebrow: 'AI tools index',
-          title: SITE.tagline,
-          body: 'Submit your product, clear review, keep a dofollow link — and get a blessing written by hand.',
+          eyebrow: 'A wishing well for AI builders', title: SITE.tagline,
+          body: 'Share what you are making, receive a personal blessing, and encourage projects with browser stars.',
           footer: 'wishmeteor.net/submit',
         });
         count += 1;
-
-        for (const entry of tools) {
-          await renderCard(out(OG.tool(entry.slug)), {
-            eyebrow: entry.origin === 'submitted' ? 'launched wish' : entry.category,
-            title: entry.name,
-            body: entry.wish?.blessingShort ?? entry.summary,
-            footer: `wishmeteor.net/tool/${entry.slug}`,
-          });
-          count += 1;
+        // Published products render versioned cards from D1 in the Worker.
+        const sharp=(await import('sharp')).default;
+        const previews=join(root,'public/tool-previews');
+        for(const file of (await readdir(previews)).filter(file=>file.endsWith('.jpg'))) {
+          await sharp(join(previews,file)).resize({width:640,withoutEnlargement:true}).webp({quality:78}).toFile(out('/tool-previews/'+file.replace(/\.jpg$/,'.webp')));
         }
-
-        for (const category of categories) {
-          const total = tools.filter((t) => t.category === category.id && t.status !== 'archived').length;
-          await renderCard(out(OG.category(category.id)), {
-            eyebrow: 'category',
-            title: category.title,
-            body: category.description,
-            footer: `${total} entries · wishmeteor.net`,
-          });
-          count += 1;
-        }
-
         for (const post of await readPosts()) {
           await renderCard(out(OG.post(post.id)), {
             eyebrow: 'logbook',

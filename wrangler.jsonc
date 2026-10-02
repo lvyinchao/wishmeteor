@@ -6,14 +6,16 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    "run_worker_first": ["/", "/api/*", "/new", "/new/*", "/tools", "/tools/*", "/tool/*"],
+    "run_worker_first": ["/", "/api/*", "/new", "/new/*", "/tools", "/tools/*", "/tool/*", "/category/*", "/compare", "/collections", "/collections/*", "/updates", "/rss.xml", "/sitemap.xml", "/sitemap-pages.xml", "/sitemap-tools.xml", "/sitemap-tools-*.xml"],
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   },
+  "rules": [{"type":"Data","globs":["**/*.ttf"],"fallthrough":true}],
   "routes": [
     { "pattern": "wishmeteor.net/*", "zone_name": "wishmeteor.net" },
     { "pattern": "www.wishmeteor.net/*", "zone_name": "wishmeteor.net" }
   ],
+  "triggers": { "crons": ["*/5 * * * *"] },
   "vars": {
     "APP_ORIGIN": "https://wishmeteor.net"
   },

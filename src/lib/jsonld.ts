@@ -85,7 +85,7 @@ export function breadcrumbs(trail: { name: string; path?: string }[]) {
   };
 }
 
-export function website(path: string) {
+export function website(_path: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',

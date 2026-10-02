@@ -1,56 +1,18 @@
 import { spawnSync } from 'node:child_process';
-
-/**
- * Talk to the submissions table through wrangler: no admin endpoint, no admin token,
- * and every read is the same CLI an operator would type by hand.
- * @param {{ local?: boolean }} [options]
- */
-export function makeD1({ local = false } = {}) {
-  const target = local ? '--local' : '--remote';
-
-  function run(statement) {
-    const result = spawnSync('npx', ['--yes', 'wrangler', 'd1', 'execute', 'wishmeteor', target, '--json', '--command', statement], {
-      encoding: 'utf8',
-      maxBuffer: 32 * 1024 * 1024,
-    });
-    if (result.status !== 0) {
-      const detail = (result.stderr || result.stdout || '').split('\n').filter(Boolean).pop() ?? 'unknown error';
-      throw new Error(`d1 execute failed: ${detail}`);
-    }
-    const stdout = result.stdout.trim();
-    const start = stdout.indexOf('[');
-    if (start === -1) return [];
-    try {
-      const parsed = JSON.parse(stdout.slice(start));
-      const first = Array.isArray(parsed) ? parsed[0] : parsed;
-      return first?.results ?? parsed;
-    } catch {
-      return [];
-    }
-  }
-
-  const query = (sql, ...params) => run(interpolate(sql, params));
-  const quote = (value) => (value === null || value === undefined ? 'NULL' : `'${String(value).replaceAll("'", "''")}'`);
-
-  /** Values are bound by escaping into a literal, because wrangler takes one SQL string. */
-  function interpolate(sql, params) {
-    if (!params.length) return sql;
-    let index = 0;
-    return sql.replace(/\?/g, () => {
-      const value = params[index++];
-      return typeof value === 'number' ? String(value) : quote(value);
-    });
-  }
-
-  return {
-    run,
-    query,
-    pending: (limit = 50) =>
-      query(`SELECT id, name, url, domain, email, category, notes, created_at FROM submissions WHERE verdict = 'pending' ORDER BY created_at ASC LIMIT ${Number(limit)}`),
-    get: (id) => query('SELECT * FROM submissions WHERE id = ?', Number(id))[0],
-    setVerdict: (id, verdict) =>
-      run(`UPDATE submissions SET verdict = '${verdict}', verdict_at = datetime('now') WHERE id = ${Number(id)}`),
-    markNotified: (id) =>
-      run(`UPDATE submissions SET notified_at = datetime('now'), email = NULL WHERE id = ${Number(id)}`),
-  };
+import { PATHS } from '../../src/lib/catalog.mjs';
+/** Wrangler authentication stays in its own process. Remote calls default to read only. */
+export function makeD1({local=false,writable=false,persistTo,config,runner=spawnSync}={}) {
+ function run(statement) {
+  if(!writable&&!/^\s*(?:SELECT|EXPLAIN\s+QUERY\s+PLAN)\b/i.test(statement))throw new Error('d1-read-only');
+  const args=['exec','wrangler','d1','execute','wishmeteor',local?'--local':'--remote','--json','--command',statement];if(persistTo)args.push('--persist-to',persistTo);if(config)args.push('--config',config);
+  const result=runner('pnpm',args,{encoding:'utf8',maxBuffer:64*1024*1024,cwd:PATHS.root});
+  if(result.status!==0)throw new Error('d1-execute-failed-exit-'+(result.status??'unknown'));
+  const raw=result.stdout.trim(),start=raw.indexOf('[');if(start<0)throw new Error('d1-invalid-response');
+  const parsed=JSON.parse(raw.slice(start));if(!Array.isArray(parsed)||!parsed.length||parsed.some(item=>item.success===false||!Array.isArray(item.results)))throw new Error('d1-query-failed');return parsed[0].results;
+ }
+ function query(sql,...values) {
+  let index=0;const escaped=sql.replace(/'(?:''|[^'])*'|"(?:""|[^"])*"|\?/g,token=>{if(token!=='?')return token;if(index>=values.length)throw new Error('d1-parameter-count');const value=values[index++];if(value==null)return 'NULL';if(typeof value==='number'){if(!Number.isFinite(value))throw new Error('invalid-number');return String(value);}if(typeof value!=='string')throw new Error('invalid-sql-value');return "'"+value.replaceAll("'","''")+"'";});
+  if(index!==values.length)throw new Error('d1-parameter-count');return run(escaped);
+ }
+ return {run,query};
 }
