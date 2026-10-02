@@ -7,7 +7,8 @@ export const CATEGORY_NAMES:Record<string,string>={
   'education-learning':'Education & Learning','sports-fitness':'Sports & Fitness','marketing-growth':'Marketing & Growth',
   'business-services':'Business Services','maker-tools':'Maker Tools',uncategorized:'New discoveries',
 };
-export const PRICING=['free','freemium','paid','open-source'] as const;
+export const PRICING=['free','freemium','paid','open-source','unknown'] as const;
+export const PRICING_LABELS:Record<typeof PRICING[number],string>={free:'Free',freemium:'Freemium',paid:'Paid','open-source':'Open source',unknown:'Pricing not confirmed'};
 export const STATUSES=['active','beta','stale','archived'] as const;
 export const SLUG_RE=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export interface Source { type:string;url:string;observedAt:string|null;title?:string }
@@ -81,7 +82,7 @@ export function validateTool(raw:unknown,slug:string,now=new Date()):{value:Tool
   const tags=Array.isArray(input.tags)?input.tags:[];
   if(tags.length<1||tags.length>12||tags.some(tag=>typeof tag!=='string'||!tag.trim()||tag.length>40))errors.push('tags must contain 1-12 non-empty strings of at most 40 characters');
   const pricing=String(input.pricing) as Tool['pricing'],status=String(input.status) as Tool['status'];
-  if(!PRICING.includes(pricing))errors.push('pricing must be free, freemium, paid, or open-source');
+  if(!PRICING.includes(pricing))errors.push('pricing must be free, freemium, paid, open-source, or unknown');
   if(!STATUSES.includes(status))errors.push('status must be active, beta, stale, or archived');
   const origin=input.origin==='submitted'?'submitted':'curated';
   if(input.origin!==undefined&&!['submitted','curated'].includes(String(input.origin)))errors.push('origin must be submitted or curated');

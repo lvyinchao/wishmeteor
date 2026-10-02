@@ -132,7 +132,7 @@ async function approveSubmission(request:Request,env:Env,id:number,action:string
     const results=await env.DB.batch(statements);return results[0].meta.changes?json({ok:true,id,verdict:'rejected'}):json({error:'submission-not-pending'},409);
   }
   const input=await jsonBody(request,64_000),slug=stringField(input,'slug',100,true);
-  const {value,errors}=validateTool(input.content,slug);value.origin='submitted';
+  const {value,errors}=validateTool(input.content,slug);value.origin=row.email?'submitted':'curated';
   if(canonicalProductUrl(row.url)?.url!==value.url)errors.push('Published URL must match the reviewed submission');
   if(!value.approved||value.status==='archived')errors.push('A new approval must publish a visible product');
   value.wish={submittedAt:row.created_at.slice(0,10),blessingShort:value.wish?.blessingShort ?? '',blessingLong:value.wish?.blessingLong ?? '',blessingApproved:value.wish?.blessingApproved===true,notifiedAt:null,...(row.make_a_wish?{makerWish:row.make_a_wish}:{})};
