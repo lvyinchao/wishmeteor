@@ -17,6 +17,7 @@
     "migrations/1011_catalog_order_indexes.sql",
     "migrations/1012_require_product_identity.sql",
     "migrations/1013_product_identity_aliases.sql",
+    "migrations/1014_publication_batch_exceptions.sql",
     "package.json",
     "pnpm-lock.yaml",
     "public/admin.js",
@@ -59,6 +60,7 @@
     "src/lib/link-policy.ts",
     "src/lib/links.mjs",
     "src/lib/public-content.ts",
+    "src/lib/product-covers.ts",
     "src/lib/public-shell.ts",
     "src/lib/tool-schema.ts",
     "src/lib/verification.d.mts",
@@ -70,7 +72,6 @@
     "src/pages/privacy.astro",
     "src/pages/sitemap-pages.xml.ts",
     "src/pages/submit.astro",
-    "src/styles/global.css",
     "tests/auth.test.mjs",
     "tests/catalog.test.mjs",
     "tests/fixtures.mjs",
@@ -107,7 +108,8 @@
     "migrations/1010_product_dedupe_guards.sql",
     "migrations/1011_catalog_order_indexes.sql",
     "migrations/1012_require_product_identity.sql",
-    "migrations/1013_product_identity_aliases.sql"
+    "migrations/1013_product_identity_aliases.sql",
+    "migrations/1014_publication_batch_exceptions.sql"
   ],
   "publicChecks": [
     "/",

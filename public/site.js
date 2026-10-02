@@ -2,7 +2,7 @@ const configuration=document.querySelector('script[src="/site.js"]');
 const privatePage=configuration?.dataset.private==='true'||location.search.includes('reset=');
 const measurementId=configuration?.dataset.measurementId;
 if(!privatePage&&/^G-[A-Z0-9]+$/.test(measurementId??'')) {
- window.dataLayer=window.dataLayer??[];window.gtag=(...args)=>window.dataLayer.push(args);
+ window.dataLayer=window.dataLayer??[];window.gtag=function(){window.dataLayer.push(arguments);};
  window.gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
  window.gtag('js',new Date());window.gtag('config',measurementId,{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false,page_location:location.origin+location.pathname});
  const script=document.createElement('script');script.async=true;script.dataset.wishmeteorGa='true';script.src=`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;document.head.append(script);

@@ -1,6 +1,6 @@
 # Verification evidence — 2026-10-02
 
-All mutations below used isolated SQLite/D1 or a local Wrangler Worker with **no Email binding**. Production inspection used aggregate SELECTs only. Browser third-party requests were blocked; no analytics event or email was sent externally during these checks.
+Local implementation checks used isolated SQLite/D1 or a local Wrangler Worker with **no Email binding**; third-party browser traffic was blocked during those checks. Production release actions and separately authorized product operations are recorded below. A later controlled production analytics check did send public product-view and share events, but GA4 did not show them in Realtime.
 
 ## Automated and runtime checks
 
@@ -26,12 +26,15 @@ Screenshots and PNG evidence are attached in the task's visual artifact director
 - `optimization-reviewed-blessing.png`
 - `optimization-card-boundary.png`
 
-GA event assertions confirmed local `product_view`, `share_listing` and `submission_success`; star events are exercised in the shared interaction flow. Account/reset/admin load no GA tag; reset tokens are removed from the URL before other scripts. External GA traffic was blocked, so these assertions do not prove Realtime/DebugView receipt.
+GA event assertions confirmed local `product_view`, `share_listing` and `submission_success`; star events are exercised in the shared interaction flow. Account/reset/admin load no GA tag; reset tokens are removed from the URL before other scripts. Local assertions do not prove GA4 receipt.
 
 ## Source collection
 
 Read-only collection ran against the copied D1 snapshot. Hacker News, Hugging Face and vendor sources completed. GitHub initially reported a changed markup parser as a partial failure rather than success with zero results. After fixing attributes before the repository href, the live Trending page parsed 15 repositories and the GitHub dry run completed with 51 candidates and zero source failures. Candidates retain canonical URL, root domain, hosted project identity, source and observation timestamps; news entries retain their published date when available.
 
-## Remaining production evidence
+## Production readback and remaining gate
 
-Production migration, push/deployment, real Google sign-in, inbox receipt and GA4 Realtime/DebugView remain unperformed and require the corresponding production authorization/access. Turnstile is optional and unconfigured; server/client integration and rejection cases were tested with isolated responses, but no real widget was created. Five legacy submitted listings lack full blessings and are exposed as a review backlog; migration does not invent them or send retroactive mail.
+- The deployed root and public API report revision `954691f64fc7f6d7a845c4f4c678a32db3031ce3` (Cloudflare version `15ee3dfb-ff4a-469e-9a99-e5deaef8b013`). Read-only admin metrics on 2026-10-02 returned 159 public products, zero pending submissions, 36 published that day, five incomplete legacy blessings, and six accepted outbox records. The migration, guarded backfill, push and deployment have been completed; release records are available from the admin metrics endpoint.
+- Production Google sign-in, account recovery, provider acceptance, inbox delivery, and a controlled publication were recorded as passed in the release log. The 35 researched entries are published; no contact address or maker ownership was invented for them. The nine-per-day maker allowance remained in place; a separately authorized, audited exception covered 27 of the 35-item batch.
+- The correct GA4 stream is visible in the current Google account as `wishmetetor`; its website URL is `https://www.wishmeteor.net` and its measurement ID matches the deployed `G-QV8KGLLDXR` tag. On 2026-10-02, the stream reported no data in the prior 48 hours. After controlled visits to a public product page and one copy-link interaction in Chrome and the in-app browser, GA4 Realtime still showed zero active users and no events. The stream's Internal Traffic filter was in Testing state. The property and stream now match; event receipt remains unverified, and the browser-to-GA collection path needs diagnosis.
+- Turnstile is optional and unconfigured; server/client integration and rejection cases were tested with isolated responses, but no real widget was created. Five legacy submitted listings still lack complete blessings; the migration preserved them for review and did not invent text or send retroactive mail.

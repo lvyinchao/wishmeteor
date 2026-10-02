@@ -1,4 +1,4 @@
-import sources from '../data/product-cover-sources.json';
+import sources from '../data/product-cover-sources.json' with { type: 'json' };
 export interface ProductCoverSource {kind:string;sourcePage:string;sourceImage?:string;capturedAt:string;sha256:string;description?:string}
 export const productCoverSources=sources as Record<string,ProductCoverSource>;
 export function productCoverLabel(source:ProductCoverSource):string {
