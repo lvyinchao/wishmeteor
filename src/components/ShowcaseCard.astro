@@ -1,12 +1,14 @@
 ---
+import { productCoverSources,productCoverLabel } from '../lib/product-covers';
 interface Props { entry: any; categoryName: string; stars?: boolean; }
 const { entry, categoryName, stars = true } = Astro.props;
 const wish = entry.wish && typeof entry.wish === 'object' ? entry.wish : {};
 const excerpt = typeof wish.makerWish === 'string' && wish.makerWish.trim() ? wish.makerWish.trim() : entry.summary;
 const cover = entry.coverImage ?? `/tool-previews/${entry.slug}.jpg`;
+const coverSource=productCoverSources[entry.slug];
 ---
 <article class="card tool-showcase-card" data-catalog-item data-slug={entry.slug} data-category={entry.category} data-search={`${entry.name} ${excerpt} ${categoryName} ${(entry.tags ?? []).join(' ')}`.toLowerCase()}>
-  <a class="tool-showcase-card__preview" href={`/tool/${entry.slug}`}><img src={cover} alt={`Product cover for ${entry.name}`} loading="lazy" decoding="async" /></a>
+  <a class="tool-showcase-card__preview" href={`/tool/${entry.slug}`}><img class:list={{'product-interface-cover':!!coverSource}} src={cover} alt={`${coverSource?productCoverLabel(coverSource):'Product cover'} for ${entry.name}`} loading="lazy" decoding="async" /></a>
   <div class="tool-showcase-card__content">
     <h3><a class="card-title" href={`/tool/${entry.slug}`}>{entry.name}</a></h3>
     <p>{excerpt}</p>

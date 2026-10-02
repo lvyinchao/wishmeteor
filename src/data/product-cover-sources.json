@@ -1,0 +1,232 @@
+{
+  "premortem": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://premortem.site/",
+    "capturedAt": "2026-10-02T02:23:45.039Z",
+    "sha256": "f16ccf0dac0baa2ff6d2c7e84707d3e67f095d9e01bfd699172fb5034067d38e"
+  },
+  "breadcrumb": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://innerloop.works/breadcrumb",
+    "capturedAt": "2026-10-02T02:36:35.755Z",
+    "sha256": "a626c28c08f38e4973e47d48e3454b75376f8c506b1d18c43b2d2b82548570fd"
+  },
+  "loveyournextjob": {
+    "kind": "published-interface-image",
+    "sourcePage": "https://betalist.com/startups/loveyournextjob",
+    "sourceImage": "https://resize.imagekit.co/XrUHpefAIdRR7gh1rx5CS9G7gb7MLLq9D2c2-LrApGU/plain/s3://betalist-production/j91p639g665wh2s1xqp3wf9q77t6",
+    "description": "Published mobile app interface screenshot.",
+    "capturedAt": "2026-10-02T02:31:58.940Z",
+    "sha256": "5526c2eb8eeee336d90b7841ea4dd58bbe86da0307acb71fbcb7bd8763741acf"
+  },
+  "loomascale": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://ai.loomascale.com/",
+    "capturedAt": "2026-10-02T02:36:16.046Z",
+    "sha256": "df6d5756545aa0fe7247bc23bdbeb0db5cbe3d74b46a38f96ac49fc28ef33ca6"
+  },
+  "hi-ai": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://www.hi-ai.live/",
+    "capturedAt": "2026-10-02T02:24:11.225Z",
+    "sha256": "a92acfc363aa8a6ab3206b86a90d295027cf99a990f7e75403d6d5c9d15e6f9d"
+  },
+  "attache": {
+    "kind": "official-interface-image",
+    "sourcePage": "https://www.attache.news",
+    "sourceImage": "https://www.attache.news/landing/incall-frame-full.png",
+    "description": "An iPhone on a call with Attaché",
+    "capturedAt": "2026-10-02T02:31:49.389Z",
+    "sha256": "efd51fe3e82d6ada40cc7e536824f757a3b26e7d05c492be7c29b1d8b9b02d8f"
+  },
+  "myresultlab": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://myresultlab.com/",
+    "capturedAt": "2026-10-02T02:24:27.048Z",
+    "sha256": "dc239014062d1b7986924ce8a3535b37daa3a32da0e718b3854ba188e27c9bcd"
+  },
+  "halv": {
+    "kind": "official-interface-image",
+    "sourcePage": "https://halv.ai",
+    "sourceImage": "https://halv.ai/_astro/workspace-light.DqY4Bod2_28Hx2g.webp",
+    "description": "Halv 桌面工作区，在三个终端窗格中运行 Claude Code 和 Codex，并显示项目历史记录和节省量表。",
+    "capturedAt": "2026-10-02T02:31:50.966Z",
+    "sha256": "54c04e58f5fdf91b1fc1d48b2934974f14f4408a8aa8c12e74d30065d039cf03"
+  },
+  "flowmate": {
+    "kind": "published-interface-image",
+    "sourcePage": "https://betalist.com/startups/flowmate",
+    "sourceImage": "https://resize.imagekit.co/T3Z8A3m8sOgILQazM8evlMC9Yw-74QGkRLcHETZ0aLY/plain/s3://betalist-production/n9a5tyhjwec18l82mwnvtglumean",
+    "capturedAt": "2026-10-02T02:38:35.778Z",
+    "sha256": "6eff534b1cae2ed213835bf004fec2bad407d0e9d6ec737388fc5a539bf90db2"
+  },
+  "tartelo": {
+    "kind": "published-interface-image",
+    "sourcePage": "https://betalist.com/startups/tartelo",
+    "sourceImage": "https://resize.imagekit.co/0IUntVkxBrR6BIMtGBP5WWjxK8n6QEiSiVdovZGr-g0/plain/s3://betalist-production/pe6ji5kjw1rs842jj4kc0agx7cc7",
+    "description": "Published interface screenshot; current official site says launching soon.",
+    "capturedAt": "2026-10-02T02:31:58.989Z",
+    "sha256": "0864098ac3654fc6b8c947c7f0f5ce473375cd821ed778bd82807a0d04815bc0"
+  },
+  "heygotchu": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://heygotchu.com/",
+    "capturedAt": "2026-10-02T02:36:30.326Z",
+    "sha256": "c1c02edba151438320201229eec543e8f6a6daeed002a7038e5defdbc3bda438"
+  },
+  "backlog-cloud": {
+    "kind": "official-interface-image",
+    "sourcePage": "https://backlog.cloud",
+    "sourceImage": "https://backlog.cloud/_next/image?url=%2Fhero-decision.webp&w=1080&q=75",
+    "capturedAt": "2026-10-02T02:36:35.805Z",
+    "sha256": "23b0f1a2a687cde497439a0c0fbeae9a5410bbbcda21da10da754438960ebef1"
+  },
+  "twinly-lab": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://twinlylab.com/",
+    "capturedAt": "2026-10-02T02:36:42.384Z",
+    "sha256": "a5e80e16a6817b7fc17f091320e185a0fbebbee96209a164b75a2b443eea6913"
+  },
+  "canovaccio": {
+    "kind": "official-interface-image",
+    "sourcePage": "https://www.canovaccio.com",
+    "sourceImage": "https://www.canovaccio.com/shot-direct.jpg",
+    "description": "The Director Tray open during a live scene",
+    "capturedAt": "2026-10-02T02:31:52.392Z",
+    "sha256": "a934a88584463f2165b63b2e89bf699c1581f4a83de8160b9240465e1df12672"
+  },
+  "zulo": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://myzulo.app/",
+    "capturedAt": "2026-10-02T02:36:49.663Z",
+    "sha256": "a2ecc603815bdfc72fdc0a939d08f7f3a5b22acc63a1a1ad357764a7182b8131"
+  },
+  "murmur": {
+    "kind": "official-interface-image",
+    "sourcePage": "https://murmur.news",
+    "sourceImage": "https://murmur.news/assets/img/natomeeting.webp",
+    "description": "The Murmur app's Brief screen: an afternoon greeting and the date, a full-width illustrated cover for the day's lead story about tension at NATO, the brief's length and story count, and one large play button.",
+    "capturedAt": "2026-10-02T02:31:53.710Z",
+    "sha256": "fc0de3488c48cb4b873d035ca23bff1e446ac8b29cfa88244e0f214e802934d1"
+  },
+  "skydive": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://www.skydive.com/",
+    "capturedAt": "2026-10-02T02:38:43.902Z",
+    "sha256": "c5d5da9f4bd680ba49520cf92d21e13e63924ad572433c2dfeab8fd06d895f7e"
+  },
+  "vibestocks": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://vibestocks.app/",
+    "capturedAt": "2026-10-02T02:38:48.520Z",
+    "sha256": "19d8e70e21a896237af3092adcae657d3d3fa0d873c87e04c1fb77638604c8b6"
+  },
+  "emochi": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://emochi.com/zh-TW",
+    "capturedAt": "2026-10-02T02:25:55.758Z",
+    "sha256": "71de3371614dba27f5dfb5f83d5ea148dab981156d9f9bb723181a289a8ed24f"
+  },
+  "alphasuite-atlas": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://alphasuite.bio/home",
+    "capturedAt": "2026-10-02T02:37:18.753Z",
+    "sha256": "08f8e099801c13a01016e4fc9e3a327cf3770dd362d48d917b40ceb5bf316638"
+  },
+  "verva": {
+    "kind": "official-interface-image",
+    "sourcePage": "https://verva.com",
+    "sourceImage": "https://verva.com/humanizer-dashboard.webp",
+    "description": "Verva Humanizer with input text on the left and an output panel showing humanization in progress on the right.",
+    "capturedAt": "2026-10-02T02:31:54.884Z",
+    "sha256": "8cadc34a2d923013051667a8035cbae2d9f4a0c5dce13b83747de35fff5b510a"
+  },
+  "viso-ai": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://viso.ai/",
+    "capturedAt": "2026-10-02T02:37:36.280Z",
+    "sha256": "8307e05e46534a83c0953043239cd1e4b9aafde69a94f76cef7ab018b990acd2"
+  },
+  "musely": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://musely.ai/",
+    "capturedAt": "2026-10-02T02:26:37.840Z",
+    "sha256": "7f3c5a995340b6543dcee7fc18e5df58c8bdaedd6743af186f0ffc29c19006ba"
+  },
+  "speech-to-text-cloud": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://www.speech-to-text.cloud/",
+    "capturedAt": "2026-10-02T02:26:42.181Z",
+    "sha256": "ffddeb2440190b248f01e7938ab92951d0d0fe2489d1d10deed92443ece71d6c"
+  },
+  "modaal": {
+    "kind": "official-interface-image",
+    "sourcePage": "https://modaal.dev",
+    "sourceImage": "https://modaal.dev/__l5e/assets-v1/673c640a-7cd5-4539-82b4-30878d2ad8bf/duet-ios-android.png",
+    "description": "The same feature running side by side — native iPhone simulator and Android emulator inside Modaal",
+    "capturedAt": "2026-10-02T02:31:57.256Z",
+    "sha256": "35b5c8bfeb0743d18d7b4a0160ecf31488fb40604afe91d4dfd4637befbb21bd"
+  },
+  "youart": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://youart.ai/zh/tool/apply-lut",
+    "capturedAt": "2026-10-02T02:37:42.595Z",
+    "sha256": "c56f640fad327ca41aba7a4cde9c5f0c8403dbaab0143948540a1845fbe99d5c"
+  },
+  "siftq": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://siftq.com/",
+    "capturedAt": "2026-10-02T02:27:12.262Z",
+    "sha256": "f2e53273facfe86b201030ce4eb1f39baff5319482df820a0d26b19007f9335d"
+  },
+  "adsgenie": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://adsgenie.io/",
+    "capturedAt": "2026-10-02T02:27:20.088Z",
+    "sha256": "6dde0dbc204f271491a34af63e84b44fbfbbaa18dc2def23145fba92ec79672c"
+  },
+  "ml-ai": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://ml.ai",
+    "capturedAt": "2026-10-02T02:36:35.784Z",
+    "sha256": "425d9c512d9f5845a0afccdb317060ae3cb5b2f5a2c1cad9a746b76f2962c102"
+  },
+  "wzrd": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://wzrd.to/",
+    "capturedAt": "2026-10-02T02:27:38.243Z",
+    "sha256": "5c7b680e6d053364907cdd7ece2e98220623d022436824dc61edd7ff637dc240"
+  },
+  "bejou": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://bejou.ai/",
+    "capturedAt": "2026-10-02T02:27:48.899Z",
+    "sha256": "7f4d15d81a1c1a0f2b5416880ad093aafc15de9ef36299d6a312a707558bb5d3"
+  },
+  "scholarsail": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://scholarsail.com/deck-builder",
+    "capturedAt": "2026-10-02T02:37:46.676Z",
+    "sha256": "1e60baa486aa8dbf96e64da9d1a194dbebc1bc8c08f1dfa201d819299f2870b0"
+  },
+  "synthpulseai": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://synthpulseai.com/create/song",
+    "capturedAt": "2026-10-02T02:37:53.497Z",
+    "sha256": "d9dc48bd8f28f6ebd85c268f0430d4b49c7b4ac3ff9b76951f5ac4a0f0b343c5"
+  },
+  "feelpair": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://feelpair.com/",
+    "capturedAt": "2026-10-02T02:37:24.135Z",
+    "sha256": "783e34b98446b4e335d7c0e858372a57affcc4a5175176f6b85f391527253e19"
+  },
+  "octop": {
+    "kind": "official-interface-image",
+    "sourcePage": "https://octop.cloud",
+    "sourceImage": "https://octop.cloud/_next/static/media/hero-chat.3znxtxjo8kqkz.png",
+    "description": "Octop 聊天首页界面",
+    "capturedAt": "2026-10-02T02:31:58.928Z",
+    "sha256": "13651f7ab6d427d7e2bd86039c22b21b0c7a94ace9536b8bd9107c2fa5b81604"
+  }
+}
