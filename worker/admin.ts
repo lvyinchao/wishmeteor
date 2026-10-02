@@ -52,7 +52,7 @@ export async function adminMetrics(env:Env):Promise<Record<string,unknown>> {
   const metrics=await env.DB.prepare(`SELECT
     (SELECT COUNT(*) FROM managed_tools WHERE approved=1 AND status!='archived') AS public_products,
     (SELECT COUNT(*) FROM submissions WHERE verdict='pending') AS pending_submissions,
-    (SELECT COALESCE(used,0) FROM publication_days WHERE day=?) AS published_today,
+    (SELECT COALESCE(used,0)+COALESCE(exception_used,0) FROM publication_days WHERE day=?) AS published_today,
     (SELECT COUNT(*) FROM accounts) AS registered_accounts,
     (SELECT COUNT(*) FROM accounts WHERE email_verified_at IS NOT NULL) AS verified_accounts,
     (SELECT COUNT(*) FROM accounts WHERE email_verified_at IS NOT NULL AND last_seen_at>=?) AS active_accounts_24h,
@@ -153,7 +153,8 @@ async function approveSubmission(request:Request,env:Env,id:number,action:string
   }
   const statements=[
     env.DB.prepare('INSERT INTO publication_days(day,used) VALUES(?,0) ON CONFLICT(day) DO NOTHING').bind(day),
-    env.DB.prepare(`UPDATE publication_days SET used=used+1 WHERE day=? AND (used<9 OR ?=1)
+    env.DB.prepare(`UPDATE publication_days SET used=used+CASE WHEN used<9 THEN 1 ELSE 0 END,
+      exception_used=exception_used+CASE WHEN used>=9 THEN 1 ELSE 0 END WHERE day=? AND (used<9 OR ?=1)
       AND EXISTS(SELECT 1 FROM submissions WHERE id=? AND verdict='pending')
       AND NOT EXISTS(SELECT 1 FROM managed_tools WHERE slug=? OR dedupe_key=?)`).bind(day,batchException?1:0,id,slug,target.projectKey),
     env.DB.prepare(`UPDATE submissions SET verdict='approved',verdict_at=?,approved_slug=?,publication_operation=? WHERE id=? AND verdict='pending' AND changes()=1`).bind(now,slug,operation,id),
@@ -161,6 +162,9 @@ async function approveSubmission(request:Request,env:Env,id:number,action:string
       SELECT ?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM submissions WHERE id=? AND publication_operation=?)`).bind(slug,JSON.stringify(value),target.domain,target.projectKey,now,now,id,operation),
     cardStatement(env,value,now),eventStatement(env,value,'published',now),
   ];
+  if(batchException)statements.push(env.DB.prepare(`INSERT INTO publication_exceptions(submission_id,batch_key,day,publication_operation,created_at)
+    SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM submissions WHERE id=? AND publication_operation=?)`)
+    .bind(id,String(input.approvalBatch),day,operation,now,id,operation));
   if(proof)statements.push(proofStatement(env,proof,value));
   if(row.email)statements.push(env.DB.prepare(`INSERT INTO notification_outbox(id,kind,recipient,payload_json,submission_id,next_attempt_at,created_at)
     SELECT ?,'approved',?,?,?,?,? WHERE EXISTS(SELECT 1 FROM submissions WHERE id=? AND publication_operation=?) ON CONFLICT(id) DO NOTHING`)
