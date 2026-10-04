@@ -19,8 +19,7 @@ const description = `The exact rules behind every outbound link on ${SITE.name}:
   <article class="prose">
     <h2>What a link here means</h2>
     <p>
-      An outbound link on {SITE.name} is a statement that we opened the product, understood it well enough to describe it, and
-      think it belongs in a list people trust. Nothing else is implied. There is no sponsorship tier, no "priority review"
+      An outbound link on {SITE.name} identifies a product admitted through editorial review or an authorized, verified submitter account. Nothing else is implied. There is no sponsorship tier, no "priority review"
       payment, and no affiliate arrangement with any listed product, so no link here should be read as a purchase.
     </p>
 
@@ -30,7 +29,7 @@ const description = `The exact rules behind every outbound link on ${SITE.name}:
       <li>the entry passed review and is marked approved;</li>
       <li>the target page returns a successful response on our last check;</li>
       <li>that check is more recent than {SITE.staleAfterDays} days;</li>
-      <li>the entry carries at least {SITE.minDescriptionChars} characters of description we wrote ourselves.</li>
+      <li>the entry carries at least {SITE.minDescriptionChars} characters of product description.</li>
     </ul>
     <p>
       If any of those fails, the link is rendered with <code>rel="nofollow ugc"</code> and the entry is dropped from the
@@ -46,12 +45,18 @@ const description = `The exact rules behind every outbound link on ${SITE.name}:
       <li>Domain squatting: one wish per product, and we consolidate clones.</li>
     </ul>
 
+    <h2>Submission screenshots and review</h2>
+    <p>Every new submission must include a real product screenshot (PNG, JPEG or WebP, up to 5 MB). It is available to the submitter and reviewers while pending, and becomes the listing cover after approval. Screenshots should not contain confidential information.</p>
+    <p>Most submissions require editorial review. An authorized, verified account can publish automatically while signed in. Writing an authorized account’s email in a form does not grant that permission.</p>
+
     <h2>Volume cap</h2>
     <p>
-      No more than {SITE.dailyLaunchCap} entries go live per day and no more than {SITE.perRoundCap} per review round. This is
+      For ordinary submissions, no more than {SITE.dailyLaunchCap} entries go live per day and no more than {SITE.perRoundCap} per review round. This is
       a quality limit before it is an SEO one: a page that grows a hundred links a week stops being an index and starts being a
       link farm, which hurts the founders who listed in good faith.
     </p>
+
+    <p>Authorized automatic-publication accounts are exempt from product submission limits and the daily publication cap. Their publications are recorded separately and do not consume ordinary review capacity. Duplicate products and input validation still apply.</p>
 
     <h2>Removals and corrections</h2>
     <p>

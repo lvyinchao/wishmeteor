@@ -24,7 +24,7 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
 
   <div class="split">
     <div>
-      <form method="post" action="/api/submit" class="form-grid">
+      <form method="post" action="/api/submit" enctype="multipart/form-data" class="form-grid">
         <div>
           <label for="name">Product name</label>
           <input id="name" name="name" required maxlength="80" placeholder="What should the index call it?" />
@@ -34,6 +34,13 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
           <input id="url" name="url" type="url" required placeholder="https://yourproduct.com" />
           <p class="hint">The homepage, not an affiliate link. We canonicalise it and remove known tracking parameters.</p>
         </div>
+        <div>
+          <label for="screenshot">Product screenshot</label>
+          <input id="screenshot" name="screenshot" type="file" accept="image/png,image/jpeg,image/webp" required aria-describedby="screenshot-hint" />
+          <p class="hint" id="screenshot-hint">Upload a real view of your product. PNG, JPEG or WebP, up to 5 MB. This becomes your listing cover after approval.</p>
+          <img data-screenshot-preview hidden alt="Selected product screenshot" style="max-width:100%;max-height:300px;object-fit:contain" />
+        </div>
+        <p data-submission-policy class="notice" hidden role="status"></p>
         <div>
           <label for="email">Email for your blessing</label>
           <input id="email" name="email" type="email" data-submit-email required placeholder="you@yourproduct.com" />
@@ -50,7 +57,7 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
         <div>
           <label for="notes">What it does, in your own words</label>
           <textarea id="notes" name="notes" rows="5" maxlength="600" placeholder="Who is it for, and what does it make possible?"></textarea>
-          <p class="hint">Write from the heart. Tell us what led you to build it and the people you hope it will help.</p>
+          <p class="hint" data-description-hint>Write from the heart. Tell us what led you to build it and the people you hope it will help.</p>
         </div>
         <div>
           <label for="make-a-wish">Make a wish <span class="hint">Optional</span></label>
@@ -76,7 +83,8 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
       <section class="aside-box" aria-labelledby="rules">
         <h2 id="rules">The rules, out loud</h2>
         <ul style="padding-left:1.1rem;font-size:.92rem">
-          <li>Every wish is reviewed before it joins the sky.</li>
+          <li>Include a real product screenshot with every submission.</li>
+          <li>Wishes go through review. Verified accounts authorized for automatic publication can publish directly without submission or daily publication limits.</li>
           <li>Keep your product available and its description honest so its light stays clear.</li>
           <li>There is no fee, upgrade, or reciprocity requirement.</li>
           <li>Not accepted: casinos, crypto giveaways, cloned wrappers, link farms, anything that requires a login to evaluate.</li>
@@ -92,6 +100,11 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
 <script>
   const feedback = document.querySelector<HTMLElement>('[data-submit-feedback]');
   const statusMessages: Record<string, string> = {
+    published: 'Your product has been approved and published with your screenshot. Your blessing is ready.',
+    'screenshot-required': 'Please upload a product screenshot before submitting.',
+    'screenshot-invalid': 'Choose a valid PNG, JPEG or WebP product screenshot.',
+    'screenshot-too-large': 'The screenshot must be no larger than 5 MB.',
+    'description-required': 'For automatic publication, describe your product in 300–600 characters so its listing is complete.',
     queued: 'Your wish found its way to us. We will review it with care and send a note when it is ready to shine.',
     duplicate: 'That project is already published or already in the queue. One wish per product, please.',
     throttled: 'We have received a few wishes from this address recently. Please give the sky a little time, then try again.',
@@ -112,14 +125,31 @@ const description = `Bring your AI product into the WishMeteor sky. Share what y
       link.textContent = 'account page';
       notice.append(link, document.createTextNode('.'));
     }
+    const slug=new URLSearchParams(window.location.search).get('slug');
+    if(submitStatus==='published'&&slug&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){const link=document.createElement('a');link.href='/tool/'+slug;link.textContent=' View your listing';notice.append(link);}
     feedback.append(notice);
   }
 
+  const screenshot=document.querySelector<HTMLInputElement>('#screenshot'),preview=document.querySelector<HTMLImageElement>('[data-screenshot-preview]');
+  let previewUrl='';
+  screenshot?.addEventListener('change',()=>{
+    screenshot.setCustomValidity('');if(previewUrl)URL.revokeObjectURL(previewUrl);if(preview)preview.hidden=true;
+    const file=screenshot.files?.[0];if(!file)return;
+    if(file.size>5*1024*1024){screenshot.setCustomValidity('Choose a screenshot no larger than 5 MB.');screenshot.reportValidity();return;}
+    if(!['image/png','image/jpeg','image/webp'].includes(file.type)){screenshot.setCustomValidity('Choose a PNG, JPEG or WebP screenshot.');screenshot.reportValidity();return;}
+    if(preview){previewUrl=URL.createObjectURL(file);preview.src=previewUrl;preview.hidden=false;preview.onerror=()=>{screenshot.setCustomValidity('Choose a valid product screenshot.');screenshot.reportValidity();preview.hidden=true;};}
+  });
   const submitEmail = document.querySelector<HTMLInputElement>('[data-submit-email]');
   fetch('/api/auth/me', { credentials: 'same-origin' })
-    .then((response) => response.ok ? response.json() as Promise<{ account?: { email?: string } | null }> : null)
+    .then((response) => response.ok ? response.json() as Promise<{ account?: { email?: string; submissionPolicy?: { automaticApproval?: boolean } } | null }> : null)
     .then((result) => {
       if (submitEmail && !submitEmail.value && result?.account?.email) submitEmail.value = result.account.email;
+      if(result?.account?.submissionPolicy?.automaticApproval){
+        const policy=document.querySelector<HTMLElement>('[data-submission-policy]'),notes=document.querySelector<HTMLTextAreaElement>('#notes'),hint=document.querySelector<HTMLElement>('[data-description-hint]');
+        if(policy){policy.hidden=false;policy.textContent='Your verified account publishes products automatically, with no submission or daily publication limit.';}
+        if(notes){notes.required=true;notes.minLength=300;}
+        if(hint)hint.textContent='Write 300–600 characters. Your own description and screenshot will appear directly on the published listing.';
+      }
     })
     .catch(() => {});
 </script>

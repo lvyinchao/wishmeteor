@@ -1,3 +1,4 @@
+import { submit } from './harness.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { environment,request,auth,verificationToken } from './harness.mjs';
@@ -80,14 +81,14 @@ test('opaque browser identity rejects random UUID votes and records one counted 
 });
 test('submission writes and both receipts share a transaction; duplicates are blocked across review paths',async()=>{
  const env=silent(),payload={name:'A project',url:'https://a-project.com',email:'maker@example.com',category:'ai-coding',notes:'A practical project.',makeAWish:'May the next step be useful.',own:'yes',hp:''};
- const submitted=await call(env,'/api/submit',payload);assert.equal(submitted.status,201);const id=(await submitted.json()).id;assert.ok(id>0);const queue=env.DB.sqlite.prepare('SELECT kind,submission_id FROM notification_outbox').all();assert.deepEqual(queue.map(r=>r.kind).sort(),['receipt','support']);assert.ok(queue.every(r=>r.submission_id===id));
- assert.equal((await call(env,'/api/submit',payload)).status,409);const draft=tool('a-project');assert.equal((await admin(env,'/api/admin/content/a-project',draft,{method:'PUT'})).status,409);
+ const submitted=await submit(env,payload);assert.equal(submitted.status,201);const id=(await submitted.json()).id;assert.ok(id>0);const queue=env.DB.sqlite.prepare('SELECT kind,submission_id FROM notification_outbox').all();assert.deepEqual(queue.map(r=>r.kind).sort(),['receipt','support']);assert.ok(queue.every(r=>r.submission_id===id));
+ assert.equal((await submit(env,payload)).status,409);const draft=tool('a-project');assert.equal((await admin(env,'/api/admin/content/a-project',draft,{method:'PUT'})).status,409);
 });
 test('registered owners see progress, save/follow projects and submit scoped corrections',async()=>{
  const env=silent(),email='owner@example.com',password='isolated-owner-password';await auth(env,'/api/auth/register',{email,password});await auth(env,'/api/auth/verify?token='+verificationToken(env,email));const login=await auth(env,'/api/auth/login',{email,password});const cookie=login.headers.get('set-cookie').split(';')[0];store(env,tool());
  assert.equal((await call(env,'/api/account/projects/isolated-project',{bookmarked:true,following:true},{cookie,method:'PUT'})).status,200);assert.equal((await (await call(env,'/api/account/projects',undefined,{cookie})).json()).projects.length,1);
  assert.equal((await call(env,'/api/account/corrections/isolated-project',{message:'The listed pricing label should be updated.'},{cookie})).status,201);
- const submission=await call(env,'/api/submit',{name:'My other project',url:'https://my-other-project.com',email,category:'ai-chat',notes:'A helpful product.',makeAWish:'Build something useful.',own:'yes'},{cookie});const id=(await submission.json()).id;
+ const submission=await submit(env,{name:'My other project',url:'https://my-other-project.com',email,category:'ai-chat',notes:'A helpful product.',makeAWish:'Build something useful.',own:'yes'},{cookie});const id=(await submission.json()).id;
  assert.equal((await call(env,'/api/account/submissions',undefined,{cookie})).status,200);assert.equal((await call(env,'/api/account/submissions/'+id,undefined,{cookie,method:'DELETE'})).status,200);assert.equal(env.DB.sqlite.prepare("SELECT COUNT(*) AS n FROM notification_outbox WHERE submission_id IS NULL AND state='cancelled' AND kind IN ('receipt','support')").get().n,2);
 });
 test('outbox records provider acceptance, retries temporary errors and suppresses withdrawn work',async()=>{

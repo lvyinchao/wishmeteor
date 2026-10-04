@@ -16,13 +16,15 @@ const description = `What ${SITE.name} stores when you share a wish or light a s
 
   <article class="prose">
     <h2>What a submission stores</h2>
-    <p>We store the project name, public homepage, category, description, optional maker wish, review state and relevant dates. Your email is used for receipt, review and essential service messages and is never shown on public pages. Submissions made while signed in are linked to your account so you can see progress and edit a pending submission.</p>
+    <p>We store the project name, public homepage, category, description, uploaded product screenshot, optional maker wish, review state and relevant dates. Your email is used for receipt, review and essential service messages and is never shown on public pages. Submissions made while signed in are linked to your account so you can see progress and edit a pending submission.</p>
     <p>A one-way hash of the submitting IP address helps limit rapid repeated submissions. Rate limit records expire automatically.</p>
+
+    <p>Screenshots are stored in Cloudflare R2. Pending and rejected screenshots are accessible only to the submitting account and authorized reviewers. After approval, the screenshot is published as the product cover. Withdrawing a pending submission deletes its screenshot. Do not upload screenshots that contain passwords, private messages or other confidential information.</p>
 
     <h2>What is published</h2>
     <p>
-      Approved entries become a public page with the product name, its link, our description of it, the dates we indexed and
-      last checked it, and the blessing. That is all a reviewer writes down, so that is all that appears.
+      Approved entries become a public page with the product name, its link, product description and screenshot, the dates we indexed and
+      last checked it, and the blessing. Product descriptions may be supplied by an authorized submitter or an editor.
     </p>
 
     <h2>Community stars</h2>

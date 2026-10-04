@@ -1,3 +1,5 @@
+import { cardStatement,eventStatement } from './publication.ts';
+import { screenshotPath,screenshotResponse } from './screenshots.ts';
 import { validateTool,blessingErrors,canonicalProductUrl,SLUG_RE,type Tool } from '../src/lib/tool-schema.ts';
 import { escapeHtml } from '../src/lib/html.ts';
 import { CatalogRepository } from './catalog.ts';
@@ -8,7 +10,7 @@ import { validateProof,type VerificationProof } from './signed-verification.ts';
 import type { Env } from './env.ts';
 
 const ADMIN_COOKIE='__Host-wm_admin';
-interface SubmissionRow {id:number;name:string;url:string;email:string|null;category:string;make_a_wish:string;verdict:string;created_at:string}
+interface SubmissionRow {id:number;name:string;url:string;email:string|null;category:string;make_a_wish:string;verdict:string;created_at:string;screenshot_key:string|null}
 
 async function authorized(request:Request,env:Env):Promise<boolean> {
   if(!env.ADMIN_API_TOKEN)return false;
@@ -21,16 +23,6 @@ async function authorized(request:Request,env:Env):Promise<boolean> {
   return !!session;
 }
 function version(tool:Tool):string {return tool.contentVersion ?? tool.updatedAt ?? '';}
-function eventStatement(env:Env,tool:Tool,kind:string,now:string):D1PreparedStatement {
-  return env.DB.prepare(`INSERT INTO tool_events(slug,kind,name,summary,category,created_at)
-    SELECT ?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM managed_tools WHERE slug=? AND json_extract(content_json,'$.contentVersion')=?)`)
-    .bind(tool.slug,kind,tool.name,tool.summary,tool.category,now,tool.slug,tool.contentVersion!);
-}
-function cardStatement(env:Env,tool:Tool,now:string):D1PreparedStatement {
-  return env.DB.prepare(`INSERT INTO tool_cards(slug,version,card_json,created_at)
-    SELECT ?,?,?,? WHERE EXISTS(SELECT 1 FROM managed_tools WHERE slug=? AND json_extract(content_json,'$.contentVersion')=?)`)
-    .bind(tool.slug,tool.contentVersion!,JSON.stringify(tool),now,tool.slug,tool.contentVersion!);
-}
 function proofStatement(env:Env,proof:VerificationProof,tool:Tool):D1PreparedStatement {
   return env.DB.prepare(`INSERT INTO link_verification_nonces(nonce,expires_at)
     SELECT ?,? WHERE EXISTS(SELECT 1 FROM managed_tools WHERE slug=? AND json_extract(content_json,'$.contentVersion')=?)`)
@@ -45,7 +37,7 @@ function applyVerification(tool:Tool,proof:VerificationProof):void {
  if(proof.state==='live'){tool.lastVerifiedAt=tool.lastCheckedAt;tool.checksFailed=0;}
  else {tool.checksFailed=(tool.checksFailed ?? 0)+1;if(proof.state==='dead'&&tool.checksFailed>=3&&tool.status==='active')tool.status='stale';}
 }
-function factualFields(tool:Tool):string {return JSON.stringify([tool.name,tool.url,tool.category,tool.summary,tool.description,tool.tags,tool.pricing,tool.status,tool.approved,tool.sources,tool.wish?.blessingShort,tool.wish?.blessingLong,tool.wish?.makerWish,tool.wish?.blessingApproved]);}
+function factualFields(tool:Tool):string {return JSON.stringify([tool.name,tool.url,tool.category,tool.summary,tool.description,tool.tags,tool.pricing,tool.status,tool.approved,tool.sources,tool.coverImage,tool.wish?.blessingShort,tool.wish?.blessingLong,tool.wish?.makerWish,tool.wish?.blessingApproved]);}
 
 export async function adminMetrics(env:Env):Promise<Record<string,unknown>> {
   const now=new Date(),day=now.toISOString().slice(0,10),activeSince=new Date(now.getTime()-86_400_000).toISOString();
@@ -122,7 +114,7 @@ async function putContent(request:Request,env:Env,slug:string):Promise<Response>
 }
 
 async function approveSubmission(request:Request,env:Env,id:number,action:string):Promise<Response> {
-  const row=await env.DB.prepare('SELECT id,name,url,email,category,make_a_wish,verdict,created_at FROM submissions WHERE id=?').bind(id).first<SubmissionRow>();
+  const row=await env.DB.prepare('SELECT id,name,url,email,category,make_a_wish,verdict,created_at,screenshot_key FROM submissions WHERE id=?').bind(id).first<SubmissionRow>();
   if(!row)return json({error:'submission-not-found'},404);if(row.verdict!=='pending')return json({error:'submission-not-pending'},409);
   const now=new Date().toISOString(),origin=(env.APP_ORIGIN ?? 'https://wishmeteor.net').replace(/\/$/,'');
   if(action==='reject') {
@@ -133,6 +125,7 @@ async function approveSubmission(request:Request,env:Env,id:number,action:string
   }
   const input=await jsonBody(request,64_000),slug=stringField(input,'slug',100,true);
   const {value,errors}=validateTool(input.content,slug);value.origin=row.email?'submitted':'curated';
+  if(row.screenshot_key)value.coverImage=screenshotPath(row.screenshot_key);
   if(canonicalProductUrl(row.url)?.url!==value.url)errors.push('Published URL must match the reviewed submission');
   if(!value.approved||value.status==='archived')errors.push('A new approval must publish a visible product');
   value.wish={submittedAt:row.created_at.slice(0,10),blessingShort:value.wish?.blessingShort ?? '',blessingLong:value.wish?.blessingLong ?? '',blessingApproved:value.wish?.blessingApproved===true,notifiedAt:null,...(row.make_a_wish?{makerWish:row.make_a_wish}:{})};
@@ -210,7 +203,12 @@ export async function handleAdmin(request:Request,env:Env):Promise<Response> {
   }
   if(path==='/api/admin/metrics'&&request.method==='GET')return json(await adminMetrics(env));
   if(path==='/api/admin/submissions'&&request.method==='GET') {
-    const result=await env.DB.prepare("SELECT id,name,url,email,category,notes,make_a_wish,created_at,verdict FROM submissions WHERE verdict='pending' ORDER BY created_at,id LIMIT 100").all();return json({submissions:result.results ?? []});
+    const result=await env.DB.prepare("SELECT id,name,url,email,category,notes,make_a_wish,created_at,verdict,screenshot_key FROM submissions WHERE verdict='pending' ORDER BY created_at,id LIMIT 100").all();return json({submissions:result.results ?? []});
+  }
+  const screenshot=/^\/api\/admin\/submissions\/(\d+)\/screenshot$/.exec(path);
+  if(screenshot&&['GET','HEAD'].includes(request.method)){
+    const row=await env.DB.prepare('SELECT screenshot_key FROM submissions WHERE id=?').bind(Number(screenshot[1])).first<{screenshot_key:string|null}>();
+    return row?.screenshot_key?screenshotResponse(request,env,row.screenshot_key):json({error:'screenshot-not-found'},404);
   }
   if(path==='/api/admin/content'&&request.method==='GET') {
     const params=new URL(request.url).searchParams;return json(await new CatalogRepository(env.DB).adminPage(Number(params.get('limit') ?? 50),params.get('cursor') ?? ''));

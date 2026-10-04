@@ -1,3 +1,4 @@
+import { automaticSubmissionAccount } from './submission-policy.ts';
 import { HttpError,json,jsonBody,requireOrigin } from './http.ts';
 import { authLimit,constantTimeEqual,randomToken,readCookie,secureCookie,sha256 } from './security.ts';
 import { escapeHtml } from '../src/lib/html.ts';
@@ -16,7 +17,7 @@ function emailValid(value:string):boolean { return value.length<=254 && /^[^\s@]
 function inputEmail(input:Record<string,unknown>):string { const email=typeof input.email==='string'?input.email.trim().toLowerCase():'';if(!emailValid(email))throw new HttpError('invalid-input');return email; }
 function inputPassword(input:Record<string,unknown>,minimum=8):string { const password=typeof input.password==='string'?input.password:'';if(password.length<minimum||password.length>256)throw new HttpError('invalid-input');return password; }
 function originFor(request:Request,env:AuthEnv):string { return (env.APP_ORIGIN || new URL(request.url).origin).replace(/\/$/,''); }
-function publicAccount(account:Account) { return {id:account.id,email:account.email,name:account.display_name,methods:{password:!!account.password_hash,google:!!account.google_sub}}; }
+function publicAccount(account:Account) { return {id:account.id,email:account.email,name:account.display_name,submissionPolicy:{automaticApproval:automaticSubmissionAccount(account),rateLimited:!automaticSubmissionAccount(account)},methods:{password:!!account.password_hash,google:!!account.google_sub}}; }
 async function byEmail(env:AuthEnv,email:string):Promise<Account|null> { return env.DB.prepare(`SELECT ${ACCOUNT_FIELDS} FROM accounts WHERE email=?`).bind(email).first<Account>(); }
 
 // Preserve the deployed KDF. Each WebCrypto operation stays within Workers' limit.

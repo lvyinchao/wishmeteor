@@ -34,13 +34,14 @@ export function database({beforeMigration}={}) {
   return DB;
 }
 export function environment(options={}) {
-  const DB=database(options),mail=[];
-  return {DB,mail,APP_ORIGIN:'https://wishmeteor.net',GOOGLE_CLIENT_ID:'isolated-test-client',ADMIN_API_TOKEN:'isolated-token-'.padEnd(64,'x'),
+  const DB=database(options),mail=[],screenshots=new Map();
+  const PRODUCT_SCREENSHOTS={objects:screenshots,async put(key,bytes,options){screenshots.set(key,{bytes:new Uint8Array(bytes),options});},async delete(key){screenshots.delete(key);},async get(key){const item=screenshots.get(key);if(!item)return null;return {body:item.bytes,httpEtag:'"'+key+'"',writeHttpMetadata(headers){headers.set('content-type',item.options.httpMetadata.contentType);}};}};
+  return {DB,mail,PRODUCT_SCREENSHOTS,APP_ORIGIN:'https://wishmeteor.net',GOOGLE_CLIENT_ID:'isolated-test-client',ADMIN_API_TOKEN:'isolated-token-'.padEnd(64,'x'),
     ASSETS:{async fetch(){return new Response('<!doctype html><html><head></head><body>Static asset</body></html>',{status:404});}},
     EMAIL:{async send(message){mail.push(message);return {messageId:'isolated-message-'+mail.length};}}};
 }
 export function request(path,payload,{cookie,ip='192.0.2.10',method,headers={}}={}) {
-  return new Request('https://wishmeteor.net'+path,{method:method ?? (payload===undefined?'GET':'POST'),headers:{origin:'https://wishmeteor.net','cf-connecting-ip':ip,...(payload===undefined?{}:{'content-type':'application/json'}),...(cookie?{cookie}:{}),...headers},...(payload===undefined?{}:{body:JSON.stringify(payload)})});
+  return new Request('https://wishmeteor.net'+path,{method:method ?? (payload===undefined?'GET':'POST'),headers:{origin:'https://wishmeteor.net','cf-connecting-ip':ip,...(payload===undefined||payload instanceof FormData?{}:{'content-type':'application/json'}),...(cookie?{cookie}:{}),...headers},...(payload===undefined?{}:{body:payload instanceof FormData?payload:JSON.stringify(payload)})});
 }
 export async function auth(env,path,payload,options) {
   try{return await handleAuth(request(path,payload,options),env);}catch(error){if(error instanceof HttpError)return json({error:error.code},error.status);throw error;}
@@ -61,3 +62,9 @@ export async function googleRequest(env,email,extra={},password) {
   try{return await auth(env,'/api/auth/google',{credential:signed+'.'+Buffer.from(signature).toString('base64url'),...(password?{password}:{})},{cookie:`__Host-wm_google_nonce=${nonce}`});}
   finally{globalThis.fetch=originalFetch;}
 }
+
+export const screenshotBytes=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jf1sAAAAASUVORK5CYII=','base64');
+export function submissionForm(input,file=new File([screenshotBytes],'product.png',{type:'image/png'})) {
+  const form=new FormData();for(const [key,value] of Object.entries(input))form.set(key,String(value));if(file)form.set('screenshot',file);return form;
+}
+export async function submit(env,input,options={}) {const {call}=await import('./fixtures.mjs');return call(env,'/api/submit',submissionForm(input),{...options,headers:{accept:'application/json',...options.headers}});}

@@ -25,6 +25,7 @@
       "allowed_sender_addresses": ["support@wishmeteor.net"]
     }
   ],
+  "r2_buckets": [{ "binding": "PRODUCT_SCREENSHOTS", "bucket_name": "wishmeteor-product-screenshots" }],
   "d1_databases": [
     {
       "binding": "DB",

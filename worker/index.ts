@@ -1,3 +1,4 @@
+import { handleScreenshot } from './screenshots.ts';
 import { handleAuth } from './auth.ts';
 import { handleAdmin } from './admin.ts';
 import { handleSubmit,handleMySubmissions,mutateSubmission,requestCorrection } from './submissions.ts';
@@ -38,6 +39,7 @@ async function route(request:Request,env:Env,ctx:ExecutionContext):Promise<Respo
  const path=new URL(request.url).pathname;
  if(path.startsWith('/api/admin/'))return handleAdmin(request,env);
  if(path.startsWith('/api/auth/'))return await handleAuth(request,env) ?? json({error:'not-found'},404);
+ const screenshot=/^\/api\/product-screenshots\/([^/]+)$/.exec(path);if(screenshot)return handleScreenshot(request,env,screenshot[1]);
  if(path==='/api/submit')return handleSubmit(request,env);
  if(path==='/api/stars/identity')return issueVoter(request,env);
  if(path==='/api/stars')return handleStars(request,env);

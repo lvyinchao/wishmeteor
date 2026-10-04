@@ -1,3 +1,4 @@
+import { submit } from './harness.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync,rmSync,writeFileSync,mkdirSync } from 'node:fs';
@@ -35,11 +36,11 @@ test('manual identity aliases reject pending conflicts and survive a homepage ch
  assert.equal((await admin(env,'/api/admin/content/'+value.slug+'/aliases',{url:'https://github.com/isolated/real-project',reason})).status,201);assert.ok(await new CatalogRepository(env.DB).duplicate('github.com:isolated/real-project'));
  pending(env,2);assert.equal((await admin(env,'/api/admin/content/'+value.slug+'/aliases',{url:'https://project-2.com',reason})).status,409);
  assert.equal((await admin(env,'/api/admin/content/'+value.slug,{...value,url:'https://moved-project.com',expectedVersion:value.contentVersion},{method:'PUT'})).status,200);assert.ok(await new CatalogRepository(env.DB).duplicate('isolated-project.com'));
- assert.equal((await call(env,'/api/submit',{name:'Duplicate',url:value.url,email:'maker@example.com',own:'yes'})).status,409);
+ assert.equal((await submit(env,{name:'Duplicate',url:value.url,email:'maker@example.com',own:'yes'})).status,409);
 });
 test('pending edits update queued mail atomically and avoid an in-flight receipt',async()=>{
  const env=environment();env.EMAIL=undefined;const cookie=await owner(env),input={name:'Original',url:'https://original-project.com',email:'maker@example.com',category:'ai-coding',notes:'The original description.',makeAWish:'A useful wish.',own:'yes'};
- const id=(await (await call(env,'/api/submit',input,{cookie})).json()).id;assert.equal((await call(env,'/api/account/submissions/'+id,{...input,name:'Changed',email:'changed@example.com'},{cookie,method:'PATCH'})).status,200);
+ const id=(await (await submit(env,input,{cookie})).json()).id;assert.equal((await call(env,'/api/account/submissions/'+id,{...input,name:'Changed',email:'changed@example.com'},{cookie,method:'PATCH'})).status,200);
  const receipt=env.DB.sqlite.prepare("SELECT * FROM notification_outbox WHERE kind='receipt' AND submission_id=?").get(id);assert.equal(receipt.recipient,'changed@example.com');assert.match(receipt.payload_json,/Changed/);
  env.DB.sqlite.prepare("UPDATE notification_outbox SET state='processing' WHERE id=?").run(receipt.id);assert.equal((await call(env,'/api/account/submissions/'+id,{...input,name:'Not saved'},{cookie,method:'PATCH'})).status,409);assert.equal(env.DB.sqlite.prepare('SELECT name FROM submissions WHERE id=?').get(id).name,'Changed');
 });

@@ -11,25 +11,28 @@ export function json(value: unknown, status = 200, extra: HeadersInit = {}): Res
   return new Response(JSON.stringify(value), {status,headers});
 }
 
-export async function boundedBody(request: Request, maximum = 8192): Promise<string> {
+export async function boundedBytes(request: Request, maximum = 8192): Promise<Uint8Array> {
   const declared = request.headers.get('content-length');
   if (declared && (!/^\d+$/.test(declared) || Number(declared) > maximum)) throw new HttpError('payload-too-large',413);
-  if (!request.body) return '';
+  if (!request.body) return new Uint8Array();
   const reader = request.body.getReader();
-  const decoder = new TextDecoder();
   let count = 0;
-  let text = '';
+  const chunks:Uint8Array[]=[];
   try {
     for (;;) {
       const {done,value} = await reader.read();
       if (done) break;
       count += value.byteLength;
       if (count > maximum) throw new HttpError('payload-too-large',413);
-      text += decoder.decode(value,{stream:true});
+      chunks.push(value);
     }
-    return text + decoder.decode();
+    const bytes=new Uint8Array(count);let offset=0;
+    for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+    return bytes;
   } finally { await reader.cancel().catch(() => {}); }
 }
+
+export async function boundedBody(request:Request,maximum=8192):Promise<string> { return new TextDecoder().decode(await boundedBytes(request,maximum)); }
 
 export async function jsonBody(request: Request, maximum = 8192): Promise<Record<string,unknown>> {
   if (!(request.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase().endsWith('application/json')) throw new HttpError('json-required',415);

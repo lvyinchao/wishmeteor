@@ -64,7 +64,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
 
 <script>
   interface AccountInfo { id: string; email: string; name: string }
-  interface SubmissionInfo { id: number; name: string; url: string; email: string | null; category: string; notes: string; make_a_wish: string; created_at: string; verdict: 'pending' | 'approved' | 'rejected'; verdict_at: string | null; slug: string | null; notification_state: string | null }
+  interface SubmissionInfo { id: number; name: string; url: string; email: string | null; category: string; notes: string; make_a_wish: string; created_at: string; verdict: 'pending' | 'approved' | 'rejected'; verdict_at: string | null; slug: string | null; notification_state: string | null; screenshot_key: string | null }
   interface GoogleCredentialResponse { credential: string }
   interface GoogleApi {
     accounts: {
@@ -155,6 +155,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
         const urlLine = document.createElement('p');
         urlLine.append(document.createTextNode('Link: '), link);
         content.append(category, contact, urlLine);
+        if(submission.screenshot_key){const image=document.createElement('img');image.src='/api/product-screenshots/'+encodeURIComponent(submission.screenshot_key);image.alt='Submitted screenshot for '+submission.name;image.loading='lazy';image.style.cssText='max-width:100%;max-height:240px;object-fit:contain';content.append(image);}
         if (submission.notes) {
           const notes = document.createElement('p');
           notes.textContent = `About the project: ${submission.notes}`;

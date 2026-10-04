@@ -105,7 +105,7 @@ export function validateTool(raw:unknown,slug:string,now=new Date()):{value:Tool
   if(!sources.length&&canonical)sources.push({type:origin==='submitted'?'submitter':'editor-provided',url:canonical.url,observedAt:null});
   const firstSeenAt=input.firstSeenAt===undefined?today:input.firstSeenAt;
   if(!isoDate(firstSeenAt)||firstSeenAt>today)errors.push('firstSeenAt must be a real past/current date');
-  if(input.coverImage!==undefined&&input.coverImage!==`/tool-previews/${slug}.jpg`)errors.push('coverImage must match the product preview path');
+  if(input.coverImage!==undefined&&input.coverImage!==`/tool-previews/${slug}.jpg`&&!(typeof input.coverImage==='string'&&/^\/api\/product-screenshots\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\.(png|jpg|webp)$/.test(input.coverImage)))errors.push('coverImage must match a local product screenshot or preview path');
   let wish:Wish|undefined;
   if(input.wish!==undefined) {
     if(!input.wish||typeof input.wish!=='object'||Array.isArray(input.wish))errors.push('wish must be an object');

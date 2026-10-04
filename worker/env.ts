@@ -1,6 +1,7 @@
 export interface Env {
   ASSETS:Fetcher;
   DB:D1Database;
+  PRODUCT_SCREENSHOTS:R2Bucket;
   EMAIL?:SendEmail;
   GOOGLE_CLIENT_ID?:string;
   APP_ORIGIN?:string;
