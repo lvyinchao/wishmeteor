@@ -228,5 +228,40 @@
     "description": "Octop 聊天首页界面",
     "capturedAt": "2026-10-02T02:31:58.928Z",
     "sha256": "13651f7ab6d427d7e2bd86039c22b21b0c7a94ace9536b8bd9107c2fa5b81604"
+  },
+  "paybox": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://paybox.sh/",
+    "capturedAt": "2026-10-04T00:59:24.388Z",
+    "sha256": "4dabcfbaff46a891e4cd88dae9f12e99b88453692ffb6cad279626a1b4b9738b",
+    "description": "Official website demonstration of connecting an AI assistant and approving scoped actions."
+  },
+  "snapgen-ai": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://snapgen.ai/app/video-gen/grok",
+    "capturedAt": "2026-10-04T01:00:38.512Z",
+    "sha256": "ca22032f8ecce726f17e3a48e3b32d659af6002d69eff62052c2b953d7c33d17",
+    "description": "Public video-generation interface showing provider selection, model options, image reference, and example previews."
+  },
+  "ezmaker-ai": {
+    "kind": "live-public-interface",
+    "sourcePage": "https://ezmaker.ai/#playground",
+    "capturedAt": "2026-10-04T01:00:38.676Z",
+    "sha256": "7359d3380d2e617748ee2e3f692a09226ae20b60e3c896f69e836a64d11b5330",
+    "description": "Public image-editing interface showing image upload, prompts, example edits, aspect ratios, and the generation control."
+  },
+  "tarang": {
+    "kind": "official-interface-preview",
+    "sourcePage": "https://trytarang.app/#product",
+    "capturedAt": "2026-10-04T01:01:11.183Z",
+    "sha256": "eda43f16b0c3c287c281f16bbd326894c97f36abd757f8d5ece9ea515d2612be",
+    "description": "Official product demonstration of text-to-speech, voice cloning, and audio tools. The authenticated studio was not accessed."
+  },
+  "learnvector": {
+    "kind": "official-website-preview",
+    "sourcePage": "https://learnvector.ai/",
+    "capturedAt": "2026-10-04T00:57:56.644Z",
+    "sha256": "11448509d60c3ad9a26dad9e496cae510f2dae7ac1b8cead149b6917aeb150c8",
+    "description": "Official website and waitlist preview. The product is still under development; this is not an operating application screenshot."
   }
 }
