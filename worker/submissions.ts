@@ -56,13 +56,13 @@ export async function handleSubmit(request:Request,env:Env):Promise<Response> {
   let submission:SubmissionInput;
   try{submission=validateSubmission(input);}catch(error){if(error instanceof HttpError)return responseForSubmission(request,'rejected');throw error;}
   const target=canonicalProductUrl(submission.url)!;
+  let screenshot;try{screenshot=await validateScreenshot(input.screenshot);}catch(error){if(error instanceof HttpError)return responseForSubmission(request,error.code);throw error;}
   const account=await getSessionAccount(request,env),automatic=automaticSubmissionAccount(account);
   if(!automatic&&!await consumeLimits(env.DB,'submit',[{key:'ip:'+requestIp(request),maximum:5},{key:'email:'+submission.email,maximum:5}]))return responseForSubmission(request,'throttled');
   const catalog=new CatalogRepository(env.DB);
   if(await catalog.duplicate(target.projectKey))return responseForSubmission(request,'duplicate');
   const pending=await env.DB.prepare("SELECT id FROM submissions WHERE verdict='pending' AND dedupe_key=? LIMIT 1").bind(target.projectKey).first();
   if(pending)return responseForSubmission(request,'duplicate');
-  let screenshot;try{screenshot=await validateScreenshot(input.screenshot);}catch(error){if(error instanceof HttpError)return responseForSubmission(request,error.code);throw error;}
   // Automatic listings use the maker's real text instead of invented product claims.
   if(automatic&&submission.notes.length<300)return responseForSubmission(request,'description-required');
   const now=new Date().toISOString(),origin=(env.APP_ORIGIN ?? new URL(request.url).origin).replace(/\/$/,'');

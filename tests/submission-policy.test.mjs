@@ -37,6 +37,7 @@ test('a form email or unverified account cannot claim automatic publication',asy
  assert.equal(env.DB.sqlite.prepare('SELECT COUNT(*) n FROM managed_tools').get().n,0);
  for(let n=3;n<=5;n++)assert.equal((await submit(env,input(n,owner))).status,201);
  assert.equal((await submit(env,input(6,owner))).status,429);
+ const missingAfterCap=await call(env,'/api/submit',input(7,owner));assert.equal(missingAfterCap.status,400);assert.equal((await missingAfterCap.json()).error,'screenshot-required');
  const me=await call(env,'/api/auth/me',undefined,{cookie});assert.deepEqual((await me.json()).account.submissionPolicy,{automaticApproval:false,rateLimited:true});
 });
 

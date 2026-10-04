@@ -1,6 +1,6 @@
 # Submission screenshots and trusted publication
 
-Every new POST /api/submit requires a multipart `screenshot` file: PNG, JPEG or WebP, at most 5 MiB. Server checks byte signatures, declared type, file size and bounded request size. Arbitrary cover URLs are not accepted. Existing submissions are grandfathered and retain their current moderation workflow.
+Every new POST /api/submit requires a multipart `screenshot` file: PNG, JPEG or WebP, at most 5 MiB. Server checks byte signatures, declared type, file size and bounded request size before ordinary submission quota checks, so missing/invalid screenshots receive their specific correction message even on an exhausted network. Arbitrary cover URLs are not accepted. Existing submissions are grandfathered and retain their current moderation workflow.
 
 Files live in the private R2 bucket `wishmeteor-product-screenshots` bound as `PRODUCT_SCREENSHOTS`. Migration 1015 adds a nullable unique screenshot key to submissions. Pending/rejected files are available only to the verified submitting account and authorized reviewers. Approved, visible products expose their own screenshot as the cover. Archived/unapproved listings lose public image access. Withdrawal deletes a pending upload. Database failures clean unattached uploads; an uncertain commit cannot delete a cover already associated with a submission.
 
