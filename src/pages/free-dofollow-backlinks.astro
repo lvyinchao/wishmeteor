@@ -17,11 +17,11 @@ const dofollowCount = live.filter((entry) => isListable(entry)).length;
 const faqs = [
   {
     q: 'Is the backlink really free?',
-    a: 'Yes. Submission, review, the listing page and the dofollow link all cost nothing, and there is no paid tier hiding behind them. Every product receives a human review, so launches appear as that work is completed.',
+    a: 'Yes. Submission, review, the listing page and the dofollow link all cost nothing, and there is no paid tier hiding behind them. Most submissions receive editorial review; authorized, verified accounts can publish directly.',
   },
   {
     q: 'What does dofollow mean here?',
-    a: `The link on your entry carries no rel="nofollow", rel="ugc" or rel="sponsored" attribute, so search engines treat it as an editorial vote from ${SITE.name}. We only keep it that way while the entry stays true: reachable, on-topic, and described in text we wrote ourselves.`,
+    a: `The link on your entry carries no rel="nofollow", rel="ugc" or rel="sponsored" attribute, which allows search engines to follow it. An editor or authorized automatic-publication account can approve dofollow explicitly; other links follow our current-check policy.`,
   },
   {
     q: 'Do I have to link back?',
@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: 'How long does the link last?',
-    a: `As long as it stays honest. Every link is re-checked, and one that has been unreachable for ${SITE.staleAfterDays} days loses its dofollow status rather than sitting there pointing at a parked domain. Deletions are logged on the policy page.`,
+    a: `Explicitly approved dofollow links remain dofollow while the product is published. Other links require a successful check within ${SITE.staleAfterDays} days. Link observations are recorded separately, and listings can still be corrected or removed.`,
   },
   {
     q: 'What gets rejected?',
@@ -93,7 +93,7 @@ const description = `A free, reviewed dofollow backlink for your AI tool, model 
       <li>During review we open the page. It has to load, be about what you said it is about, and be evaluable without signing in.</li>
       <li>If it passes, an entry is written in our own words: what the thing does, what it costs, who it is for and where it falls short. No copy-paste of your tagline.</li>
       <li>The entry goes live with a dofollow link, and your blessing — one paragraph, written for your product, not a template — is emailed to you along with a card you can share.</li>
-      <li>After that, links are re-checked on a rolling basis. Dead link, nofollow. Fixed within the grace period, dofollow again.</li>
+      <li>Link checks continue on a rolling basis. Explicit dofollow approval is retained while the product is published; other links follow the current-check policy.</li>
     </ol>
   </section>
 

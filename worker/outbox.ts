@@ -1,5 +1,5 @@
 import { escapeHtml } from '../src/lib/html.ts';
-import { isDofollow } from '../src/lib/link-policy.ts';
+import { linkPolicyMessage,type LinkFields } from '../src/lib/link-policy.ts';
 import { CatalogRepository } from './catalog.ts';
 import { randomToken } from './security.ts';
 
@@ -25,11 +25,11 @@ export function enqueueStatement(db: D1Database,id: string,kind: string,recipien
     .bind(id,kind,recipient,JSON.stringify(payload),submissionId,now,now);
 }
 
-export function approvalMail(tool: {slug:string;name:string;url:string;description:string;approved:boolean;status:string;lastVerifiedAt:string|null;checksFailed:number;contentVersion?:string;wish?:{blessingLong?:string}},origin: string): MailPayload {
+export function approvalMail(tool: LinkFields & {slug:string;name:string;url:string;contentVersion?:string;wish?:{blessingLong?:string}},origin: string): MailPayload {
   const page=`${origin}/tool/${tool.slug}`;
   const card=`${page}/card.png${tool.contentVersion ? '?v='+encodeURIComponent(tool.contentVersion) : ''}`;
   const blessing=tool.wish?.blessingLong ?? '';
-  const policy=isDofollow(tool) ? 'Your official-site link currently meets our verified-link policy.' : 'Your official-site link is marked nofollow until it passes our verification policy.';
+  const policy=linkPolicyMessage(tool);
   return {
     slug:tool.slug,cardUrl:card,subject:`${tool.name} is live on WishMeteor`,
     text:`Your project is live: ${page}\n\n${blessing}\n\nDownload your blessing card: ${card}\n${policy}\n\nYou can request a correction from your account.`,

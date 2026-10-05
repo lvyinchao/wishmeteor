@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { environment,googleRequest,submit,submissionForm,screenshotBytes } from './harness.mjs';
 import { call,admin,tool,approvedContent } from './fixtures.mjs';
 import { automaticSubmissionAccount } from '../worker/submission-policy.ts';
+import { isDofollow,outboundRel } from '../src/lib/link-policy.ts';
 const owner='lvyinchao@gmail.com';
 const input=(n=1,email='maker@gmail.com')=>({name:'Screenshot project '+n,url:'https://screenshot-project-'+n+'.com',email,category:'ai-coding',notes:tool().description,own:'yes'});
 const cookieFor=async(env,email)=>{const response=await googleRequest(env,email);assert.equal(response.status,200);return response.headers.get('set-cookie').split(';')[0];};
@@ -32,6 +33,7 @@ test('pending screenshots are private, admins can review them, and approval uses
 
 test('a form email or unverified account cannot claim automatic publication',async()=>{
  assert.equal(automaticSubmissionAccount({email:owner,email_verified_at:null}),false);assert.equal(automaticSubmissionAccount(null),false);
+ assert.equal(automaticSubmissionAccount({email:'lvyjnchao@gmail.com',email_verified_at:new Date().toISOString()}),false);
  const env=silent(),cookie=await cookieFor(env,'other@gmail.com');
  for(const options of [{},{cookie}]){const response=await submit(env,input(options.cookie?2:1,owner),options);assert.equal(response.status,201);assert.equal((await response.json()).status,'queued');}
  assert.equal(env.DB.sqlite.prepare('SELECT COUNT(*) n FROM managed_tools').get().n,0);
@@ -49,7 +51,8 @@ test('verified owner publishes over submission and daily caps atomically with sc
   const response=await submit(env,input(n,owner),{cookie});assert.equal(response.status,201);const data=await response.json();assert.equal(data.status,'published');
   const row=env.DB.sqlite.prepare('SELECT * FROM submissions WHERE id=?').get(data.id);assert.equal(row.verdict,'approved');assert.equal(row.approved_slug,data.slug);assert.equal(row.email,owner);
   const record=JSON.parse(env.DB.sqlite.prepare('SELECT content_json FROM managed_tools WHERE slug=?').get(data.slug).content_json);assert.equal(record.description,input().notes);assert.equal(record.pricing,'unknown');assert.equal(record.lastVerifiedAt,null);assert.equal(record.coverImage,'/api/product-screenshots/'+row.screenshot_key);assert.equal(record.wish.blessingApproved,true);
-  assert.equal((await call(env,record.coverImage)).status,200);assert.equal((await call(env,'/tool/'+data.slug)).status,200);
+  assert.equal(record.linkPolicy,'dofollow');assert.equal(isDofollow(record,new Date(Date.now()+100*86400000)),true);assert.equal(outboundRel(record),'noopener');
+  assert.equal((await call(env,record.coverImage)).status,200);const html=await (await call(env,'/tool/'+data.slug)).text();assert.match(html,/Official link is approved as dofollow/);assert.ok(!html.includes('rel="noopener nofollow'));
  }
  const total=table=>env.DB.sqlite.prepare('SELECT COUNT(*) n FROM '+table).get().n;
  for(const table of ['submissions','managed_tools','tool_cards','tool_events','publication_exceptions','notification_outbox'])assert.equal(total(table),12,table);

@@ -24,7 +24,8 @@ const description = `The exact rules behind every outbound link on ${SITE.name}:
     </p>
 
     <h2>When a link is dofollow</h2>
-    <p>A link carries no value-affecting rel attribute only while all of the following hold:</p>
+    <p>A published product's official link can be approved as dofollow by an editor, or receive dofollow automatically through an authorized, verified submitter account. This approval remains in effect while the product is published. A link check is recorded separately and does not cancel the approved link setting.</p>
+    <p>Other official links qualify for dofollow while all of the following hold:</p>
     <ul>
       <li>the entry passed review and is marked approved;</li>
       <li>the target page returns a successful response on our last check;</li>
@@ -32,7 +33,7 @@ const description = `The exact rules behind every outbound link on ${SITE.name}:
       <li>the entry carries at least {SITE.minDescriptionChars} characters of product description.</li>
     </ul>
     <p>
-      If any of those fails, the link is rendered with <code>rel="nofollow ugc"</code> and the entry is dropped from the
+      For links without explicit dofollow approval, if any of those fails, the link is rendered with <code>rel="nofollow ugc"</code> and the entry is dropped from the
       sitemap until it is fixed. The status is visible on every entry page, so nobody has to guess.
     </p>
 
@@ -47,7 +48,7 @@ const description = `The exact rules behind every outbound link on ${SITE.name}:
 
     <h2>Submission screenshots and review</h2>
     <p>Every new submission must include a real product screenshot (PNG, JPEG or WebP, up to 5 MB). It is available to the submitter and reviewers while pending, and becomes the listing cover after approval. Screenshots should not contain confidential information.</p>
-    <p>Most submissions require editorial review. An authorized, verified account can publish automatically while signed in. Writing an authorized account’s email in a form does not grant that permission.</p>
+    <p>Most submissions require editorial review. An authorized, verified account can publish automatically with a dofollow official link while signed in. Writing an authorized account’s email in a form does not grant that permission.</p>
 
     <h2>Volume cap</h2>
     <p>

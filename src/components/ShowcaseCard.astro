@@ -1,5 +1,6 @@
 ---
 import { productCoverSources,productCoverLabel } from '../lib/product-covers';
+import { outboundRel } from '../lib/link-policy';
 interface Props { entry: any; categoryName: string; stars?: boolean; }
 const { entry, categoryName, stars = true } = Astro.props;
 const wish = entry.wish && typeof entry.wish === 'object' ? entry.wish : {};
@@ -13,7 +14,7 @@ const coverSource=uploaded?undefined:productCoverSources[entry.slug];
   <div class="tool-showcase-card__content">
     <h3><a class="card-title" href={`/tool/${entry.slug}`}>{entry.name}</a></h3>
     <p>{excerpt}</p>
-    <div class="card-meta"><span class="pill">{categoryName}</span><span class="pill">{entry.pricing}</span><a class="pill" href={entry.url} rel="noopener nofollow ugc" target="_blank">Visit project ↗</a></div>
+    <div class="card-meta"><span class="pill">{categoryName}</span><span class="pill">{entry.pricing}</span><a class="pill" href={entry.url} rel={outboundRel(entry)} target="_blank">Visit project ↗</a></div>
     {stars && <button class="star-vote" type="button" data-star-button aria-label={`Light a star for ${entry.name}`} aria-pressed="false"><span class="star-vote__icon" aria-hidden="true">✦</span><span class="star-vote__count" data-star-count>—</span><span class="star-vote__label" data-star-label>Light a star</span></button>}
   </div>
 </article>

@@ -13,8 +13,8 @@ function readTool(row:ContentRow):Tool {
   return tool;
 }
 export function summarize(tool:Tool,stars=0,descriptionLength=tool.description?.length ?? 0,rankStars=stars):ToolSummary {
-  const {slug,name,url,category,summary,tags,pricing,status,origin,firstSeenAt,lastSeenAt,lastVerifiedAt,checksFailed,approved,publishedAt,approvedAt,submittedAt,updatedAt,contentVersion,coverImage}=tool;
-  return {slug,name,url,category,summary,tags,pricing,status,origin,firstSeenAt,lastSeenAt,lastVerifiedAt,checksFailed,approved,publishedAt,approvedAt,submittedAt,updatedAt,contentVersion,coverImage,stars,rankStars,descriptionLength,
+  const {slug,name,url,category,summary,tags,pricing,status,origin,firstSeenAt,lastSeenAt,lastVerifiedAt,checksFailed,approved,publishedAt,approvedAt,submittedAt,updatedAt,contentVersion,coverImage,linkPolicy}=tool;
+  return {slug,name,url,category,summary,tags,pricing,status,origin,firstSeenAt,lastSeenAt,lastVerifiedAt,checksFailed,approved,publishedAt,approvedAt,submittedAt,updatedAt,contentVersion,coverImage,linkPolicy,stars,rankStars,descriptionLength,
     ...(tool.wish?{wish:{...tool.wish,blessingLong:''}}:{})};
 }
 function encodeCursor(tool:ToolSummary,sort:string):string {return btoa(JSON.stringify({v:1,sort,stamp:tool.publishedAt,slug:tool.slug,stars:tool.rankStars}));}

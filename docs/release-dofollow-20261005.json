@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "baseline": "0906c64a41cb8cb7354cf2ba3f6114573c4ed8c8",
+  "files": [
+    "README.md",
+    "docs/release-dofollow-20261005.json",
+    "src/components/ShowcaseCard.astro",
+    "src/lib/link-policy.ts",
+    "src/lib/tool-schema.ts",
+    "src/pages/dofollow-policy.astro",
+    "src/pages/free-dofollow-backlinks.astro",
+    "tests/link-policy.test.mjs",
+    "tests/submission-policy.test.mjs",
+    "worker/admin.ts",
+    "worker/catalog.ts",
+    "worker/outbox.ts",
+    "worker/public.ts",
+    "worker/submissions.ts"
+  ],
+  "migrations": [],
+  "publicChecks": ["/", "/new", "/api/content", "/tool/heyclicky", "/dofollow-policy", "/sitemap-tools.xml"]
+}

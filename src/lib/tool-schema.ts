@@ -19,6 +19,7 @@ export interface Tool {
   firstSeenAt:string;lastSeenAt:string;lastVerifiedAt:string|null;checksFailed:number;approved:boolean;
   submittedAt?:string;approvedAt?:string;publishedAt?:string;updatedAt?:string;contentVersion?:string;
   coverImage?:string;wish?:Wish;lastCheckState?:'live'|'dead'|'blocked';lastCheckedAt?:string;
+  linkPolicy?:'verified'|'dofollow';
 }
 export interface ToolSummary extends Omit<Tool,'description'|'sources'> { stars:number;rankStars:number;descriptionLength:number }
 export function isPublicTool(tool:Pick<Tool,'approved'|'status'>):boolean { return tool.approved===true&&tool.status!=='archived'; }
@@ -87,6 +88,7 @@ export function validateTool(raw:unknown,slug:string,now=new Date()):{value:Tool
   const origin=input.origin==='submitted'?'submitted':'curated';
   if(input.origin!==undefined&&!['submitted','curated'].includes(String(input.origin)))errors.push('origin must be submitted or curated');
   const today=now.toISOString().slice(0,10);
+  if(input.linkPolicy!==undefined&&!['verified','dofollow'].includes(String(input.linkPolicy)))errors.push('linkPolicy must be verified or dofollow');
   const sources:Source[]=[];
   if(input.sources!==undefined&&!Array.isArray(input.sources))errors.push('sources must be an array');
   if(Array.isArray(input.sources)) {
@@ -121,7 +123,7 @@ export function validateTool(raw:unknown,slug:string,now=new Date()):{value:Tool
       wish={submittedAt:typeof submittedAt==='string'?submittedAt:today,blessingShort,blessingLong,blessingApproved:w.blessingApproved===true,notifiedAt:null,...(makerWish?{makerWish}:{})};
     }
   }
-  return {errors,value:{slug,name,url:canonical?.url ?? '',category,summary,description,tags:tags.filter((t):t is string=>typeof t==='string').map(t=>t.trim()),pricing,status,origin,sources,firstSeenAt:typeof firstSeenAt==='string'?firstSeenAt:today,lastSeenAt:today,lastVerifiedAt:null,checksFailed:0,approved:input.approved!==false,...(input.coverImage?{coverImage:String(input.coverImage)}:{}),...(wish?{wish}:{})}};
+  return {errors,value:{slug,name,url:canonical?.url ?? '',category,summary,description,tags:tags.filter((t):t is string=>typeof t==='string').map(t=>t.trim()),pricing,status,origin,sources,firstSeenAt:typeof firstSeenAt==='string'?firstSeenAt:today,lastSeenAt:today,lastVerifiedAt:null,checksFailed:0,approved:input.approved!==false,...(input.linkPolicy?{linkPolicy:input.linkPolicy as Tool['linkPolicy']}:{}),...(input.coverImage?{coverImage:String(input.coverImage)}:{}),...(wish?{wish}:{})}};
 }
 
 export function blessingErrors(tool:Tool):string[] {

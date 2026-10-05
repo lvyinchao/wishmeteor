@@ -96,7 +96,7 @@ async function publishAutomatic(request:Request,env:Env,submission:SubmissionInp
   const day=now.slice(0,10),operation=crypto.randomUUID();
   const {value,errors}=validateTool({name:submission.name,url:target.url,category:submission.category,
     summary:submission.notes.replace(/\s+/g,' ').slice(0,160),description:submission.notes,tags:[submission.category],pricing:'unknown',status:'active',origin:'submitted',approved:true,
-    coverImage:screenshotPath(screenshotKey),sources:[{type:'submitter',url:target.url,observedAt:day}],firstSeenAt:day,
+    coverImage:screenshotPath(screenshotKey),linkPolicy:'dofollow',sources:[{type:'submitter',url:target.url,observedAt:day}],firstSeenAt:day,
     wish:{submittedAt:day,makerWish:submission.makeAWish,blessingApproved:true,blessingShort:'May your next chapter shine.',
       blessingLong:`May ${submission.name} find the people who need it. May thoughtful feedback, patient collaborators, and each small improvement help your idea grow. We wish you clarity for the next step and a welcoming community as you bring this project into the world.`}},slug);
   if(errors.length||blessingErrors(value).length)throw new HttpError('invalid-content');

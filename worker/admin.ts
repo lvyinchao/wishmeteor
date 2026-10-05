@@ -37,7 +37,7 @@ function applyVerification(tool:Tool,proof:VerificationProof):void {
  if(proof.state==='live'){tool.lastVerifiedAt=tool.lastCheckedAt;tool.checksFailed=0;}
  else {tool.checksFailed=(tool.checksFailed ?? 0)+1;if(proof.state==='dead'&&tool.checksFailed>=3&&tool.status==='active')tool.status='stale';}
 }
-function factualFields(tool:Tool):string {return JSON.stringify([tool.name,tool.url,tool.category,tool.summary,tool.description,tool.tags,tool.pricing,tool.status,tool.approved,tool.sources,tool.coverImage,tool.wish?.blessingShort,tool.wish?.blessingLong,tool.wish?.makerWish,tool.wish?.blessingApproved]);}
+function factualFields(tool:Tool):string {return JSON.stringify([tool.name,tool.url,tool.category,tool.summary,tool.description,tool.tags,tool.pricing,tool.status,tool.approved,tool.sources,tool.coverImage,tool.linkPolicy,tool.wish?.blessingShort,tool.wish?.blessingLong,tool.wish?.makerWish,tool.wish?.blessingApproved]);}
 
 export async function adminMetrics(env:Env):Promise<Record<string,unknown>> {
   const now=new Date(),day=now.toISOString().slice(0,10),activeSince=new Date(now.getTime()-86_400_000).toISOString();
@@ -76,6 +76,7 @@ async function putContent(request:Request,env:Env,slug:string):Promise<Response>
     const errors=blessingErrors(value);if(errors.length)return json({error:'blessing-required',details:errors},400);
   }
   const sameUrl=existing?.url===value.url;
+  if(sameUrl&&input.linkPolicy===undefined)value.linkPolicy=existing?.linkPolicy;
   value.lastVerifiedAt=sameUrl?existing!.lastVerifiedAt:null;value.checksFailed=sameUrl?existing!.checksFailed:0;
   if(sameUrl){value.lastCheckState=existing!.lastCheckState;value.lastCheckedAt=existing!.lastCheckedAt;}if(proof)applyVerification(value,proof);
   value.publishedAt=existing?.publishedAt ?? now;value.approvedAt=existing?.approvedAt ?? now;value.updatedAt=now;value.contentVersion=randomToken().slice(0,16);
@@ -186,6 +187,22 @@ async function verificationResult(request:Request,env:Env,slug:string):Promise<R
   }catch(error){if(String(error).includes('link_verification_nonces.nonce'))return json({error:'verification-replayed'},409);throw error;}
 }
 
+async function setLinkPolicy(request:Request,env:Env,slug:string):Promise<Response> {
+  const tool=await new CatalogRepository(env.DB).get(slug,true);
+  if(!tool||!tool.approved||tool.status==='archived')return json({error:'public-product-required'},404);
+  const input=await jsonBody(request);
+  if(input.expectedVersion!==version(tool))return json({error:'content-version-required',expectedVersion:version(tool)},428);
+  if(!['verified','dofollow'].includes(String(input.linkPolicy)))return json({error:'invalid-link-policy'},400);
+  if(tool.linkPolicy===input.linkPolicy)return json({ok:true,tool,unchanged:true});
+  const now=new Date().toISOString(),value:Tool={...tool,linkPolicy:input.linkPolicy as Tool['linkPolicy'],updatedAt:now,contentVersion:randomToken().slice(0,16)};
+  const results=await env.DB.batch([
+    env.DB.prepare("UPDATE managed_tools SET content_json=?,updated_at=? WHERE slug=? AND COALESCE(json_extract(content_json,'$.contentVersion'),updated_at,'')=?")
+      .bind(JSON.stringify(value),now,slug,version(tool)),
+    cardStatement(env,value,now),eventStatement(env,value,'updated',now),
+  ]);
+  return results[0].meta.changes?json({ok:true,tool:value}):json({error:'version-conflict'},409);
+}
+
 export async function handleAdmin(request:Request,env:Env):Promise<Response> {
   const path=new URL(request.url).pathname;
   if(path==='/api/admin/session'&&request.method==='POST') {
@@ -226,6 +243,8 @@ export async function handleAdmin(request:Request,env:Env):Promise<Response> {
   }
   if(content&&request.method==='GET') {const tool=await new CatalogRepository(env.DB).get(content[1],true);return tool?json({tool}):json({error:'product-not-found'},404);}
   if(content&&request.method==='PUT')return putContent(request,env,content[1]);
+  const linkPolicy=/^\/api\/admin\/content\/([a-z0-9]+(?:-[a-z0-9]+)*)\/link-policy$/.exec(path);
+  if(linkPolicy&&request.method==='POST')return setLinkPolicy(request,env,linkPolicy[1]);
   const approval=/^\/api\/admin\/submissions\/(\d+)\/(approve|reject)$/.exec(path);
   if(approval&&request.method==='POST')return approveSubmission(request,env,Number(approval[1]),approval[2]);
   const verification=/^\/api\/admin\/content\/([a-z0-9]+(?:-[a-z0-9]+)*)\/verification$/.exec(path);
