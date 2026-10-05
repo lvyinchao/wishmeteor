@@ -18,5 +18,21 @@
     "worker/submissions.ts"
   ],
   "migrations": [],
-  "publicChecks": ["/", "/new", "/api/content", "/tool/heyclicky", "/dofollow-policy", "/sitemap-tools.xml"]
+  "publicChecks": [
+    "/",
+    "/new",
+    "/api/content",
+    "/tool/heyclicky",
+    "/sitemap-tools.xml"
+  ],
+  "assetChecks": [
+    {
+      "path": "/dofollow-policy",
+      "text": "editor, or receive dofollow"
+    },
+    {
+      "path": "/free-dofollow-backlinks",
+      "text": "Explicitly approved dofollow"
+    }
+  ]
 }
