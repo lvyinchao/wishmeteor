@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "baseline": "9792b526e59f476292d45faebcf286cdfe76362b",
+  "files": [
+    "docs/release-sitemaps-20261007.json",
+    "src/lib/sitemap.mjs",
+    "src/lib/sitemap.d.mts",
+    "src/pages/sitemap.xml.ts",
+    "src/pages/sitemap-pages.xml.ts",
+    "src/pages/sitemap-posts.xml.ts",
+    "src/pages/sitemap-tools.xml.ts",
+    "tests/sitemap.test.mjs",
+    "worker/catalog.ts",
+    "worker/public.ts"
+  ],
+  "migrations": [],
+  "publicChecks": ["/", "/api/content", "/sitemap.xml", "/sitemap-tools.xml", "/sitemap-pages.xml", "/tools/2"],
+  "assetChecks": ["/sitemap-posts.xml", "/robots.txt"]
+}

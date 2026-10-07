@@ -7,6 +7,7 @@ import { itemList,softwareApplication,website } from '../src/lib/jsonld.ts';
 import { CatalogRepository,type CatalogFilters,type CatalogPage } from './catalog.ts';
 import { HttpError,json } from './http.ts';
 import type { Env } from './env.ts';
+import { urlset,sitemapIndex,SITEMAP_PAGES,SITEMAP_TOOL_LIMIT,sitemapDate } from '../src/lib/sitemap.mjs';
 
 export function filtersFrom(url:URL):CatalogFilters {
   const p=url.searchParams,sort=p.get('sort') ?? 'newest',pricing=p.get('pricing') ?? '',origin=p.get('origin') ?? '';
@@ -39,7 +40,8 @@ async function directory(request:Request,env:Env,repo:CatalogRepository):Promise
   const url=new URL(request.url),filters=filtersFrom(url),page=await repo.list(filters),categories=await repo.categories();
   const home=url.pathname==='/',title=filters.category&&filters.category!=='all'?`${CATEGORY_NAMES[filters.category]} projects`:'A project worth a little starlight';
   const body=`${home?HERO:''}<section class="section catalog-section wish-sky-catalog" id="wish-wall" aria-labelledby="catalog-title" data-catalog><div class="section-head"><div><p class="eyebrow">A little light goes a long way</p><${home?'h2':'h1'} id="catalog-title">${e(title)}</${home?'h2':'h1'}><p class="section-intro">Explore approved projects, find a spark, and light a star.</p></div></div><form class="catalog-controls" method="get" data-catalog-form><label class="catalog-search" for="catalog-search"><span aria-hidden="true">⌕</span><input id="catalog-search" name="q" type="search" value="${e(filters.q)}" maxlength="120" aria-label="Search projects" placeholder="Search name, keyword or description" autocomplete="off"><kbd>⌘ K</kbd></label><div class="catalog-selects"><label>Category<select name="category">${opt('','All categories',filters.category ?? '')}${categories.map(c=>opt(c.id,`${c.name} (${c.count})`,filters.category ?? '')).join('')}</select></label><label>Pricing<select name="pricing">${opt('','Any pricing',filters.pricing ?? '')}${PRICING.map(p=>opt(p,PRICING_LABELS[p],filters.pricing ?? '')).join('')}</select></label><label>Order<select name="sort">${opt('newest','Newest first',filters.sort ?? '')}${opt('popular','Most starred',filters.sort ?? '')}</select></label><label>Source<select name="origin">${opt('','All projects',filters.origin ?? '')}${opt('submitted','Maker submissions',filters.origin ?? '')}${opt('curated','Editorial picks',filters.origin ?? '')}</select></label><button class="btn btn-quiet" type="submit">Apply filters</button></div></form><p class="catalog-results" data-catalog-results role="status" aria-live="polite">${page.total} projects · ${page.limit} per page</p><div class="grid grid-cards" id="catalog-grid" data-catalog-grid>${page.tools.map(productCard).join('')}</div><p class="catalog-empty" data-catalog-empty${page.tools.length?' hidden':''}>No projects match these filters. Try another keyword or category.</p><div data-catalog-pagination>${pageLinks(url,page)}</div><p class="wish-wall__note" data-star-status role="status" aria-live="polite">One encouragement per project for this browser identity. Browser stars are not a count of people.</p></section><section class="closing-wish"><span class="closing-wish__spark" aria-hidden="true">✦</span><div><h2>What are you hoping to bring to life?</h2><p>Put your idea beneath this sky. Let the next chapter begin with a wish.</p></div><a class="btn btn-primary" href="/submit">Plant a wish ↗</a></section>`;
-  return html(publicDocument({title:home?'WishMeteor — a wishing well for AI builders':`${title} — WishMeteor`,description:'Discover approved projects, compare ideas and encourage launches with browser stars.',path:url.pathname+(url.searchParams.get('page')?`?page=${page.page}`:''),jsonLd:[itemList(page.tools,url.pathname,title),...(home?[website('/')]:[])]},body,env.GA_MEASUREMENT_ID));
+  const canonical=home?(page.page>1?`/tools/${page.page}`:'/'):url.pathname.replace(/\/\d+$/,'')+(page.page>1?`/${page.page}`:'');
+  return html(publicDocument({title:home?'WishMeteor — a wishing well for AI builders':`${title} — WishMeteor`,description:'Discover approved projects, compare ideas and encourage launches with browser stars.',path:canonical,jsonLd:[itemList(page.tools,canonical,title),...(home?[website('/')]:[])]},body,env.GA_MEASUREMENT_ID));
 }
 async function detail(env:Env,repo:CatalogRepository,slug:string):Promise<Response> {
   const tool=await repo.get(slug);if(!tool)return notFound(env);
@@ -67,11 +69,23 @@ async function updates(request:Request,env:Env,repo:CatalogRepository):Promise<R
 function xml(body:string):Response {return new Response(body,{headers:{'content-type':'application/xml; charset=utf-8'}});}
 async function sitemap(request:Request,repo:CatalogRepository):Promise<Response> {
   const url=new URL(request.url);
-  if(url.pathname==='/sitemap-pages.xml'){const categories=await repo.categories();return xml(`<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/','/tools','/new','/submit','/about','/privacy','/dofollow-policy','/free-dofollow-backlinks','/news','/blog','/updates',...categories.map(c=>'/category/'+c.id)].map(path=>`<url><loc>https://wishmeteor.net${path}</loc></url>`).join('')}</urlset>`);}
+  const site=new URL('https://wishmeteor.net');
+  if(url.pathname==='/sitemap-pages.xml'){
+    const groups=await repo.sitemapGroups(),total=groups.reduce((n,g)=>n+g.count,0);
+    const latest=groups.map(g=>sitemapDate(g.updated_at)).filter((d):d is string=>!!d).sort().at(-1);
+    const items:{path:string;lastmod?:string}[]=SITEMAP_PAGES.map(path=>({path,...(['/', '/tools','/new'].includes(path)&&latest?{lastmod:latest}:{})}));
+    for(const prefix of ['/tools','/new'])for(let page=2;page<=Math.ceil(total/12);page++)items.push({path:prefix+'/'+page,lastmod:latest});
+    for(const group of groups)for(let page=1;page<=Math.ceil(group.count/12);page++)items.push({path:'/category/'+group.category+(page>1?'/'+page:''),lastmod:sitemapDate(group.updated_at)??undefined});
+    return xml(urlset(site,items));
+  }
   const match=/^\/sitemap-tools(?:-(\d+))?\.xml$/.exec(url.pathname);
-  if(match) {const rows=await repo.sitemap(Number(match[1] ?? 1));return xml(`<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${rows.map(r=>`<url><loc>https://wishmeteor.net/tool/${r.slug}</loc><lastmod>${e(r.updated_at)}</lastmod></url>`).join('')}</urlset>`);}
-  const count=await repo.list({limit:1}),pages=Math.max(1,Math.ceil(count.total/10000));
-  return xml(`<?xml version="1.0"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><sitemap><loc>https://wishmeteor.net/sitemap-pages.xml</loc></sitemap><sitemap><loc>https://wishmeteor.net/sitemap-posts.xml</loc></sitemap>${Array.from({length:pages},(_,i)=>`<sitemap><loc>https://wishmeteor.net/sitemap-tools${i?'-'+(i+1):''}.xml</loc></sitemap>`).join('')}</sitemapindex>`);
+  const count=await repo.list({limit:1}),pages=Math.ceil(count.total/SITEMAP_TOOL_LIMIT);
+  if(match){
+    const page=Number(match[1]??1);
+    if(!Number.isSafeInteger(page)||page<1||page>pages||(match[1]&&(page===1||String(page)!==match[1])))throw new HttpError('sitemap-not-found',404);
+    const rows=await repo.sitemap(page);return xml(urlset(site,rows.map(r=>({path:'/tool/'+r.slug,lastmod:r.updated_at}))));
+  }
+  return xml(sitemapIndex(site,[{path:'/sitemap-pages.xml'},{path:'/sitemap-posts.xml'},...Array.from({length:pages},(_,i)=>({path:`/sitemap-tools${i?'-'+(i+1):''}.xml`}))]));
 }
 async function rss(repo:CatalogRepository):Promise<Response> {
   const events=await repo.events(50);

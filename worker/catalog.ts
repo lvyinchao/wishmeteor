@@ -1,5 +1,6 @@
 import { CATEGORY_NAMES,SLUG_RE,type Tool,type ToolSummary } from '../src/lib/tool-schema.ts';
 import { HttpError } from './http.ts';
+import { SITEMAP_TOOL_LIMIT } from '../src/lib/sitemap.mjs';
 
 export interface CatalogFilters { q?:string;category?:string;pricing?:string;origin?:string;sort?:'newest'|'popular';cursor?:string;page?:number;limit?:number }
 export interface CatalogPage {tools:ToolSummary[];total:number;page:number;limit:number;nextCursor:string|null;version:number;starVersion:number}
@@ -89,7 +90,10 @@ export class CatalogRepository {
     return !!await this.db.prepare("SELECT slug FROM managed_tools WHERE dedupe_key=? AND slug!=? UNION ALL SELECT slug FROM product_identity_aliases WHERE alias_key=? AND slug!=? LIMIT 1").bind(key,excludeSlug,key,excludeSlug).first();
   }
   async sitemap(page=1):Promise<{slug:string;updated_at:string}[]> {
-    const rows=await this.db.prepare(`SELECT slug,updated_at FROM managed_tools t WHERE ${PUBLIC} ORDER BY slug LIMIT 10000 OFFSET ?`).bind((Math.max(1,page)-1)*10000).all<{slug:string;updated_at:string}>();return rows.results ?? [];
+    const rows=await this.db.prepare(`SELECT slug,updated_at FROM managed_tools t WHERE ${PUBLIC} ORDER BY slug LIMIT ? OFFSET ?`).bind(SITEMAP_TOOL_LIMIT,(page-1)*SITEMAP_TOOL_LIMIT).all<{slug:string;updated_at:string}>();return rows.results ?? [];
+  }
+  async sitemapGroups():Promise<{category:string;count:number;updated_at:string}[]> {
+    const rows=await this.db.prepare(`SELECT category,COUNT(*) AS count,MAX(updated_at) AS updated_at FROM managed_tools t WHERE ${PUBLIC} GROUP BY category ORDER BY category`).all<{category:string;count:number;updated_at:string}>();return rows.results ?? [];
   }
   async events(limit=30,week=''):Promise<{id:number;slug:string;kind:string;name:string;summary:string;category:string;created_at:string}[]> {
     const conditions=[PUBLIC],values:(string|number)[]=[];
