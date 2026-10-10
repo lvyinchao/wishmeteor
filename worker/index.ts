@@ -1,5 +1,6 @@
 import { handleScreenshot } from './screenshots.ts';
 import { handleAuth } from './auth.ts';
+import { handleApiCredential } from './api-credentials.ts';
 import { handleAdmin } from './admin.ts';
 import { handleSubmit,handleMySubmissions,mutateSubmission,requestCorrection } from './submissions.ts';
 import { issueVoter,handleStars } from './stars.ts';
@@ -37,6 +38,7 @@ async function publicResponse(request:Request,env:Env,ctx:ExecutionContext):Prom
 }
 async function route(request:Request,env:Env,ctx:ExecutionContext):Promise<Response> {
  const path=new URL(request.url).pathname;
+ if(path==='/api/token')return handleApiCredential(request,env);
  if(path.startsWith('/api/admin/'))return handleAdmin(request,env);
  if(path.startsWith('/api/auth/'))return await handleAuth(request,env) ?? json({error:'not-found'},404);
  const screenshot=/^\/api\/product-screenshots\/([^/]+)$/.exec(path);if(screenshot)return handleScreenshot(request,env,screenshot[1]);

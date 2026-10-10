@@ -5,6 +5,7 @@ import { canonicalProductUrl,CATEGORY_NAMES,validateTool,blessingErrors } from '
 import { escapeHtml } from '../src/lib/html.ts';
 import { CatalogRepository } from './catalog.ts';
 import { getSessionAccount } from './auth.ts';
+import { getApiCredentialAccount,submissionAccount } from './api-credentials.ts';
 import { boundedBody,boundedBytes,HttpError,json,jsonBody,requireOrigin,stringField } from './http.ts';
 import { consumeLimits,requestIp,sha256 } from './security.ts';
 import { approvalMail,enqueueStatement,type MailPayload } from './outbox.ts';
@@ -32,7 +33,7 @@ async function formOrJson(request:Request):Promise<Record<string,unknown>> {
   throw new HttpError('unsupported-form',415);
 }
 function responseForSubmission(request:Request,status:string,id?:number,slug?:string):Response {
-  if((request.headers.get('content-type') ?? '').includes('application/json')||(request.headers.get('accept') ?? '').includes('application/json')) {
+  if(request.headers.has('authorization')||(request.headers.get('content-type') ?? '').includes('application/json')||(request.headers.get('accept') ?? '').includes('application/json')) {
     const codes:Record<string,number>={queued:201,published:201,'screenshot-too-large':413,duplicate:409,throttled:429,rejected:400};
     return json(['queued','published'].includes(status)?{ok:true,status,id,...(slug?{slug}:{})}:{error:status},codes[status] ?? 400);
   }
@@ -51,13 +52,16 @@ function submissionMail(submission:SubmissionInput,target:{url:string},origin:st
 
 export async function handleSubmit(request:Request,env:Env):Promise<Response> {
   if(request.method!=='POST')return json({error:'method-not-allowed'},405);
-  requireOrigin(request);const input=await formOrJson(request);
+  const apiAccount=await getApiCredentialAccount(request,env);
+  if(!apiAccount)requireOrigin(request);
+  const input=await formOrJson(request);
   if(stringField(input,'hp',200))return responseForSubmission(request,'queued');
   let submission:SubmissionInput;
   try{submission=validateSubmission(input);}catch(error){if(error instanceof HttpError)return responseForSubmission(request,'rejected');throw error;}
+  if(apiAccount&&submission.email!==apiAccount.email.toLowerCase())throw new HttpError('email-account-mismatch',403);
   const target=canonicalProductUrl(submission.url)!;
   let screenshot;try{screenshot=await validateScreenshot(input.screenshot);}catch(error){if(error instanceof HttpError)return responseForSubmission(request,error.code);throw error;}
-  const account=await getSessionAccount(request,env),automatic=automaticSubmissionAccount(account);
+  const account=apiAccount ?? await getSessionAccount(request,env),automatic=automaticSubmissionAccount(account);
   if(!automatic&&!await consumeLimits(env.DB,'submit',[{key:'ip:'+requestIp(request),maximum:5},{key:'email:'+submission.email,maximum:5}]))return responseForSubmission(request,'throttled');
   const catalog=new CatalogRepository(env.DB);
   if(await catalog.duplicate(target.projectKey))return responseForSubmission(request,'duplicate');
@@ -115,7 +119,7 @@ async function publishAutomatic(request:Request,env:Env,submission:SubmissionInp
 
 export async function handleMySubmissions(request:Request,env:Env):Promise<Response> {
   if(request.method!=='GET')return json({error:'method-not-allowed'},405);
-  const account=await getSessionAccount(request,env);if(!account)return json({error:'not-signed-in'},401);
+  const account=await submissionAccount(request,env);if(!account)return json({error:'not-signed-in'},401);
   const result=await env.DB.prepare(`SELECT s.id,s.name,s.url,s.email,s.category,s.notes,s.make_a_wish,s.created_at,s.verdict,s.verdict_at,s.screenshot_key,
     CASE WHEN t.approved=1 AND t.status!='archived' THEN t.slug ELSE NULL END AS slug,
     (SELECT n.state FROM notification_outbox n WHERE n.submission_id=s.id AND n.kind IN ('receipt','approved','rejected') ORDER BY n.created_at DESC,n.id DESC LIMIT 1) AS notification_state
