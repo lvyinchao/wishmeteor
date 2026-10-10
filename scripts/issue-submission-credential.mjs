@@ -8,7 +8,11 @@ const args=process.argv.slice(2),value=flag=>{const i=args.indexOf(flag);return 
 const email=value('--email')?.trim().toLowerCase(),output=value('--output'),name=value('--name') ?? 'Submission API';
 if(!email||!output||!args.includes('--remote')||!/^\S+@\S+\.\S+$/.test(email)||name.length>80)throw Error('Use --remote --email <verified email> --output <private token file> [--name <label>]');
 const quote=value=>"'"+value.replaceAll("'","''")+"'";
-const run=options=>JSON.parse(execFileSync('pnpm',['exec','wrangler','d1','execute','wishmeteor','--remote','--json',...options],{encoding:'utf8',maxBuffer:4*1024*1024}));
+const run=options=>{
+  const result=execFileSync('pnpm',['exec','wrangler','d1','execute','wishmeteor','--remote','--json',...options],{encoding:'utf8',maxBuffer:4*1024*1024});
+  // SQL-file execution emits progress before its JSON. Confirm writes with a separate query.
+  return options.includes('--file')?undefined:JSON.parse(result);
+};
 const rows=result=>{if(result.some(item=>!item.success))throw Error('Database operation failed');return result.flatMap(item=>item.results ?? []);};
 const accounts=rows(run(['--command',`SELECT id,email FROM accounts WHERE email=${quote(email)} AND email_verified_at IS NOT NULL`]));
 if(accounts.length!==1)throw Error('Verified account not found');
