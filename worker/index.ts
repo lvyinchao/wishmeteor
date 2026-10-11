@@ -1,3 +1,5 @@
+import { handleMcp } from './mcp/server.ts';
+import { handleOAuth } from './mcp/oauth.ts';
 import { handleScreenshot } from './screenshots.ts';
 import { handleAuth } from './auth.ts';
 import { handleApiCredential } from './api-credentials.ts';
@@ -38,6 +40,8 @@ async function publicResponse(request:Request,env:Env,ctx:ExecutionContext):Prom
 }
 async function route(request:Request,env:Env,ctx:ExecutionContext):Promise<Response> {
  const path=new URL(request.url).pathname;
+ if(path==='/mcp')return handleMcp(request,env);
+ if(path.startsWith('/oauth/')||path.startsWith('/.well-known/oauth-'))return handleOAuth(request,env);
  if(path==='/api/token')return handleApiCredential(request,env);
  if(path.startsWith('/api/admin/'))return handleAdmin(request,env);
  if(path.startsWith('/api/auth/'))return await handleAuth(request,env) ?? json({error:'not-found'},404);

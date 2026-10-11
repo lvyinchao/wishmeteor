@@ -48,6 +48,8 @@ export function canonicalProductUrl(raw:unknown):{url:string;domain:string;proje
     let projectKey=domain;
     if(['github.com','gitlab.com'].includes(domain)&&projectPath.length>=2) {
       projectKey=`${domain}:${projectPath.slice(0,2).join('/').replace(/\.git$/,'').toLowerCase()}`;
+    } else if(['replit.com','glitch.com','codepen.io','codesandbox.io','stackblitz.com','notion.so','notion.site','lovable.dev'].includes(domain)&&projectPath.length) {
+      projectKey=domain+':'+projectPath.join('/').toLowerCase();
     } else if(domain==='huggingface.co'&&projectPath.length>=2) {
       const explicit=['models','datasets','spaces'].includes(projectPath[0]);
       const kind=explicit?projectPath[0]:'models',parts=explicit?projectPath.slice(1,3):projectPath.slice(0,2);

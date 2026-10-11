@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "baseline": "642e70608350de10db322eee006c08f80613aae7",
+  "files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "src/lib/tool-schema.ts",
+    "src/pages/account.astro",
+    "worker/index.ts",
+    "worker/submissions.ts",
+    "wrangler.jsonc",
+    "migrations/1017_private_mcp.sql",
+    "worker/mcp/oauth.ts",
+    "worker/mcp/files.ts",
+    "worker/mcp/services.ts",
+    "worker/mcp/server.ts",
+    "tests/mcp.test.mjs",
+    "docs/private-mcp.md",
+    "docs/private-mcp-release.json"
+  ],
+  "migrations": [
+    "migrations/1017_private_mcp.sql"
+  ],
+  "publicChecks": [
+    "/",
+    "/api/content",
+    "/sitemap-tools.xml",
+    "/.well-known/oauth-protected-resource",
+    "/.well-known/oauth-authorization-server"
+  ]
+}

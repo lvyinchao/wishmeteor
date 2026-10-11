@@ -4,7 +4,7 @@ import { cardStatement,eventStatement } from './publication.ts';
 import { canonicalProductUrl,CATEGORY_NAMES,validateTool,blessingErrors } from '../src/lib/tool-schema.ts';
 import { escapeHtml } from '../src/lib/html.ts';
 import { CatalogRepository } from './catalog.ts';
-import { getSessionAccount } from './auth.ts';
+import { type Account,getSessionAccount } from './auth.ts';
 import { getApiCredentialAccount,submissionAccount } from './api-credentials.ts';
 import { boundedBody,boundedBytes,HttpError,json,jsonBody,requireOrigin,stringField } from './http.ts';
 import { consumeLimits,requestIp,sha256 } from './security.ts';
@@ -59,9 +59,20 @@ export async function handleSubmit(request:Request,env:Env):Promise<Response> {
   let submission:SubmissionInput;
   try{submission=validateSubmission(input);}catch(error){if(error instanceof HttpError)return responseForSubmission(request,'rejected');throw error;}
   if(apiAccount&&submission.email!==apiAccount.email.toLowerCase())throw new HttpError('email-account-mismatch',403);
+  const account=apiAccount ?? await getSessionAccount(request,env);
+  return saveSubmission(request,env,submission,input.screenshot,account);
+}
+export interface McpSubmissionMetadata {key:string;hash:string;identity:string;sources:string[];names:string[];grantId:string;screenshotHash:string}
+export async function submitForAccount(request:Request,env:Env,account:Account,input:Record<string,unknown>,metadata:McpSubmissionMetadata):Promise<Response> {
+  const submission=validateSubmission({...input,email:account.email},false);
+  if(!['owner','authorized_independent'].includes(metadata.identity))throw new HttpError('listing-identity-invalid');
+  if(submission.notes.length<300)throw new HttpError('description-required');
+  return saveSubmission(request,env,submission,input.screenshot,account,metadata);
+}
+async function saveSubmission(request:Request,env:Env,submission:SubmissionInput,file:unknown,account:Account|null,metadata?:McpSubmissionMetadata):Promise<Response> {
   const target=canonicalProductUrl(submission.url)!;
-  let screenshot;try{screenshot=await validateScreenshot(input.screenshot);}catch(error){if(error instanceof HttpError)return responseForSubmission(request,error.code);throw error;}
-  const account=apiAccount ?? await getSessionAccount(request,env),automatic=automaticSubmissionAccount(account);
+  let screenshot;try{screenshot=await validateScreenshot(file);}catch(error){if(error instanceof HttpError)return responseForSubmission(request,error.code);throw error;}
+  const automatic=automaticSubmissionAccount(account);
   if(!automatic&&!await consumeLimits(env.DB,'submit',[{key:'ip:'+requestIp(request),maximum:5},{key:'email:'+submission.email,maximum:5}]))return responseForSubmission(request,'throttled');
   const catalog=new CatalogRepository(env.DB);
   if(await catalog.duplicate(target.projectKey))return responseForSubmission(request,'duplicate');
@@ -75,10 +86,10 @@ export async function handleSubmit(request:Request,env:Env):Promise<Response> {
   const screenshotKey=crypto.randomUUID()+'.'+screenshot.extension;
   await env.PRODUCT_SCREENSHOTS.put(screenshotKey,screenshot.bytes,{httpMetadata:{contentType:screenshot.type}});
   try {
-    if(automatic)return await publishAutomatic(request,env,submission,account!.id,target,screenshotKey,ipHash,now,origin);
+    if(automatic)return await publishAutomatic(request,env,submission,account!.id,target,screenshotKey,ipHash,now,origin,metadata);
     const results=await env.DB.batch([
-      env.DB.prepare(`INSERT INTO submissions(name,url,domain,root_domain,dedupe_key,email,category,notes,make_a_wish,ip_hash,created_at,verdict,account_id,screenshot_key)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,'pending',?,?)`).bind(submission.name,target.url,target.domain,target.domain,target.projectKey,submission.email,submission.category,submission.notes,submission.makeAWish,ipHash,now,account?.id ?? null,screenshotKey),
+      env.DB.prepare(`INSERT INTO submissions(name,url,domain,root_domain,dedupe_key,email,category,notes,make_a_wish,ip_hash,created_at,verdict,account_id,screenshot_key,mcp_idempotency_key,mcp_payload_hash,listing_identity,source_links,name_keys,mcp_grant_id,screenshot_hash)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?)`).bind(submission.name,target.url,target.domain,target.domain,target.projectKey,submission.email,submission.category,submission.notes,submission.makeAWish,ipHash,now,account?.id ?? null,screenshotKey,metadata?.key ?? null,metadata?.hash ?? null,metadata?.identity ?? null,JSON.stringify(metadata?.sources ?? []),JSON.stringify(metadata?.names ?? []),metadata?.grantId ?? null,metadata?.screenshotHash ?? null),
       env.DB.prepare(`INSERT INTO notification_outbox(id,kind,recipient,payload_json,submission_id,next_attempt_at,created_at)
         SELECT 'support:'||last_insert_rowid(),'support',?,?,last_insert_rowid(),?,?`).bind('support@wishmeteor.net',JSON.stringify(support),now,now),
       env.DB.prepare(`INSERT INTO notification_outbox(id,kind,recipient,payload_json,submission_id,next_attempt_at,created_at)
@@ -94,20 +105,20 @@ export async function handleSubmit(request:Request,env:Env):Promise<Response> {
   }
 }
 
-async function publishAutomatic(request:Request,env:Env,submission:SubmissionInput,accountId:string,target:NonNullable<ReturnType<typeof canonicalProductUrl>>,screenshotKey:string,ipHash:string,now:string,origin:string):Promise<Response> {
+async function publishAutomatic(request:Request,env:Env,submission:SubmissionInput,accountId:string,target:NonNullable<ReturnType<typeof canonicalProductUrl>>,screenshotKey:string,ipHash:string,now:string,origin:string,metadata?:McpSubmissionMetadata):Promise<Response> {
   const base=(submission.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70).replace(/-$/,'')||'product');
   const slug=base+'-'+crypto.randomUUID().slice(0,8);
   const day=now.slice(0,10),operation=crypto.randomUUID();
   const {value,errors}=validateTool({name:submission.name,url:target.url,category:submission.category,
     summary:submission.notes.replace(/\s+/g,' ').slice(0,160),description:submission.notes,tags:[submission.category],pricing:'unknown',status:'active',origin:'submitted',approved:true,
-    coverImage:screenshotPath(screenshotKey),linkPolicy:'dofollow',sources:[{type:'submitter',url:target.url,observedAt:day}],firstSeenAt:day,
+    coverImage:screenshotPath(screenshotKey),linkPolicy:'dofollow',sources:metadata?.sources.map(url=>({type:'submitter',url,observedAt:day})) ?? [{type:'submitter',url:target.url,observedAt:day}],firstSeenAt:day,
     wish:{submittedAt:day,makerWish:submission.makeAWish,blessingApproved:true,blessingShort:'May your next chapter shine.',
       blessingLong:`May ${submission.name} find the people who need it. May thoughtful feedback, patient collaborators, and each small improvement help your idea grow. We wish you clarity for the next step and a welcoming community as you bring this project into the world.`}},slug);
   if(errors.length||blessingErrors(value).length)throw new HttpError('invalid-content');
-  Object.assign(value,{submittedAt:now,approvedAt:now,publishedAt:now,updatedAt:now,contentVersion:crypto.randomUUID().slice(0,16)});
+  Object.assign(value,{...(metadata?{aliases:metadata.names.filter(n=>n!==submission.name.toLowerCase().trim()),listingIdentity:metadata.identity}:{}),submittedAt:now,approvedAt:now,publishedAt:now,updatedAt:now,contentVersion:crypto.randomUUID().slice(0,16)});
   const results=await env.DB.batch([
-    env.DB.prepare(`INSERT INTO submissions(name,url,domain,root_domain,dedupe_key,email,category,notes,make_a_wish,ip_hash,created_at,verdict,account_id,screenshot_key,verdict_at,approved_slug,publication_operation)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,'approved',?,?,?,?,?)`).bind(submission.name,target.url,target.domain,target.domain,target.projectKey,submission.email,submission.category,submission.notes,submission.makeAWish,ipHash,now,accountId,screenshotKey,now,slug,operation),
+    env.DB.prepare(`INSERT INTO submissions(name,url,domain,root_domain,dedupe_key,email,category,notes,make_a_wish,ip_hash,created_at,verdict,account_id,screenshot_key,verdict_at,approved_slug,publication_operation,mcp_idempotency_key,mcp_payload_hash,listing_identity,source_links,name_keys,mcp_grant_id,screenshot_hash)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,'approved',?,?,?,?,?,?,?,?,?,?,?,?)`).bind(submission.name,target.url,target.domain,target.domain,target.projectKey,submission.email,submission.category,submission.notes,submission.makeAWish,ipHash,now,accountId,screenshotKey,now,slug,operation,metadata?.key ?? null,metadata?.hash ?? null,metadata?.identity ?? null,JSON.stringify(metadata?.sources ?? []),JSON.stringify(metadata?.names ?? []),metadata?.grantId ?? null,metadata?.screenshotHash ?? null),
     env.DB.prepare('INSERT INTO managed_tools(slug,content_json,root_domain,dedupe_key,created_at,updated_at) VALUES(?,?,?,?,?,?)').bind(slug,JSON.stringify(value),target.domain,target.projectKey,now,now),
     cardStatement(env,value,now),eventStatement(env,value,'published',now),
     env.DB.prepare('INSERT INTO publication_days(day,used,exception_used) VALUES(?,0,1) ON CONFLICT(day) DO UPDATE SET exception_used=exception_used+1').bind(day),

@@ -6,7 +6,7 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    "run_worker_first": ["/", "/api/*", "/new", "/new/*", "/tools", "/tools/*", "/tool/*", "/category/*", "/compare", "/collections", "/collections/*", "/updates", "/rss.xml", "/sitemap.xml", "/sitemap-pages.xml", "/sitemap-tools.xml", "/sitemap-tools-*.xml"],
+    "run_worker_first": ["/", "/api/*", "/mcp", "/oauth/*", "/.well-known/oauth-*", "/new", "/new/*", "/tools", "/tools/*", "/tool/*", "/category/*", "/compare", "/collections", "/collections/*", "/updates", "/rss.xml", "/sitemap.xml", "/sitemap-pages.xml", "/sitemap-tools.xml", "/sitemap-tools-*.xml"],
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   },

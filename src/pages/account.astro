@@ -55,7 +55,7 @@ const description = 'Sign in or create a WishMeteor account with Google or email
           <p class="account-form__hint" data-submissions-error hidden>Submission status could not be loaded. Please refresh to try again.</p>
         </section>
         <section class="account-projects"><h3>Saved and followed projects</h3><ul data-project-list></ul><p data-project-list-status role="status"></p></section>
-        <div class="account-recovery-actions"><button class="btn btn-quiet" type="button" data-password-setup>Reset or add a password</button><button class="btn btn-quiet" type="button" data-revoke>Sign out all sessions</button></div><button class="btn btn-quiet" type="button" data-connect-google>Connect Google</button><div data-google-connect-area hidden><div id="google-connect-button"></div></div><p data-security-status role="status"></p>
+        <div class="account-recovery-actions"><button class="btn btn-quiet" type="button" data-password-setup>Reset or add a password</button><button class="btn btn-quiet" type="button" data-revoke>Sign out all sessions</button><a class="btn btn-quiet" href="/oauth/connections">Connected assistants</a></div><button class="btn btn-quiet" type="button" data-connect-google>Connect Google</button><div data-google-connect-area hidden><div id="google-connect-button"></div></div><p data-security-status role="status"></p>
       </div>
     </div>
     <p class="account-footnote">Connect sign-in methods using an existing account credential and a verified email.</p>
@@ -97,6 +97,8 @@ const description = 'Sign in or create a WishMeteor account with Google or email
   }
 
   function showAccount(account: AccountInfo) {
+    const oauthRequest=new URLSearchParams(location.search).get('oauth_request');
+    if(oauthRequest && /^[a-f0-9]{64}$/.test(oauthRequest)){location.assign('/oauth/consent?request='+oauthRequest);return;}
     currentEmail=account.email;
     if(password)password.value='';
     if (formView) formView.hidden = true;
