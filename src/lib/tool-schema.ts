@@ -46,8 +46,11 @@ export function canonicalProductUrl(raw:unknown):{url:string;domain:string;proje
     const url=parsed.toString().replace(/\/$/,'');
     const projectPath=parsed.pathname.split('/').filter(Boolean);
     let projectKey=domain;
-    if(['github.com','gitlab.com'].includes(domain)&&projectPath.length>=2) {
+    if(domain==='github.com'&&projectPath.length>=2) {
       projectKey=`${domain}:${projectPath.slice(0,2).join('/').replace(/\.git$/,'').toLowerCase()}`;
+    } else if(domain==='gitlab.com'&&projectPath.length>=2) {
+      const boundary=projectPath.indexOf('-');
+      projectKey=domain+':'+projectPath.slice(0,boundary<0?undefined:boundary).join('/').replace(/\.git$/,'').toLowerCase();
     } else if(['replit.com','glitch.com','codepen.io','codesandbox.io','stackblitz.com','notion.so','notion.site','lovable.dev'].includes(domain)&&projectPath.length) {
       projectKey=domain+':'+projectPath.join('/').toLowerCase();
     } else if(domain==='huggingface.co'&&projectPath.length>=2) {

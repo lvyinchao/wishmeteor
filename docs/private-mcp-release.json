@@ -2,6 +2,7 @@
   "version": 1,
   "baseline": "642e70608350de10db322eee006c08f80613aae7",
   "files": [
+    ".gitignore",
     "package.json",
     "pnpm-lock.yaml",
     "src/lib/tool-schema.ts",

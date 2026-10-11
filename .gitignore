@@ -21,3 +21,4 @@ data/drafts/blessings/
 
 .playwright-cli/
 output/playwright/
+output/mcp-e2e/

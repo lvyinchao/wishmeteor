@@ -119,3 +119,17 @@ test('atomic name guard rejects a different-URL name race after duplicate rechec
  env.DB.beforeBatch=async statements=>{if(!once&&statements.some(s=>s.sql.includes('INSERT INTO submissions'))){once=true;store(env,tool('racing-name',{name:input.name,url:'https://different-racing-url.com'}));}};
  await withImage(async()=>{const r=await invokeTool(flow.request,env,'submit_listing',input);assert.equal(r.structuredContent.error.code,'duplicate');});assert.equal(env.DB.sqlite.prepare('SELECT COUNT(*) n FROM submissions').get().n,0);assert.equal(env.PRODUCT_SCREENSHOTS.objects.size,0);
 });
+test('shared-host lookup handles legacy root identities and nested GitLab projects without false root matches',async()=>{
+ const env=environment(),flow=await oauth(env,'reader@gmail.com');
+ store(env,tool('legacy-shared',{name:'Legacy hosted project',url:'https://replit.com/@owner/project-one'}));env.DB.sqlite.prepare("UPDATE managed_tools SET dedupe_key='replit.com' WHERE slug='legacy-shared'").run();
+ for(const [url,expected] of [['https://replit.com/@owner/project-one',true],['https://replit.com/@owner/project-two',false]])assert.equal(data(await invokeTool(flow.request,env,'check_duplicate',{official_url:url,name:'Different name'})).duplicate,expected);
+ store(env,tool('nested-one',{name:'Nested one',url:'https://gitlab.com/group/subgroup/one'}));env.DB.sqlite.prepare("UPDATE managed_tools SET dedupe_key='gitlab.com:group/subgroup' WHERE slug='nested-one'").run();
+ assert.equal(data(await invokeTool(flow.request,env,'check_duplicate',{official_url:'https://gitlab.com/group/subgroup/one/-/tree/main',name:'Different name'})).duplicate,true);
+ assert.equal(data(await invokeTool(flow.request,env,'check_duplicate',{official_url:'https://gitlab.com/group/subgroup/two',name:'Different name'})).duplicate,false);
+});
+test('actual official client performs Streamable HTTP initialize, discovery and scoped calls',async()=>{
+ const {Client}=await import('@modelcontextprotocol/sdk/client/index.js'),{StreamableHTTPClientTransport}=await import('@modelcontextprotocol/sdk/client/streamableHttp.js'),worker=(await import('../worker/index.ts')).default;
+ const env=environment(),flow=await oauth(env),client=new Client({name:'isolated-official-client',version:'1'});
+ const transport=new StreamableHTTPClientTransport(new URL(origin+'/mcp'),{requestInit:{headers:{authorization:'Bearer '+flow.tokens.access_token}},fetch:async(url,options)=>{const req=new Request(url,options);return worker.fetch(req,env,{waitUntil(){}});}});
+ await client.connect(transport);const tools=await client.listTools();assert.equal(tools.tools.length,5);const result=await client.callTool({name:'get_account',arguments:{}});assert.equal(result.structuredContent.account.email,'lvyinchao@gmail.com');await client.close();
+});

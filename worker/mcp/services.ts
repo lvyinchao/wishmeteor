@@ -15,18 +15,20 @@ export async function checkDuplicate(env:Env,auth:Principal,input:DuplicateInput
  const target=canonicalProductUrl(input.official_url);if(!target)throw new HttpError('invalid-link');
  const names=[...new Set([input.name,...(input.aliases ?? [])].map(normalizeName))];
  const aliases=(input.aliases ?? []).flatMap(a=>{const t=canonicalProductUrl(a);return t?[t.projectKey]:[];}),keys=[...new Set([target.projectKey,...aliases])];
+ const lookupKeys=[...new Set([...keys,target.domain,...keys.filter(k=>k.startsWith('gitlab.com:')).map(k=>k.split('/').slice(0,2).join('/'))])];
  const rows=await env.DB.prepare(`SELECT t.slug,t.content_json,t.dedupe_key FROM managed_tools t WHERE t.approved=1 AND t.status!='archived' AND (
  t.dedupe_key IN (SELECT value FROM json_each(?)) OR EXISTS(SELECT 1 FROM product_identity_aliases a WHERE a.slug=t.slug AND a.alias_key IN (SELECT value FROM json_each(?)))
  OR lower(trim(json_extract(t.content_json,'$.name'))) IN (SELECT value FROM json_each(?)) OR EXISTS(SELECT 1 FROM json_each(t.content_json,'$.aliases') a WHERE lower(trim(a.value)) IN (SELECT value FROM json_each(?)))
- ) ORDER BY t.slug LIMIT 50`).bind(JSON.stringify(keys),JSON.stringify(keys),JSON.stringify(names),JSON.stringify(names)).all<{slug:string;content_json:string;dedupe_key:string}>();
+ ) ORDER BY t.slug LIMIT 50`).bind(JSON.stringify(lookupKeys),JSON.stringify(keys),JSON.stringify(names),JSON.stringify(names)).all<{slug:string;content_json:string;dedupe_key:string}>();
  const matches:(Record<string,unknown>)[]=[];
  for(const row of rows.results ?? []) {
-  const t=JSON.parse(row.content_json),urlMatch=keys.includes(row.dedupe_key)||await env.DB.prepare('SELECT slug FROM product_identity_aliases WHERE slug=? AND alias_key IN (SELECT value FROM json_each(?)) LIMIT 1').bind(row.slug,JSON.stringify(keys)).first();
+  const t=JSON.parse(row.content_json),urlMatch=keys.includes(canonicalProductUrl(t.url)?.projectKey ?? row.dedupe_key)||await env.DB.prepare('SELECT slug FROM product_identity_aliases WHERE slug=? AND alias_key IN (SELECT value FROM json_each(?)) LIMIT 1').bind(row.slug,JSON.stringify(keys)).first();
   const reasons=[...(urlMatch?['normalized_official_url_or_url_alias']:[]),...([t.name,...(t.aliases ?? [])].some(n=>names.includes(normalizeName(n)))?['product_name_or_alias']:[])];
+  if(!reasons.length)continue;
   matches.push({record_id:row.slug,status:'published',name:t.name,official_url:t.url,public_url:issuer(env)+'/tool/'+row.slug,reasons});
  }
- const pending=await env.DB.prepare(`SELECT id,name,url,dedupe_key,name_keys FROM submissions s WHERE account_id=? AND verdict='pending' AND (dedupe_key IN (SELECT value FROM json_each(?)) OR lower(trim(name)) IN (SELECT value FROM json_each(?)) OR EXISTS(SELECT 1 FROM json_each(name_keys) a WHERE a.value IN (SELECT value FROM json_each(?)))) ORDER BY id LIMIT 50`).bind(auth.account.id,JSON.stringify(keys),JSON.stringify(names),JSON.stringify(names)).all<{id:number;name:string;url:string;dedupe_key:string;name_keys:string}>();
- for(const s of pending.results ?? [])matches.push({record_id:s.id,status:'pending_review',name:s.name,official_url:s.url,public_url:null,reasons:[...(keys.includes(s.dedupe_key)?['normalized_official_url_or_url_alias']:[]),...([s.name,...JSON.parse(s.name_keys)].some(n=>names.includes(normalizeName(n)))?['product_name_or_alias']:[])]});
+ const pending=await env.DB.prepare(`SELECT id,name,url,dedupe_key,name_keys FROM submissions s WHERE account_id=? AND verdict='pending' AND (dedupe_key IN (SELECT value FROM json_each(?)) OR lower(trim(name)) IN (SELECT value FROM json_each(?)) OR EXISTS(SELECT 1 FROM json_each(name_keys) a WHERE a.value IN (SELECT value FROM json_each(?)))) ORDER BY id LIMIT 50`).bind(auth.account.id,JSON.stringify(lookupKeys),JSON.stringify(names),JSON.stringify(names)).all<{id:number;name:string;url:string;dedupe_key:string;name_keys:string}>();
+ for(const s of pending.results ?? []){const reasons=[...(keys.includes(canonicalProductUrl(s.url)?.projectKey ?? s.dedupe_key)?['normalized_official_url_or_url_alias']:[]),...([s.name,...JSON.parse(s.name_keys)].some(n=>names.includes(normalizeName(n)))?['product_name_or_alias']:[])];if(!reasons.length)continue;matches.push({record_id:s.id,status:'pending_review',name:s.name,official_url:s.url,public_url:null,reasons});}
  return {normalized_official_url:target.url,project_key:target.projectKey,duplicate:matches.length>0,matches};
 }
 export async function getAccount(env:Env,auth:Principal) {
