@@ -24,8 +24,9 @@ test('live product dates come from listing changes, remain stable, and never inc
 
 test('page maps cover default directory and category pagination with matching canonical URLs',async()=>{
  const env=environment();env.EMAIL=undefined;for(let n=0;n<25;n++)store(env,tool('pagination-'+n,{category:n<13?'ai-coding':'ai-chat'}));
- const xml=await (await call(env,'/sitemap-pages.xml')).text();for(const path of ['/tools/2','/tools/3','/new/3','/category/ai-coding/2','/blog','/news'])assert.ok(xml.includes('https://wishmeteor.net'+path+'</loc>'),path);assert.ok(!xml.includes('/tools/4')&&!xml.includes('/category/ai-chat/2')&&!xml.includes('/admin')&&!xml.includes('/account')&&!xml.includes('/compare'));
- for(const path of ['/tools/2','/tools?page=2','/?page=2'])assert.match(await (await call(env,path)).text(),/<link rel="canonical" href="https:\/\/wishmeteor.net\/tools\/2">/);
+ const xml=await (await call(env,'/sitemap-pages.xml')).text();for(const path of ['/new','/new/2','/new/3','/category/ai-coding/2','/blog','/news'])assert.ok(xml.includes('https://wishmeteor.net'+path+'</loc>'),path);assert.ok(!xml.includes('/tools')&&!xml.includes('/new/4')&&!xml.includes('/category/ai-chat/2')&&!xml.includes('/admin')&&!xml.includes('/account')&&!xml.includes('/compare'));
+ assert.match(await (await call(env,'/new/2')).text(),/<link rel="canonical" href="https:\/\/wishmeteor.net\/new\/2">/);
+ for(const path of ['/tools/2','/tools?page=2','/?page=2']){const response=await call(env,path);assert.equal(response.status,308);assert.equal(response.headers.get('location'),'/new/2');}
  const sitemap=await (await call(env,'/sitemap.xml')).text();assert.match(sitemap,/<sitemapindex/);assert.equal((sitemap.match(/<loc>/g)??[]).length,3);
 });
 

@@ -26,7 +26,8 @@ test('D1 summaries are bounded, preserve policy fields and support combined pagi
 });
 test('archived and unapproved products are excluded from every public surface',async()=>{
  const env=silent();store(env,tool('visible'));store(env,tool('archived',{status:'archived'}));store(env,tool('private',{approved:false}));
- for(const path of ['/','/tools','/new','/category/ai-coding','/api/content','/sitemap-tools.xml','/compare?slugs=visible,archived,private']){const response=await call(env,path);assert.equal(response.status,200,path);const text=await response.text();assert.ok(!text.includes('Isolated archived')&&!text.includes('Isolated private'),path);}
+ for(const path of ['/','/new','/category/ai-coding','/api/content','/sitemap-tools.xml','/compare?slugs=visible,archived,private']){const response=await call(env,path);assert.equal(response.status,200,path);const text=await response.text();assert.ok(!text.includes('Isolated archived')&&!text.includes('Isolated private'),path);}
+ const alias=await call(env,'/tools');assert.equal(alias.status,308);assert.equal(alias.headers.get('location'),'/new');
  for(const path of ['/tool/archived','/tool/private','/tool/private/card.svg'])assert.equal((await call(env,path)).status,404);
  const stars=await call(env,'/api/stars?slugs=visible,private,archived');assert.deepEqual((await stars.json()).counts,{visible:0});
 });

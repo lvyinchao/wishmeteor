@@ -23,9 +23,9 @@ const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
   title={`AI tools index, page ${slice.page} of ${slice.lastPage}`}
   description={`Page ${slice.page} of the WishMeteor AI tools index: ${slice.items.length} more tools, models and open-source projects with pricing and honest summaries.`}
 >
-  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'AI tools', path: '/tools' }, { name: `Page ${slice.page}` }]} />
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'AI tools', path: '/new' }, { name: `Page ${slice.page}` }]} />
   <div class="page-head">
     <h1>The index · page {slice.page}</h1>
   </div>
-  <ToolListing slice={slice} base="/tools" categoryName={nameOf} listName={`AI tools index page ${slice.page}`} />
+  <ToolListing slice={slice} base="/new" categoryName={nameOf} listName={`AI tools index page ${slice.page}`} />
 </Base>
