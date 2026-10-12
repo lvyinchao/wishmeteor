@@ -106,3 +106,22 @@ test('large fixtures use ordered public indexes and return a small page',async()
  const env=silent(),sqlite=env.DB.sqlite;sqlite.exec('BEGIN');for(let n=0;n<6000;n++)store(env,tool('large-'+n));sqlite.exec('COMMIT');sqlite.exec('ANALYZE');const repo=new CatalogRepository(env.DB),start=performance.now();const page=await repo.list({limit:12});assert.equal(page.total,6000);assert.equal(page.tools.length,12);assert.ok(JSON.stringify(page).length<22000);
  const query=env.DB.queries.findLast(row=>row.sql.includes('LIMIT ? OFFSET ?'));const plan=sqlite.prepare('EXPLAIN QUERY PLAN '+query.sql).all(...query.values);assert.ok(!plan.some(row=>row.detail.includes('USE TEMP B-TREE')),JSON.stringify(plan));assert.ok(performance.now()-start<5000);console.log('6000 product fixture page:',Math.round(performance.now()-start),'ms;',JSON.stringify(page).length,'bytes;',plan.map(row=>row.detail).join(' | '));
 });
+test('public ordering does not fall back to legacy indexes with misleading statistics',async()=>{
+ const env=silent(),sqlite=env.DB.sqlite;sqlite.exec('BEGIN');
+ for(let n=0;n<600;n++)store(env,tool('ordered-'+String(n).padStart(3,'0'),{category:n%2?'ai-chat':'ai-coding',pricing:n%3?'paid':'free',origin:n%5?'submitted':'curated',publishedAt:'2026-10-01T00:00:00.000Z'}));
+ sqlite.exec("UPDATE managed_tools SET trusted_star_count=CAST(substr(slug,9) AS INTEGER)%7; COMMIT; ANALYZE");
+ // Emulate stale estimates that make the old status-range indexes look cheap.
+ sqlite.exec("UPDATE sqlite_stat1 SET stat='600 1 1 1 1' WHERE idx LIKE 'catalog_%'");
+ if(sqlite.prepare("SELECT name FROM sqlite_master WHERE name='sqlite_stat4'").get())sqlite.exec('DELETE FROM sqlite_stat4');
+ sqlite.exec('ANALYZE sqlite_schema');
+ const repo=new CatalogRepository(env.DB);
+ for(const filters of [{},{category:'ai-coding'},{pricing:'free'},{origin:'submitted'},{category:'ai-chat',pricing:'paid',origin:'submitted',q:'complete'},{sort:'popular'},{sort:'popular',category:'ai-chat'}]) {
+  const page=await repo.list({...filters,limit:5});assert.equal(page.tools.length,5);
+  const next=await repo.list({...filters,limit:5,cursor:page.nextCursor});assert.equal(next.tools.length,5);assert.ok(next.tools.every(t=>!page.tools.some(p=>p.slug===t.slug)));
+  for(const t of [...page.tools,...next.tools]){if(filters.category)assert.equal(t.category,filters.category);if(filters.pricing)assert.equal(t.pricing,filters.pricing);if(filters.origin)assert.equal(t.origin,filters.origin);}
+  for(const query of env.DB.queries.filter(x=>x.sql.includes('LIMIT ? OFFSET ?'))) {
+   const plan=sqlite.prepare('EXPLAIN QUERY PLAN '+query.sql).all(...query.values);assert.ok(!plan.some(x=>x.detail.includes('USE TEMP B-TREE')),JSON.stringify({filters,plan}));
+  }
+  env.DB.queries.length=0;
+ }
+});

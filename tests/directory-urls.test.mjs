@@ -2,10 +2,24 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { environment } from './harness.mjs';
 import { call,store,tool } from './fixtures.mjs';
-import { catalogLocation,updateCatalogMetadata } from '../public/catalog-navigation.js';
+import { catalogLocation,catalogFormParams,updateCatalogMetadata } from '../public/catalog-navigation.js';
+import { publicHeader } from '../src/lib/public-shell.ts';
 
 const fixture=()=>{const env=environment();env.EMAIL=undefined;for(let n=0;n<32;n++)store(env,tool('directory-'+n,{category:n<25?'ai-coding':'ai-chat'}));return env;};
 const links=text=>[...text.matchAll(/<a class="catalog-page" href="([^"]+)"/g)].map(m=>m[1].replaceAll('&amp;','&'));
+
+test('news and directory paths select only their own navigation entry',()=>{
+ for(const [path,active] of [['/news','/news'],['/news?topic=launches','/news'],['/new','/new'],['/new?q=complete','/new'],['/new/2','/new'],['/category/ai-coding','/new'],['/','/new'],['/?q=complete','/new']]) {
+  const current=[...publicHeader(path).matchAll(/<a href="([^"]+)" aria-current="page"/g)].map(x=>x[1]);assert.deepEqual(current,[active],path);
+ }
+});
+
+test('browser pagination retains page size and filter changes reset page and cursor',()=>{
+ const next=catalogLocation(new URL('https://wishmeteor.net/new/3?limit=3&pricing=free&q=complete&sort=popular'));
+ assert.equal(next.get('page'),'3');assert.equal(next.get('limit'),'3');assert.equal(next.get('pricing'),'free');assert.equal(next.get('sort'),'popular');
+ const changed=catalogFormParams(new URL('https://wishmeteor.net/new/3?limit=3&q=old&cursor=old&pricing=free'),[['q',''],['category','ai-chat'],['pricing',''],['sort','newest']]);
+ assert.equal(changed.get('limit'),'3');assert.equal(changed.get('category'),'ai-chat');for(const key of ['q','cursor','page','pricing'])assert.equal(changed.has(key),false,key);
+});
 
 test('directory aliases, query pagination, page one and trailing slashes redirect directly to /new',async()=>{
  const env=fixture();
@@ -42,7 +56,7 @@ test('browser back state includes route page/category and updates canonical, og:
  const state=catalogLocation(new URL('https://wishmeteor.net/category/ai-coding/3?q=complete&pricing=free'));assert.equal(state.get('page'),'3');assert.equal(state.get('category'),'ai-coding');assert.equal(state.get('q'),'complete');assert.equal(state.get('pricing'),'free');
  assert.equal(catalogLocation(new URL('https://wishmeteor.net/new/3?page=2')).get('page'),'2');
  const attrs={},item={textContent:JSON.stringify({'@type':'ItemList',url:'old'})},website={textContent:JSON.stringify({'@type':'WebSite',url:'https://wishmeteor.net'})},other={textContent:'not json'};
- const document={baseURI:'https://wishmeteor.net/new',querySelector:selector=>({setAttribute:(name,value)=>attrs[selector+name]=value}),querySelectorAll:()=>[item,website,other]};
+ const document={baseURI:'https://www.wishmeteor.net/new',querySelector:selector=>({setAttribute:(name,value)=>attrs[selector+name]=value}),querySelectorAll:()=>[item,website,other]};
  const fresh={'@type':'ItemList',url:'https://wishmeteor.net/new/3',itemListElement:[]};updateCatalogMetadata(document,'/new/3',fresh);
  assert.equal(attrs['link[rel="canonical"]href'],'https://wishmeteor.net/new/3');assert.equal(attrs['meta[property="og:url"]content'],'https://wishmeteor.net/new/3');assert.deepEqual(JSON.parse(item.textContent),fresh);assert.equal(JSON.parse(website.textContent)['@type'],'WebSite');assert.equal(other.textContent,'not json');
 });

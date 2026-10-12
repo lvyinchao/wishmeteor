@@ -1,4 +1,4 @@
-import { catalogLocation,updateCatalogMetadata } from './catalog-navigation.js';
+import { catalogLocation,catalogFormParams,updateCatalogMetadata } from './catalog-navigation.js';
 const configuration=document.querySelector('script[src="/site.js"]');
 const privatePage=configuration?.dataset.private==='true'||location.search.includes('reset=');
 const measurementId=configuration?.dataset.measurementId;
@@ -69,7 +69,7 @@ document.addEventListener('click',event=>{const button=event.target.closest('[da
 const catalog=document.querySelector('[data-catalog]'),form=catalog?.querySelector('[data-catalog-form]');
 if(catalog&&form) {
  let timer,controller,serial=0;const cache=new Map();
- function params(){const p=new URLSearchParams();for(const [key,value] of new FormData(form))if(value)p.set(key,String(value));return p;}
+ function params(){return catalogFormParams(location,new FormData(form));}
  async function load(p,push=true) {
   controller?.abort();controller=new AbortController();const current=++serial,key=p.toString();catalog.setAttribute('aria-busy','true');
   try {
@@ -84,7 +84,7 @@ if(catalog&&form) {
  form.addEventListener('submit',event=>{event.preventDefault();clearTimeout(timer);void load(params());});
  form.querySelector('[name=q]').addEventListener('input',()=>{clearTimeout(timer);controller?.abort();timer=setTimeout(()=>load(params()),250);});
  form.querySelectorAll('select').forEach(select=>select.addEventListener('change',()=>{clearTimeout(timer);void load(params());}));
- catalog.addEventListener('click',event=>{const page=event.target.closest('[data-page]');if(!page)return;event.preventDefault();const p=params();p.set('page',page.dataset.page);void load(p);catalog.querySelector('[data-catalog-results]').setAttribute('tabindex','-1');catalog.querySelector('[data-catalog-results]').focus({preventScroll:true});});
+ catalog.addEventListener('click',event=>{const page=event.target.closest('[data-page]');if(!page)return;event.preventDefault();void load(catalogLocation(new URL(page.href)));catalog.querySelector('[data-catalog-results]').setAttribute('tabindex','-1');catalog.querySelector('[data-catalog-results]').focus({preventScroll:true});});
  window.addEventListener('popstate',()=>{const p=catalogLocation(location);for(const element of form.elements)if(element.name)element.value=p.get(element.name)??(element.name==='sort'?'newest':'');void load(p,false);});
 }
 const product=document.querySelector('.product-hero[data-slug]');

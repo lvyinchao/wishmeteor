@@ -64,8 +64,15 @@ export class CatalogRepository {
         values.push(cursor.stars,cursor.stars,cursor.stamp,cursor.stamp,cursor.slug);
       } else {conditions.push(timeCondition);values.push(cursor.stamp,cursor.stamp,cursor.slug);}
     }
+    // The legacy status-range indexes cannot satisfy this ORDER BY. Keep the
+    // list on the ordered public indexes from migration 1011 across planners.
+    const orderIndex=sort==='popular'
+      ? category&&category!=='all'?'public_category_popular':'public_popular_order'
+      : category&&category!=='all'?'public_category_order'
+      : pricing&&pricing!=='all'?'public_pricing_order'
+      : ['submitted','curated'].includes(origin)?'public_origin_order':'public_recent_order';
     const rows=await this.db.prepare(`SELECT json_remove(content_json,'$.description','$.sources','$.wish.blessingLong') AS content_json,published_at,updated_at,star_count,trusted_star_count,length(json_extract(content_json,'$.description')) AS description_length
-      FROM managed_tools t WHERE ${conditions.join(' AND ')} ORDER BY ${sort==='popular'?'trusted_star_count DESC, ':''}published_at DESC,slug ASC LIMIT ? OFFSET ?`)
+      FROM managed_tools t INDEXED BY ${orderIndex} WHERE ${conditions.join(' AND ')} ORDER BY ${sort==='popular'?'trusted_star_count DESC, ':''}published_at DESC,slug ASC LIMIT ? OFFSET ?`)
       .bind(...values,limit+1,filters.cursor?0:(page-1)*limit).all<ContentRow>();
     const found=(rows.results ?? []).map(r=>summarize(readTool(r),r.star_count ?? 0,r.description_length ?? 0,r.trusted_star_count ?? 0));
     const more=found.length>limit,tools=found.slice(0,limit);
