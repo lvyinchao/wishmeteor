@@ -1,5 +1,5 @@
 /** Shared XML builders for both live and prerendered sitemaps. */
-export const SITEMAP_PAGES=['/','/tools','/new','/submit','/about','/privacy','/dofollow-policy','/free-dofollow-backlinks','/news','/blog','/updates'];
+export const SITEMAP_PAGES=['/','/new','/submit','/about','/privacy','/dofollow-policy','/free-dofollow-backlinks','/news','/blog','/updates'];
 export const SITEMAP_TOOL_LIMIT=10000;
 
 /** Return a real, non-future UTC modification date; unknown dates stay absent.

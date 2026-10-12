@@ -30,7 +30,7 @@ const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
   <Breadcrumbs
     trail={[
       { name: 'Home', path: '/' },
-      { name: 'AI tools', path: '/tools' },
+      { name: 'AI tools', path: '/new' },
       { name: category.name, path: `/category/${category.id}` },
       { name: `Page ${slice.page}` },
     ]}

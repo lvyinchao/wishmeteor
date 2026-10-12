@@ -9,7 +9,7 @@ import { issueVoter,handleStars } from './stars.ts';
 import { accountProjects } from './account-projects.ts';
 import { dispatchOutbox,cleanupState } from './outbox.ts';
 import { CatalogRepository } from './catalog.ts';
-import { handlePublic } from './public.ts';
+import { handlePublic,directoryRedirect } from './public.ts';
 import { HttpError,json } from './http.ts';
 import type { Env } from './env.ts';
 export type { Env } from './env.ts';
@@ -55,6 +55,7 @@ async function route(request:Request,env:Env,ctx:ExecutionContext):Promise<Respo
  const projects=/^\/api\/account\/projects(?:\/([a-z0-9-]+))?$/.exec(path);if(projects)return accountProjects(request,env,projects[1]);
  const correction=/^\/api\/account\/corrections\/([a-z0-9-]+)$/.exec(path);if(correction)return requestCorrection(request,env,correction[1]);
  if(!['GET','HEAD'].includes(request.method))return json({error:'method-not-allowed'},405,{'allow':'GET, HEAD'});
+ const canonicalRedirect=directoryRedirect(new URL(request.url));if(canonicalRedirect)return canonicalRedirect;
  const publicPage=await publicResponse(request,env,ctx);if(publicPage)return publicPage;
  if(path.startsWith('/api/'))return json({error:'not-found'},404);
  return env.ASSETS.fetch(request);

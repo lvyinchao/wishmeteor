@@ -8,6 +8,7 @@ import { CatalogRepository,type CatalogFilters,type CatalogPage } from './catalo
 import { HttpError,json } from './http.ts';
 import type { Env } from './env.ts';
 import { urlset,sitemapIndex,SITEMAP_PAGES,SITEMAP_TOOL_LIMIT,sitemapDate } from '../src/lib/sitemap.mjs';
+import { directoryPageUrl,isDirectoryPath } from '../src/lib/directory-url.ts';
 
 export function filtersFrom(url:URL):CatalogFilters {
   const p=url.searchParams,sort=p.get('sort') ?? 'newest',pricing=p.get('pricing') ?? '',origin=p.get('origin') ?? '';
@@ -22,6 +23,15 @@ export function filtersFrom(url:URL):CatalogFilters {
   const limit=Number(p.get('limit') ?? 12);if(!Number.isSafeInteger(limit)||limit<1||limit>48)throw new HttpError('invalid-limit');
   return {q:p.get('q') ?? '',category,pricing,origin,sort:sort as 'newest'|'popular',page,limit,cursor:p.get('cursor') ?? undefined};
 }
+export function directoryRedirect(url:URL):Response|null {
+  if(!isDirectoryPath(url.pathname))return null;
+  const filters=filtersFrom(url),target=directoryPageUrl(url,filters.page ?? 1);
+  // Leave query-only changes alone; normalize aliases, page parameters and trailing slashes in one hop.
+  if(target.pathname===url.pathname&&!url.searchParams.has('page'))return null;
+  // Redirects preserve caller parameters (including tracking); only page moves into the path.
+  target.search=url.search;target.searchParams.delete('page');
+  return new Response(null,{status:308,headers:{location:target.pathname+target.search}});
+}
 const opt=(value:string,label:string,selected:string)=>`<option value="${e(value)}"${value===selected?' selected':''}>${e(label)}</option>`;
 function preview(tool:Tool|ToolSummary,eager=false):string {
   const image=tool.coverImage ?? `/tool-previews/${tool.slug}.jpg`;
@@ -32,7 +42,7 @@ export function productCard(tool:ToolSummary):string {
   return `<article class="card tool-showcase-card" data-catalog-item data-slug="${tool.slug}"><a class="tool-showcase-card__preview" href="/tool/${tool.slug}">${preview(tool)}</a><div class="tool-showcase-card__content"><h3><a class="card-title" href="/tool/${tool.slug}">${e(tool.name)}</a></h3><p>${e(tool.wish?.makerWish || tool.summary)}</p><div class="card-meta"><a class="pill" href="/category/${tool.category}">${e(CATEGORY_NAMES[tool.category] ?? tool.category)}</a><span class="pill">${e(PRICING_LABELS[tool.pricing])}</span><a class="pill" href="${e(tool.url)}" rel="${outboundRel(tool)}" target="_blank" data-outbound>Visit project ↗</a></div><div class="product-actions"><button class="star-vote" type="button" data-star-button aria-label="Light a star for ${e(tool.name)}" aria-pressed="false"><span class="star-vote__icon" aria-hidden="true">✦</span><span data-star-count>${tool.stars}</span><span data-star-label>Light a star</span></button><button class="btn btn-quiet" type="button" data-compare="${tool.slug}" aria-pressed="false">Compare</button></div></div></article>`;
 }
 export function pageLinks(url:URL,page:CatalogPage):string {
-  const link=(n:number,label:string)=>{const u=new URL(url);u.searchParams.delete('cursor');u.searchParams.set('page',String(n));return `<a class="catalog-page" href="${e(u.pathname+u.search)}" data-page="${n}">${label}</a>`;};
+  const link=(n:number,label:string)=>{const base=new URL(url);if(base.pathname==='/')base.pathname='/new';base.searchParams.delete('cursor');const u=directoryPageUrl(base,n);return `<a class="catalog-page" href="${e(u.pathname+u.search)}" data-page="${n}">${label}</a>`;};
   return `<nav class="catalog-pagination" aria-label="Product pages">${page.page>1?link(page.page-1,'← Previous'):''}<span>Page ${page.page} of ${Math.max(1,Math.ceil(page.total/page.limit))}</span>${page.page*page.limit<page.total?link(page.page+1,'Next →'):''}</nav>`;
 }
 const HERO=`<section class="wish-hero" aria-labelledby="hero-title"><div class="wish-hero__sky" aria-hidden="true"><span class="sky-orbit sky-orbit--outer"></span><span class="sky-orbit sky-orbit--inner"></span><span class="sky-moon"></span><span class="sky-star sky-star--one">✦</span><span class="sky-star sky-star--two">✧</span><span class="sky-star sky-star--three">✦</span><span class="sky-star sky-star--four">✧</span><span class="sky-trail"></span></div><div class="wish-hero__copy"><p class="eyebrow">A wishing well for people building AI</p><h1 id="hero-title">Every brave idea deserves a little starlight.</h1><p class="lede">Share what you are making. Meet kindred builders, find a spark, and help a launch rise.</p><div class="hero-cta"><a class="btn btn-primary" href="#wish-wall">Explore Wish Sky ↓</a><a class="btn btn-ghost" href="/submit">Share a wish ↗</a></div></div><div class="wish-hero__caption" aria-hidden="true"><span>WISHES IN MOTION</span><span>✦</span><span>MADE WITH HOPE</span></div></section>`;
@@ -40,7 +50,7 @@ async function directory(request:Request,env:Env,repo:CatalogRepository):Promise
   const url=new URL(request.url),filters=filtersFrom(url),page=await repo.list(filters),categories=await repo.categories();
   const home=url.pathname==='/',title=filters.category&&filters.category!=='all'?`${CATEGORY_NAMES[filters.category]} projects`:'A project worth a little starlight';
   const body=`${home?HERO:''}<section class="section catalog-section wish-sky-catalog" id="wish-wall" aria-labelledby="catalog-title" data-catalog><div class="section-head"><div><p class="eyebrow">A little light goes a long way</p><${home?'h2':'h1'} id="catalog-title">${e(title)}</${home?'h2':'h1'}><p class="section-intro">Explore approved projects, find a spark, and light a star.</p></div></div><form class="catalog-controls" method="get" data-catalog-form><label class="catalog-search" for="catalog-search"><span aria-hidden="true">⌕</span><input id="catalog-search" name="q" type="search" value="${e(filters.q)}" maxlength="120" aria-label="Search projects" placeholder="Search name, keyword or description" autocomplete="off"><kbd>⌘ K</kbd></label><div class="catalog-selects"><label>Category<select name="category">${opt('','All categories',filters.category ?? '')}${categories.map(c=>opt(c.id,`${c.name} (${c.count})`,filters.category ?? '')).join('')}</select></label><label>Pricing<select name="pricing">${opt('','Any pricing',filters.pricing ?? '')}${PRICING.map(p=>opt(p,PRICING_LABELS[p],filters.pricing ?? '')).join('')}</select></label><label>Order<select name="sort">${opt('newest','Newest first',filters.sort ?? '')}${opt('popular','Most starred',filters.sort ?? '')}</select></label><label>Source<select name="origin">${opt('','All projects',filters.origin ?? '')}${opt('submitted','Maker submissions',filters.origin ?? '')}${opt('curated','Editorial picks',filters.origin ?? '')}</select></label><button class="btn btn-quiet" type="submit">Apply filters</button></div></form><p class="catalog-results" data-catalog-results role="status" aria-live="polite">${page.total} projects · ${page.limit} per page</p><div class="grid grid-cards" id="catalog-grid" data-catalog-grid>${page.tools.map(productCard).join('')}</div><p class="catalog-empty" data-catalog-empty${page.tools.length?' hidden':''}>No projects match these filters. Try another keyword or category.</p><div data-catalog-pagination>${pageLinks(url,page)}</div><p class="wish-wall__note" data-star-status role="status" aria-live="polite">One encouragement per project for this browser identity. Browser stars are not a count of people.</p></section><section class="closing-wish"><span class="closing-wish__spark" aria-hidden="true">✦</span><div><h2>What are you hoping to bring to life?</h2><p>Put your idea beneath this sky. Let the next chapter begin with a wish.</p></div><a class="btn btn-primary" href="/submit">Plant a wish ↗</a></section>`;
-  const canonical=home?(page.page>1?`/tools/${page.page}`:'/'):url.pathname.replace(/\/\d+$/,'')+(page.page>1?`/${page.page}`:'');
+  const pageUrl=directoryPageUrl(url,page.page),canonical=pageUrl.pathname+pageUrl.search;
   return html(publicDocument({title:home?'WishMeteor — a wishing well for AI builders':`${title} — WishMeteor`,description:'Discover approved projects, compare ideas and encourage launches with browser stars.',path:canonical,jsonLd:[itemList(page.tools,canonical,title),...(home?[website('/')]:[])]},body,env.GA_MEASUREMENT_ID));
 }
 async function detail(env:Env,repo:CatalogRepository,slug:string):Promise<Response> {
@@ -57,7 +67,7 @@ async function comparison(request:Request,env:Env,repo:CatalogRepository):Promis
   const raw=(new URL(request.url).searchParams.get('slugs') ?? '').split(',').filter(Boolean);
   if(raw.length>3||raw.some(s=>!SLUG_RE.test(s)))throw new HttpError('compare-up-to-three');
   const tools=await repo.bySlugs(raw),rows:[string,(t:Tool)=>string][]=[['Category',t=>e(CATEGORY_NAMES[t.category])],['Pricing',t=>e(PRICING_LABELS[t.pricing])],['Status',t=>e(t.status)],['What it does',t=>e(t.summary)],['Published',t=>e(t.publishedAt?.slice(0,10))],['Last link check',t=>e(t.lastVerifiedAt?.slice(0,10) ?? 'No successful check')],['Evidence',t=>t.sources.map(s=>`${e(s.type)} · ${e(s.observedAt ?? 'undated')}`).join('<br>')]];
-  return html(publicDocument({title:'Compare projects — WishMeteor',description:'Compare published projects by pricing, purpose and dated source evidence.',path:'/compare',noindex:true},`<section class="section"><p class="eyebrow">Side by side</p><h1>Compare projects</h1><p class="lede">Choose up to three projects from the directory. Pricing labels describe the listing; check each official site for current terms.</p>${tools.length?`<div class="table-scroll"><table class="comparison-table"><thead><tr><th scope="col">Listing</th>${tools.map(t=>`<th scope="col"><a href="/tool/${t.slug}">${e(t.name)}</a></th>`).join('')}</tr></thead><tbody>${rows.map(([label,value])=>`<tr><th scope="row">${label}</th>${tools.map(t=>`<td>${value(t)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'<p>Select projects using Compare in the directory.</p>'}<a href="/tools">Return to the directory</a></section>`,env.GA_MEASUREMENT_ID));
+  return html(publicDocument({title:'Compare projects — WishMeteor',description:'Compare published projects by pricing, purpose and dated source evidence.',path:'/compare',noindex:true},`<section class="section"><p class="eyebrow">Side by side</p><h1>Compare projects</h1><p class="lede">Choose up to three projects from the directory. Pricing labels describe the listing; check each official site for current terms.</p>${tools.length?`<div class="table-scroll"><table class="comparison-table"><thead><tr><th scope="col">Listing</th>${tools.map(t=>`<th scope="col"><a href="/tool/${t.slug}">${e(t.name)}</a></th>`).join('')}</tr></thead><tbody>${rows.map(([label,value])=>`<tr><th scope="row">${label}</th>${tools.map(t=>`<td>${value(t)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'<p>Select projects using Compare in the directory.</p>'}<a href="/new">Return to the directory</a></section>`,env.GA_MEASUREMENT_ID));
 }
 async function updates(request:Request,env:Env,repo:CatalogRepository):Promise<Response> {
   const week=new URL(request.url).searchParams.get('week') ?? '';
@@ -73,8 +83,8 @@ async function sitemap(request:Request,repo:CatalogRepository):Promise<Response>
   if(url.pathname==='/sitemap-pages.xml'){
     const groups=await repo.sitemapGroups(),total=groups.reduce((n,g)=>n+g.count,0);
     const latest=groups.map(g=>sitemapDate(g.updated_at)).filter((d):d is string=>!!d).sort().at(-1);
-    const items:{path:string;lastmod?:string}[]=SITEMAP_PAGES.map(path=>({path,...(['/', '/tools','/new'].includes(path)&&latest?{lastmod:latest}:{})}));
-    for(const prefix of ['/tools','/new'])for(let page=2;page<=Math.ceil(total/12);page++)items.push({path:prefix+'/'+page,lastmod:latest});
+    const items:{path:string;lastmod?:string}[]=SITEMAP_PAGES.map(path=>({path,...(['/', '/new'].includes(path)&&latest?{lastmod:latest}:{})}));
+    for(let page=2;page<=Math.ceil(total/12);page++)items.push({path:'/new/'+page,lastmod:latest});
     for(const group of groups)for(let page=1;page<=Math.ceil(group.count/12);page++)items.push({path:'/category/'+group.category+(page>1?'/'+page:''),lastmod:sitemapDate(group.updated_at)??undefined});
     return xml(urlset(site,items));
   }
@@ -93,7 +103,7 @@ async function rss(repo:CatalogRepository):Promise<Response> {
 }
 export async function handlePublic(request:Request,env:Env):Promise<Response|null> {
   const path=new URL(request.url).pathname.replace(/\/$/,'') || '/',repo=new CatalogRepository(env.DB);
-  if(path==='/api/content') {const url=new URL(request.url),page=await repo.list(filtersFrom(url));const pageUrl=new URL(url);pageUrl.pathname='/tools';pageUrl.searchParams.delete('view');return json({...page,categories:await repo.categories(),...(url.searchParams.get('view')==='cards'?{cards:page.tools.map(productCard).join(''),pagination:pageLinks(pageUrl,page)}:{})});}
+  if(path==='/api/content') {const url=new URL(request.url),filters=filtersFrom(url),page=await repo.list(filters);const base=new URL(url);base.pathname=filters.category&&filters.category!=='all'?'/category/'+filters.category:'/new';base.searchParams.delete('view');const pageUrl=directoryPageUrl(base,page.page),relative=pageUrl.pathname+pageUrl.search,title=filters.category&&filters.category!=='all'?`${CATEGORY_NAMES[filters.category]} projects`:'A project worth a little starlight';return json({...page,categories:await repo.categories(),...(url.searchParams.get('view')==='cards'?{cards:page.tools.map(productCard).join(''),pagination:pageLinks(pageUrl,page),pageUrl:relative,itemList:itemList(page.tools,relative,title)}:{})});}
   if(path==='/'||/^\/(tools|new)(\/\d+)?$/.test(path)||/^\/category\/[a-z0-9-]+(\/\d+)?$/.test(path))return directory(request,env,repo);
   const tool=/^\/tool\/([a-z0-9]+(?:-[a-z0-9]+)*)$/.exec(path);if(tool)return detail(env,repo,tool[1]);
   if(path==='/compare')return comparison(request,env,repo);
@@ -104,4 +114,4 @@ export async function handlePublic(request:Request,env:Env):Promise<Response|nul
   return null;
 }
 export function html(body:string,status=200):Response {return new Response(body,{status,headers:{'content-type':'text/html; charset=utf-8','x-content-type-options':'nosniff','referrer-policy':'strict-origin-when-cross-origin'}});}
-export function notFound(env:Env):Response {return html(publicDocument({title:'Project not found — WishMeteor',description:'This project is not publicly listed.',path:'/404',noindex:true},'<section class="section"><h1>This project is not publicly listed.</h1><a href="/tools">Explore other projects</a></section>',env.GA_MEASUREMENT_ID),404);}
+export function notFound(env:Env):Response {return html(publicDocument({title:'Project not found — WishMeteor',description:'This project is not publicly listed.',path:'/404',noindex:true},'<section class="section"><h1>This project is not publicly listed.</h1><a href="/new">Explore other projects</a></section>',env.GA_MEASUREMENT_ID),404);}
