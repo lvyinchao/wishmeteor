@@ -85,11 +85,17 @@ test('optional star challenge is triggered only after abnormal issuance and veri
  }finally{globalThis.fetch=original;}env.TURNSTILE_HOSTNAMES='wishmeteor.net,localhost';assert.equal(challengeConfigured(env),false);
 });
 
-test('an unsent approval message uses the current blessing and card version',async()=>{
+test('an unsent approval message uses the current blessing, card and star invitation',async()=>{
  const env=environment();env.EMAIL=undefined;const id=pending(env,1),content=approvedContent(1);assert.equal((await admin(env,`/api/admin/submissions/${id}/approve`,{slug:content.slug,content})).status,200);
  const current=await new CatalogRepository(env.DB).get(content.slug);const blessing='May this updated and reviewed blessing stay together with its matching card. May the next step bring thoughtful feedback, patient collaborators and a useful path forward for everyone this project helps.';
  assert.equal((await admin(env,'/api/admin/content/'+content.slug,{...current,wish:{...current.wish,blessingLong:blessing},expectedVersion:current.contentVersion},{method:'PUT'})).status,200);
  const latest=await new CatalogRepository(env.DB).get(content.slug);env.EMAIL={async send(message){env.mail.push(message);return {messageId:'accepted-current-version'};}};await dispatchOutbox(env);assert.match(env.mail[0].text,new RegExp(blessing.slice(0,60)));assert.ok(env.mail[0].text.includes(latest.contentVersion));
+ for(const body of [env.mail[0].text,env.mail[0].html]) {
+  assert.match(body,/friends or users/);
+  assert.match(body,/invite them to light a star/);
+  assert.match(body,/can help.*rank higher in popularity listings/);
+  assert.ok(body.includes('https://wishmeteor.net/tool/'+content.slug));
+ }
 });
 
 test('release source fingerprints detect changes to already modified source files',()=>{

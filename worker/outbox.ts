@@ -30,10 +30,11 @@ export function approvalMail(tool: LinkFields & {slug:string;name:string;url:str
   const card=`${page}/card.png${tool.contentVersion ? '?v='+encodeURIComponent(tool.contentVersion) : ''}`;
   const blessing=tool.wish?.blessingLong ?? '';
   const policy=linkPolicyMessage(tool);
+  const encouragement='Share your listing with friends or users and invite them to light a star for your project. Their support can help your project rank higher in popularity listings.';
   return {
     slug:tool.slug,cardUrl:card,subject:`${tool.name} is live on WishMeteor`,
-    text:`Your project is live: ${page}\n\n${blessing}\n\nDownload your blessing card: ${card}\n${policy}\n\nYou can request a correction from your account.`,
-    html:`<p>Your project <strong>${escapeHtml(tool.name)}</strong> is live on WishMeteor.</p><p><a href="${escapeHtml(page)}">Read the listing</a></p><blockquote>${escapeHtml(blessing)}</blockquote><p><a href="${escapeHtml(card)}">Download your blessing card</a></p><p>${escapeHtml(policy)}</p><p>You can request a correction from your account.</p>`,
+    text:`Your project is live: ${page}\n\n${blessing}\n\nDownload your blessing card: ${card}\n${policy}\n\n${encouragement}\n\nYou can request a correction from your account.`,
+    html:`<p>Your project <strong>${escapeHtml(tool.name)}</strong> is live on WishMeteor.</p><p><a href="${escapeHtml(page)}">Read the listing</a></p><blockquote>${escapeHtml(blessing)}</blockquote><p><a href="${escapeHtml(card)}">Download your blessing card</a></p><p>${escapeHtml(policy)}</p><p>${escapeHtml(encouragement)}</p><p>You can request a correction from your account.</p>`,
   };
 }
 
