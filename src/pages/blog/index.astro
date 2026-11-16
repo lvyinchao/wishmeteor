@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { SITE } from '../../lib/site.ts';
+import { LAUNCH_WEEKLY_CATEGORY, SITE } from '../../lib/site.ts';
 import { getPublicPosts } from '../../lib/public-content.ts';
 
 const posts = (await getPublicPosts()).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -24,6 +24,8 @@ const description = `Stories and practical notes from WishMeteor about discoveri
       Ideas, field notes and thoughtful questions from our sky of projects. Read about the people and choices behind a launch.
     </p>
   </div>
+
+  <p><a class="btn btn-ghost" href="/blog/launch-weekly">{LAUNCH_WEEKLY_CATEGORY}</a></p>
 
   {
     [...byMonth.entries()].map(([month, monthPosts]) => (

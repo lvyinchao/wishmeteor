@@ -16,3 +16,5 @@ export const SITE = {
   staleAfterDays: 120,
   minDescriptionChars: 300,
 } as const;
+
+export const LAUNCH_WEEKLY_CATEGORY = 'Launch Weekly';

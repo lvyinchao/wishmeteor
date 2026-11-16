@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getPublicPosts } from '../../lib/public-content.ts';
+import { LAUNCH_WEEKLY_CATEGORY, SITE } from '../../lib/site.ts';
+
+const issues = (await getPublicPosts())
+  .filter((post) => post.data.category === LAUNCH_WEEKLY_CATEGORY)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const description = 'Editorial picks from each week of new WishMeteor listings, with a look at what each product does well and where it could go next.';
+---
+
+<Base title={`${LAUNCH_WEEKLY_CATEGORY} | ${SITE.name}`} description={description}>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }, { name: LAUNCH_WEEKLY_CATEGORY }]} />
+  <div class="page-head">
+    <h1>{LAUNCH_WEEKLY_CATEGORY}</h1>
+    <p class="lede">{description}</p>
+  </div>
+  <section class="section" aria-labelledby="issues">
+    <div class="section-head"><h2 id="issues">Issues</h2></div>
+    <div class="grid">
+      {issues.map((issue) => {
+        const date = issue.data.pubDate.toISOString().slice(0, 10);
+        return (
+          <article class="card">
+            <h3><a class="card-title" href={`/blog/${issue.id}`}>{issue.data.title}</a></h3>
+            <p>{issue.data.description}</p>
+            <div class="card-meta"><time datetime={date}>{date}</time></div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+</Base>

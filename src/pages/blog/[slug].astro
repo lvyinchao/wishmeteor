@@ -5,7 +5,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { loadPublicCatalog, getPublicPosts } from '../../lib/public-content.ts';
 import { OG } from '../../lib/og.mjs';
 import { blogPosting, breadcrumbs as breadcrumbData } from '../../lib/jsonld.ts';
-import { SITE } from '../../lib/site.ts';
+import { LAUNCH_WEEKLY_CATEGORY, SITE } from '../../lib/site.ts';
 
 export const getStaticPaths = async () => {
   const posts = await getPublicPosts();
@@ -22,6 +22,7 @@ const path = `/blog/${post.id}`;
 const trail = [
   { name: 'Home', path: '/' },
   { name: 'Blog', path: '/blog' },
+  ...(post.data.category === LAUNCH_WEEKLY_CATEGORY ? [{ name: LAUNCH_WEEKLY_CATEGORY, path: '/blog/launch-weekly' }] : []),
   { name: post.data.title },
 ];
 ---
@@ -46,17 +47,17 @@ const trail = [
       <p class="meta-row">
         <span>Published <time datetime={pubDate}>{pubDate}</time></span>
         {updated && <span>Updated <time datetime={updated!}>{updated}</time></span>}
-        <span>Projects referenced <span>{referenced.length}</span></span>
+        {referenced.length > 0 && <span>Projects referenced <span>{referenced.length}</span></span>}
       </p>
       <Content />
     </div>
     <div class="aside-sticky">
-      <section class="aside-box" aria-labelledby="refs">
+      {referenced.length > 0 && <section class="aside-box" aria-labelledby="refs">
         <h2 id="refs">Tools in this piece</h2>
         <div class="grid">
           {referenced.map((entry) => <a href={`/tool/${entry.slug}`} style="text-decoration:none">{entry.name}</a>)}
         </div>
-      </section>
+      </section>}
       {
         (post.data.sources ?? []).length > 0 && (
           <section class="aside-box" style="margin-top:1rem" aria-labelledby="srcs">
