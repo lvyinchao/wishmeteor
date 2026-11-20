@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { SITE } from '../lib/site.ts';
+
+const title = `Submit Your AI Tool for Free | ${SITE.name}`;
+const description = `Submit your AI tool for free to ${SITE.name}. Prepare your product details, understand the review process, and share your project with AI builders.`;
+const faqs = [
+  {
+    q: 'Does it cost anything to submit an AI tool?',
+    a: `${SITE.name} does not charge for submission, review or a listing. There is no paid placement or priority review fee, and no reciprocal link is required.`,
+  },
+  {
+    q: 'Is every submission accepted?',
+    a: 'No. Ordinary submissions are reviewed before publication. A product must meet the submission and link policies; submitting it does not guarantee a listing.',
+  },
+  {
+    q: 'Will my listing have a dofollow link?',
+    a: 'An approved listing can include a dofollow official link under the current link policy. Eligibility depends on the published rules, and listings can be corrected or removed.',
+  },
+  {
+    q: 'Can I update an existing listing?',
+    a: `If an entry misstates what your product does or costs, email ${SITE.email} with a link to the source.`,
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  }]}
+>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Submit your AI tool for free' }]} />
+
+  <div class="page-head">
+    <p class="eyebrow">A wishing well for AI builders</p>
+    <h1>Submit your AI tool for free</h1>
+    <p class="lede">
+      Give your AI product a place to be discovered by people who care about what you are building.
+      {SITE.name} accepts submissions without a listing fee, paid placement or a required link back.
+    </p>
+  </div>
+
+  <p class="hero-cta">
+    <a class="btn btn-primary" href="/submit">Submit your AI tool</a>
+    <a class="btn btn-ghost" href="/new">Explore the wish sky</a>
+  </p>
+
+  <article class="prose">
+    <h2>Get your submission ready</h2>
+    <ol>
+      <li>Choose the product name and category, and provide its public homepage rather than an affiliate link. We canonicalise the URL and remove known tracking parameters.</li>
+      <li>Upload a real product screenshot in PNG, JPEG or WebP format, up to 5 MB. It becomes the listing cover if your submission is approved.</li>
+      <li>Provide a contact email for your receipt, review and essential service messages, including your blessing and card. It is not published or added to a marketing list.</li>
+      <li>Confirm that you own the domain or are allowed to submit it. You can also describe what your product does, who it helps and the hope behind it.</li>
+    </ol>
+    <p>
+      The description and wish are optional for ordinary submissions. If your verified account is authorized for automatic publication,
+      the form requires a description of {SITE.minDescriptionChars}–600 characters.
+    </p>
+
+    <h2>Make the product easy to evaluate</h2>
+    <p>
+      Share a working homepage that explains the product honestly and can be evaluated without a login. Casinos, crypto giveaways,
+      cloned wrappers and link farms are not accepted. A clear explanation and a real screenshot help show what you have built;
+      they do not guarantee acceptance.
+    </p>
+
+    <h2>What happens after you submit</h2>
+    <p>
+      Ordinary submissions go through review before appearing in the directory. At most {SITE.dailyLaunchCap} ordinary entries go live
+      per day and {SITE.perRoundCap} per review round. Verified accounts authorized for automatic publication can publish directly
+      without those limits; entering an authorized account's email alone does not grant that permission.
+    </p>
+    <p>
+      If your submission is approved, you receive a blessing and a shareable card. People can explore the listing and light a star
+      without creating an account. Learn more about <a href="/about">how {SITE.name} works</a> and its community.
+    </p>
+
+    <h2>What about the link?</h2>
+    <p>
+      An approved listing can include a dofollow link to your official site, subject to the current rules. Read the
+      <a href="/dofollow-policy">dofollow policy</a> for eligibility and maintenance, or the
+      <a href="/free-dofollow-backlinks">free dofollow backlinks guide</a> for the listing offer.
+    </p>
+
+    <section aria-labelledby="faq">
+      <h2 id="faq">Frequently asked questions</h2>
+      {faqs.map((faq) => (
+        <>
+          <h3>{faq.q}</h3>
+          <p>{faq.a}</p>
+        </>
+      ))}
+    </section>
+
+    <p>Ready to share? <a href="/submit">Make a wish and submit your AI tool</a>.</p>
+  </article>
+
+  <JsonLd data={{
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: `${SITE.url}/submit-ai-tool`,
+    inLanguage: 'en',
+  }} />
+</Base>
