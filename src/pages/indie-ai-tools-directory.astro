@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { SITE } from '../lib/site.ts';
+
+const title = `Indie AI Tools Directory | ${SITE.name}`;
+const description = `Explore ${SITE.name}, an indie AI tools directory for discovering projects from independent builders. Browse new listings, explore categories, and light a star.`;
+const faqs = [
+  {
+    q: 'Are listings paid placements?',
+    a: `${SITE.name} has no listing fee, paid placement or priority review fee. A reciprocal link is not required, and the optional badge carries no weight either way.`,
+  },
+  {
+    q: 'Can I browse and light a star without an account?',
+    a: 'Yes. Visitors can browse approved projects and light stars without creating an account. A browser can light one star for each wish.',
+  },
+  {
+    q: 'How are projects chosen for the directory?',
+    a: 'Projects can come from maker submissions or research across communities and official sources. Ordinary submissions go through review, and a human reads each research candidate. Verified accounts authorized for automatic publication can publish directly.',
+  },
+  {
+    q: 'How can I correct an entry?',
+    a: `If an entry misstates what a product does or costs, email ${SITE.email} with a link to the source.`,
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  }]}
+>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Indie AI tools directory' }]} />
+
+  <div class="page-head">
+    <p class="eyebrow">A wishing well for AI builders</p>
+    <h1>Indie AI tools directory</h1>
+    <p class="lede">
+      Discover AI projects from independent builders in {SITE.name}, a free directory and a wishing well for people bringing products into the world.
+      Browse approved projects, find something interesting, and give it a little starlight.
+    </p>
+  </div>
+
+  <p class="hero-cta">
+    <a class="btn btn-primary" href="/new">Browse the latest projects</a>
+    <a class="btn btn-ghost" href="/submit">Share your product</a>
+  </p>
+
+  <article class="prose">
+    <h2>How projects find their place</h2>
+    <p>
+      Makers can submit their products, and ordinary submissions are reviewed before they appear. We also look across communities,
+      research releases, product announcements, and official sources for candidates. That research never publishes anything automatically:
+      a human reads each candidate, and its entry text is written from scratch against what the product actually does.
+    </p>
+    <p>
+      A model may help find candidates and draft long passages, but nothing from that research goes public without a person reading and
+      correcting it. There is no mass ingestion. Verified accounts authorized for automatic publication can publish directly;
+      entering an authorized account's email alone does not grant that permission. Read more <a href="/about">about {SITE.name}</a>.
+    </p>
+
+    <h2>Find something to explore</h2>
+    <p>
+      Start with the <a href="/new">latest approved projects</a>, or browse by what you want to make or learn:
+      <a href="/category/ai-coding">Coding</a>, <a href="/category/ai-chat">Chat &amp; Assistants</a>,
+      <a href="/category/image-video">Image &amp; Video</a>, <a href="/category/audio-voice">Voice &amp; Music</a>,
+      <a href="/category/agents-automation">Agents &amp; Automation</a>, or <a href="/category/data-retrieval">Search &amp; RAG</a>.
+      Visit the latest list to keep exploring other categories too.
+    </p>
+    <p>
+      You can browse approved projects and light a star without creating an account. Star votes are stored without an account,
+      and a browser can light one star for each wish.
+    </p>
+
+    <h2>A directory without paid placement</h2>
+    <p>
+      There is no listing fee, paid placement, priority review fee, or reciprocal-link requirement. The badge is optional and
+      carries no weight either way. To keep the collection editorial, at most {SITE.dailyLaunchCap} ordinary entries go live per day
+      and {SITE.perRoundCap} per review round. Verified accounts authorized for automatic publication can publish directly without those limits.
+    </p>
+
+    <h2>Have a product to share?</h2>
+    <p>
+      <a href="/submit">Submit your product</a> or read the <a href="/submit-ai-tool">free submission guide</a> to see what to prepare.
+      If your submission is approved, you receive a blessing and a shareable card.
+    </p>
+
+    <section aria-labelledby="faq">
+      <h2 id="faq">Frequently asked questions</h2>
+      {faqs.map((faq) => (
+        <>
+          <h3>{faq.q}</h3>
+          <p>{faq.a}</p>
+        </>
+      ))}
+    </section>
+  </article>
+
+  <JsonLd data={{
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: `${SITE.url}/indie-ai-tools-directory`,
+    inLanguage: 'en',
+  }} />
+</Base>
