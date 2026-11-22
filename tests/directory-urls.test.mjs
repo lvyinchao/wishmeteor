@@ -52,6 +52,22 @@ test('invalid pagination stays invalid and unrelated product, API and static rou
  assert.equal((await call(env,'/tools',{})).status,405);
 });
 
+test('directory pages beyond the filtered results return 404 and end the crawl path',async()=>{
+ const env=fixture();
+ for(const path of ['/new/4','/category/ai-chat/2','/new/2?q=absent','/new/100000']){
+  const response=await call(env,path);
+  assert.equal(response.status,404,path);
+  const html=await response.text();
+  assert.match(html,/<meta name="robots" content="noindex,nofollow">/);
+  assert.deepEqual(links(html),[]);
+ }
+ const last=await call(env,'/new/3');
+ assert.equal(last.status,200);
+ assert.deepEqual(links(await last.text()),['/new/2']);
+ assert.equal((await call(env,'/new?q=absent')).status,200);
+ assert.equal((await call(env,'/api/content?page=4')).status,200);
+});
+
 test('browser back state includes route page/category and updates canonical, og:url and ItemList',()=>{
  const state=catalogLocation(new URL('https://wishmeteor.net/category/ai-coding/3?q=complete&pricing=free'));assert.equal(state.get('page'),'3');assert.equal(state.get('category'),'ai-coding');assert.equal(state.get('q'),'complete');assert.equal(state.get('pricing'),'free');
  assert.equal(catalogLocation(new URL('https://wishmeteor.net/new/3?page=2')).get('page'),'2');
