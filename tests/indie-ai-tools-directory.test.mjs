@@ -32,7 +32,7 @@ test('indie directory renders indexable metadata, structured data and discovery 
   assert.ok(html.includes(`<meta property="og:url" content="${canonical}">`));
   assert.doesNotMatch(html, /<meta\s+name="robots"[^>]*(noindex|nofollow)/i);
   assert.match(html, /<h1(?:\s[^>]*)?>Indie AI tools directory<\/h1>/);
-  for (const path of ['/new', '/about', '/submit', '/submit-ai-tool', '/category/ai-coding', '/category/ai-chat', '/category/image-video', '/category/audio-voice', '/category/agents-automation', '/category/data-retrieval']) {
+  for (const path of ['/new', '/new-ai-tools', '/about', '/submit', '/submit-ai-tool', '/category/ai-coding', '/category/ai-chat', '/category/image-video', '/category/audio-voice', '/category/agents-automation', '/category/data-retrieval']) {
     assert.ok(html.includes(`href="${path}"`), path);
   }
   const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((match) => JSON.parse(match[1]));

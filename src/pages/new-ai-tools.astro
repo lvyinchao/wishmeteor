@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { SITE } from '../lib/site.ts';
+
+const title = `New AI Tools This Week | ${SITE.name}`;
+const description = `Discover newly listed independent AI tools on ${SITE.name}. Browse the latest projects, explore developer tools, and catch up with Launch Weekly.`;
+const faqs = [
+  {
+    q: 'Does this list include every new AI tool released this week?',
+    a: `${SITE.name} shows its own newly listed projects, not every AI product released elsewhere. Ordinary submissions are reviewed before they appear; authorized verified accounts can publish directly.`,
+  },
+  {
+    q: 'Where can I find new AI tools for developers?',
+    a: 'Start with the Coding category, then check each project’s details and official site to see whether it fits your workflow.',
+  },
+  {
+    q: 'Does WishMeteor track official Google or OpenAI releases?',
+    a: `${SITE.name} is a directory for independent products, not a comprehensive changelog of official Google or OpenAI releases.`,
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  }]}
+>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'New AI tools this week' }]} />
+
+  <div class="page-head">
+    <p class="eyebrow">Discover independent projects</p>
+    <h1>New AI tools this week</h1>
+    <p class="lede">
+      Looking for something new to try? Start with the latest independent products listed on {SITE.name},
+      then use this guide to find the ones that fit what you want to make.
+    </p>
+  </div>
+
+  <p class="hero-cta">
+    <a class="btn btn-primary" href="/new">See the latest projects</a>
+    <a class="btn btn-ghost" href="/blog/launch-weekly">Read Launch Weekly</a>
+  </p>
+
+  <article class="prose">
+    <h2>A practical way to discover new AI tools</h2>
+    <ol>
+      <li>Open the <a href="/new">latest projects feed</a> and explore the listings that interest you. Come back to see what has appeared since your last visit.</li>
+      <li>Choose a project and read what it does. Follow its official link to check current features, pricing, and any data-handling terms before trying it.</li>
+      <li>For a smaller editorial selection, read <a href="/blog/launch-weekly">Launch Weekly</a>, which looks at what selected products do well and where they could go next.</li>
+    </ol>
+    <p>
+      You can browse and light a star without an account; each browser can light one star per wish.
+      The feed is a living list of {SITE.name} projects, while Launch Weekly is an editorial selection rather than the whole feed.
+    </p>
+
+    <h2>Start with the work you want to do</h2>
+    <p>
+      To discover new AI tools for developers, browse <a href="/category/ai-coding">Coding</a>.
+      For other workflows, try <a href="/category/agents-automation">Agents &amp; Automation</a>,
+      <a href="/category/data-retrieval">Search &amp; RAG</a>, <a href="/category/image-video">Image &amp; Video</a>,
+      <a href="/category/audio-voice">Voice &amp; Music</a>, or <a href="/category/ai-chat">Chat &amp; Assistants</a>.
+      Category pages help you explore a subject; they are not limited to products listed this week.
+      For a broader starting point, visit the <a href="/indie-ai-tools-directory">indie AI tools directory</a>.
+    </p>
+
+    <h2>What “new” means here</h2>
+    <p>
+      The latest feed is a way to find recently listed projects on {SITE.name}, not a complete record of every AI launch.
+      Ordinary submissions are reviewed before publication, with at most {SITE.dailyLaunchCap} ordinary entries per day and
+      {SITE.perRoundCap} per review round. Verified accounts authorized for automatic publication can publish directly without those limits.
+      Learn more <a href="/about">about how {SITE.name} works</a>.
+    </p>
+    <p>
+      Building something yourself? Read the <a href="/submit-ai-tool">free submission guide</a>.
+      If an entry misstates a product’s cost or behavior, email <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with a source link.
+    </p>
+
+    <section aria-labelledby="faq">
+      <h2 id="faq">Frequently asked questions</h2>
+      {faqs.map((faq) => (
+        <>
+          <h3>{faq.q}</h3>
+          <p>{faq.a}</p>
+        </>
+      ))}
+    </section>
+  </article>
+
+  <JsonLd data={{
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: `${SITE.url}/new-ai-tools`,
+    inLanguage: 'en',
+  }} />
+</Base>
