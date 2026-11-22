@@ -3,7 +3,18 @@ import assert from 'node:assert/strict';
 import { environment } from './harness.mjs';
 import { tool,store,call } from './fixtures.mjs';
 import { urlset,sitemapIndex,sitemapDate,SITEMAP_PAGES,SITEMAP_TOOL_LIMIT } from '../src/lib/sitemap.mjs';
+import { GET as robotsTxt } from '../src/pages/robots.txt.ts';
 const now=new Date('2026-10-07T10:00:00Z');
+
+test('robots permits public listing screenshots while restricting the API', async () => {
+  const response = await robotsTxt({site: new URL('https://wishmeteor.net')});
+  const groups = (await response.text()).split(/^User-agent: /m);
+  const rules = groups.find(group => group.startsWith('*\n'));
+  assert.ok(rules, 'expected a default crawler group');
+  assert.match(rules, /^Allow: \/api\/product-screenshots\/$/m);
+  assert.match(rules, /^Disallow: \/api\/$/m);
+  assert.doesNotMatch(rules, /^Allow: \/api\/?$/m);
+});
 
 test('sitemap dates normalize real dates and UTC database times without fabricating unknown or future dates',()=>{
  for(const value of ['2026-10-05','2026-10-05T06:38:06.369Z','2026-10-05 06:38:06','2026-10-05 06:38:06.123',new Date('2026-10-05T06:38:06Z')])assert.equal(sitemapDate(value,now),'2026-10-05');

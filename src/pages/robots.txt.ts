@@ -5,6 +5,7 @@ export const prerender = true;
 export const GET: APIRoute = ({ site }) => {
   const body = `User-agent: *
 Allow: /
+Allow: /api/product-screenshots/
 Disallow: /api/
 
 Sitemap: ${new URL('/sitemap.xml', site).href}
