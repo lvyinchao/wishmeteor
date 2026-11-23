@@ -1,35 +1,32 @@
-# New AI tools SEO page report
+# SEO report: Product Hunt alternative for AI tools
 
 ## Files changed
 
-- `src/pages/new-ai-tools.astro` — practical discovery guide and FAQ/WebPage structured data.
-- `src/pages/indie-ai-tools-directory.astro` — contextual link to the guide.
-- `src/lib/sitemap.mjs` — adds the guide to the shared page list.
-- `tests/new-ai-tools.test.mjs` — metadata, indexability, structured data, links, sitemap, robots, and asset configuration checks.
-- `tests/indie-ai-tools-directory.test.mjs` — checks the inbound guide link.
-- `tests/sitemap.test.mjs` — checks the live worker sitemap contains the slashless guide URL while retaining catalog pagination coverage.
-- `QODER_SEO_REPORT.md` — this report.
+- `src/pages/product-hunt-alternative-ai-tools.astro`: new static guide with FAQPage and WebPage structured data.
+- `src/pages/indie-ai-tools-directory.astro`: contextual link to the new guide.
+- `src/lib/sitemap.mjs`: added the new slashless static path.
+- `tests/product-hunt-alternative-ai-tools.test.mjs`: coverage for metadata, schemas, links, robots, sitemap, missing `llms.txt`, and static asset configuration.
+- `tests/sitemap.test.mjs`: coverage of the new path in the worker-generated sitemap alongside existing catalog pagination.
+- `QODER_SEO_REPORT.md`: this report.
 
 ## Page metadata
 
-- Title: `New AI Tools This Week | WishMeteor`
-- H1: `New AI tools this week`
-- Description: `Discover newly listed independent AI tools on WishMeteor. Browse the latest projects, explore developer tools, and catch up with Launch Weekly.`
-- Canonical: `https://wishmeteor.net/new-ai-tools`
-- The page uses the shared indexable head and Open Graph metadata, plus visible FAQ content matching FAQPage JSON-LD and a WebPage JSON-LD entry.
+- Title: `Product Hunt Alternative for AI Tools | WishMeteor`
+- H1: `A Product Hunt alternative for AI tools`
+- Meta description: `Looking for a Product Hunt alternative for AI tools? Explore WishMeteor, a free directory for independent products beyond a single launch day.`
+- Canonical: `https://wishmeteor.net/product-hunt-alternative-ai-tools`
+- The page is indexable, uses the same Open Graph and canonical rendering as sibling pages, and emits FAQPage and WebPage JSON-LD.
 
-## Sitemap and links
+## Discovery and links
 
-The shared `SITEMAP_PAGES` entry appears in the prerendered sitemap and in the worker's live page sitemap. The worker's existing request-time `/new` and category pagination remains unchanged. The guide links to `/new`, `/indie-ai-tools-directory`, `/blog/launch-weekly`, `/submit-ai-tool`, `/about`, and relevant categories; the indie directory links back to the guide.
+The prerendered page sitemap and the worker both use `SITEMAP_PAGES`; the worker also adds catalog and category pagination at request time. The test suite checks the new slashless URL and preserves coverage for those dynamic pages. With the same `drop-trailing-slash` setting, a local Wrangler asset-only server returned `307` to the slashless route, which returned `200` with the expected canonical; its `/llms.txt` returned `404`. The live `/about/` likewise redirects to `/about`; the new route's production redirect cannot be tested until deployment.
+
+The guide links to `/submit-ai-tool`, `/indie-ai-tools-directory`, `/new-ai-tools`, `/new`, `/about`, `/blog/launch-weekly`, and `/dofollow-policy`. The indie directory links back to the guide. No `llms.txt` was created; the live endpoint returned 404.
 
 ## Verification
 
-- `pnpm test`: passed, 95 tests.
-- `pnpm build`: passed; generated `dist/new-ai-tools/index.html`.
-- Focused page and sitemap tests: passed, 11 tests.
-- A local Wrangler asset-only server using `drop-trailing-slash` returned `307 Location: /new-ai-tools` for `/new-ai-tools/` and `200` for `/new-ai-tools`; `/about/` had the same redirect behavior. This was not a deployment or a test of the production worker.
-- Local and live source pages confirmed the stated discovery, review, cap, star, category, and Launch Weekly facts. The latest locally and publicly visible weekly issue was dated 2026-11-16. The new route returns 404 on the live site because this change has not been deployed. Existing local links from `/about` and `/submit` to other guides were not yet visible on their live counterparts.
-- Browser interaction and visual checks could not be completed: headless Chrome stalled. Despite an isolated profile and HOME, Chrome launched GoogleUpdater, whose logs indicate that it wrote updater preferences outside the worktree. The browser attempt was stopped; no outside files were manually changed or cleaned up.
-- The worktree was not clean at the start: `wishmeteor-seo-20261122-qoder-prompt.md` was already untracked. It was preserved and excluded from the commit.
-
-No fact used in the guide remains unverified against the local source and relevant live pages. No newer weekly issue, current-week product count, or product sample is claimed.
+- `pnpm test`: passed, 100 tests.
+- `pnpm build`: passed, including the new static page and sitemap entry.
+- Verified the relevant WishMeteor claims against the live about, submission, directory and new-tools pages and their worktree sources. The latest checked-in Launch Weekly issue covers November 16–22, 2026.
+- The user-provided search-intent research and the general description of Product Hunt were not independently rechecked. The page makes no competitor pricing, traffic, ranking or review-time claims and does not promise approval, traffic or permanent retention.
+- The worktree initially contained the untracked `wishmeteor-seo-20261123-qoder-prompt.md`; it was preserved and excluded from the commit.

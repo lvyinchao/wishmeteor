@@ -1,0 +1,113 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { SITE } from '../lib/site.ts';
+
+const title = `Product Hunt Alternative for AI Tools | ${SITE.name}`;
+const description = `Looking for a Product Hunt alternative for AI tools? Explore ${SITE.name}, a free directory for independent products beyond a single launch day.`;
+const faqs = [
+  {
+    q: 'Is WishMeteor a free Product Hunt alternative for AI tools?',
+    a: `${SITE.name} is a free directory for independent AI products. It charges no submission, review or listing fee, and has no paid placement or reciprocal-link requirement.`,
+  },
+  {
+    q: 'Will my product stay listed forever?',
+    a: 'An approved listing can remain in the catalog beyond its launch day, but it is subject to maintenance and may be corrected or removed. Submission does not guarantee approval.',
+  },
+  {
+    q: 'Can I use WishMeteor as well as a launch platform?',
+    a: 'Yes. A directory listing and a public launch event can serve different purposes. Neither approval nor discovery is guaranteed.',
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  }]}
+>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Product Hunt alternative for AI tools' }]} />
+
+  <div class="page-head">
+    <p class="eyebrow">Beyond a single launch day</p>
+    <h1>A Product Hunt alternative for AI tools</h1>
+    <p class="lede">
+      If you are looking for Product Hunt alternatives, {SITE.name} offers a different starting point: a free directory
+      and a wishing well for independent AI builders, not another one-day launch contest.
+    </p>
+  </div>
+
+  <p class="hero-cta">
+    <a class="btn btn-primary" href="/submit-ai-tool">See how to submit</a>
+    <a class="btn btn-ghost" href="/new">Browse the latest projects</a>
+  </p>
+
+  <article class="prose">
+    <h2>A directory rather than a launch-day event</h2>
+    <p>
+      Product Hunt is commonly used for a public launch day with comments and rankings. {SITE.name} is a directory
+      of independent AI products: an approved listing can remain in the catalog after it appears, rather than depending
+      on a single launch day. Listings are maintained and can be corrected or removed, so they are not guaranteed to stay forever.
+    </p>
+    <p>
+      This is useful if you want a place for people to find a product after launch, or to explore AI projects by category.
+      It is not a promise of traffic or discovery, and it does not replace the audience or experience of a launch event.
+      You can use both approaches if they fit your goals.
+    </p>
+
+    <h2>What a builder can expect</h2>
+    <p>
+      Submission, review and listing are free. There is no paid placement, priority review fee or reciprocal-link requirement;
+      the badge is optional. Ordinary submissions are reviewed before publication, and approval is not guaranteed.
+      At most {SITE.dailyLaunchCap} ordinary entries go live per day and {SITE.perRoundCap} per review round.
+      Verified accounts authorized for automatic publication can publish directly without those limits; entering an authorized
+      account's email alone does not grant that permission.
+    </p>
+    <p>
+      Start with the <a href="/submit-ai-tool">submission guide</a> to prepare a product and understand the process.
+      If approved, the submitter receives a blessing and a shareable card. An approved listing can include an official dofollow link
+      under the <a href="/dofollow-policy">link policy</a>. Learn more <a href="/about">about {SITE.name}</a> and its approach to review.
+    </p>
+
+    <h2>How to explore without a launch campaign</h2>
+    <p>
+      Browse the <a href="/indie-ai-tools-directory">indie AI tools directory</a> by the work you want to do, or use the
+      <a href="/new-ai-tools">new AI tools guide</a> and <a href="/new">latest projects feed</a> to find recently listed products.
+      The feed contains {SITE.name} listings, not every AI tool released elsewhere. Check each official site for current features,
+      pricing and data-handling terms before trying a product.
+    </p>
+    <p>
+      For a smaller editorial selection, read <a href="/blog/launch-weekly">Launch Weekly</a>. You can browse and light a star
+      without an account; each browser can light one star per wish. Stars offer encouragement rather than a launch-day ranking campaign.
+      If a listing misstates a product's cost or behavior, email <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with a source link.
+    </p>
+
+    <section aria-labelledby="faq">
+      <h2 id="faq">Frequently asked questions</h2>
+      {faqs.map((faq) => (
+        <>
+          <h3>{faq.q}</h3>
+          <p>{faq.a}</p>
+        </>
+      ))}
+    </section>
+  </article>
+
+  <JsonLd data={{
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: `${SITE.url}/product-hunt-alternative-ai-tools`,
+    inLanguage: 'en',
+  }} />
+</Base>
