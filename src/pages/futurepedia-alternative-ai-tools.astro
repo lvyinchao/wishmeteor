@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { SITE } from '../lib/site.ts';
+
+const title = `Futurepedia Alternative for AI Tools | ${SITE.name}`;
+const description = `Looking for a Futurepedia alternative? Browse independent AI products on ${SITE.name}, see how listings are reviewed, or submit your own tool for free.`;
+const faqs = [
+  {
+    q: 'Does it cost anything to list a tool?',
+    a: 'Submission, review and listing are free. There is no paid placement or priority review fee. Linking back or displaying a badge is optional and has no effect on review.',
+  },
+  {
+    q: `How does ${SITE.name} review tools found through research?`,
+    a: 'An editor checks each candidate against what the product actually does. The team writes the listing from scratch and a person reviews the text before publication.',
+  },
+  {
+    q: 'What if a listing gets a product detail wrong?',
+    a: `If a listing misstates what the product does or costs, email ${SITE.email} with a link to the source. Listings can be corrected or removed.`,
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  }]}
+>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: 'Futurepedia alternative for AI tools' }]} />
+
+  <div class="page-head">
+    <h1>A Futurepedia alternative for AI tools</h1>
+    <p class="lede">
+      {SITE.name} is a free directory of independent AI products. You can browse without an account,
+      follow a listing to the builder’s own site, or submit a tool you made for review.
+    </p>
+  </div>
+
+  <p class="hero-cta">
+    <a class="btn btn-primary" href="/new">Browse recent listings</a>
+    <a class="btn btn-ghost" href="/submit-ai-tool">See how to list a tool</a>
+  </p>
+
+  <article class="prose">
+    <h2>Where to browse on Futurepedia.io</h2>
+    <p>
+      On November 26, 2026, the <a href="https://www.futurepedia.io/">Futurepedia homepage</a> emphasized a
+      Personal AI Plan for using AI at work. Its <a href="https://www.futurepedia.io/ai-tools">AI tool categories</a>
+      were still available for browsing. We also checked <code>/submit-tool</code> and <code>/submit</code> on
+      Futurepedia.io that day. Both returned HTTP 404.
+    </p>
+
+    <h2>Find a tool for a task you already have</h2>
+    <p>
+      The <a href="/indie-ai-tools-directory">indie AI tools directory</a> is a good starting point if you know what
+      you want to make. Say you have a printed score and want to edit the notes in music software. Start in
+      <a href="/category/audio-voice">Voice &amp; Music</a> and look for a tool that exports MIDI or MusicXML.
+      On the builder’s site, check whether it accepts the kind of score you have and lets you correct a misread note.
+    </p>
+    <p>
+      If you would like a few tools to read about first, <a href="/blog/launch-weekly">Launch Weekly</a> selects
+      projects from each week’s new listings. The <a href="/blog/launch-weekly-2026-11-22">November 16–22 issue</a>,
+      for example, walks through how Sheet Music to MIDI lets a musician review a score before downloading it.
+    </p>
+
+    <h2>What to show when you list your product</h2>
+    <p>
+      Send the public product homepage and a screenshot that shows what someone can do with it. For a music tool,
+      a view of the original score beside the editable notes tells a reader more than a logo. Ordinary submissions
+      go through human review, and approval is not guaranteed. Read <a href="/about">how {SITE.name} reviews projects</a>.
+    </p>
+    <p>
+      If you are planning a public launch day, the <a href="/product-hunt-alternative-ai-tools">Product Hunt alternative guide</a>
+      explains how a directory listing can fit alongside that event.
+    </p>
+
+    <section aria-labelledby="faq">
+      <h2 id="faq">Frequently asked questions</h2>
+      {faqs.map((faq) => (
+        <>
+          <h3>{faq.q}</h3>
+          <p>{faq.a}</p>
+        </>
+      ))}
+    </section>
+  </article>
+
+  <JsonLd data={{
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: `${SITE.url}/futurepedia-alternative-ai-tools`,
+    inLanguage: 'en',
+  }} />
+</Base>
