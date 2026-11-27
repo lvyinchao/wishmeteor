@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { SITE } from '../lib/site.ts';
+
+const title = `There's An AI For That Alternative for AI Tools | ${SITE.name}`;
+const description = `Compare the public launch fees at TAAFT with ${SITE.name}, a free There's An AI For That alternative for browsing independent AI tools or submitting one for human review.`;
+const faqs = [
+  { q: 'Did TAAFT offer a free submission form?', a: 'On November 27, 2026, neither public launch URL showed a standing free submission form. That observation covers those two pages, not every possible promotion.' },
+  { q: `Do I need to link back to ${SITE.name}?`, a: 'No. A reciprocal link is not required. The badge is optional and does not affect review.' },
+  { q: 'How can I correct a directory entry?', a: `Email ${SITE.email} with the listing, the detail that needs changing and a link to the source.` },
+];
+---
+
+<Base title={title} description={description} jsonLd={[{
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+}]}>
+  <Breadcrumbs trail={[{ name: 'Home', path: '/' }, { name: "There's An AI For That alternative" }]} />
+  <div class="page-head">
+    <h1>A There's An AI For That alternative for AI tools</h1>
+    <p class="lede">If you want a smaller directory of independent AI products, try {SITE.name}. You can browse approved listings without an account or submit your own tool for human review without paying a fee. If you want a broad index organized by task, TAAFT is the better starting point.</p>
+  </div>
+  <article class="prose">
+    <h2>Browsing TAAFT and launching on it are different decisions</h2>
+    <p>On November 27, 2026, the <a href="https://theresanaiforthat.com/">There's An AI For That front page</a> grouped tools by topic and task. Readers looking for a tool could start there. For builders, <a href="https://theresanaiforthat.com/launch">the launch page</a> and <a href="https://theresanaiforthat.com/submit">the submit page</a> showed the same two paid options:</p>
+    <ul>
+      <li><strong>Low traffic:</strong> a $49 one-time review fee. The package described a permanent listing and basic analytics.</li>
+      <li><strong>Maximum exposure package:</strong> a $437 one-time fee. The page listed newsletter placement, priority review and support, and enhanced analytics.</li>
+    </ul>
+    <p>Check the launch page again before budgeting. A listing, a newsletter placement and a visitor who actually tries your product are three different things.</p>
+
+    <h2>Find a tool for a task</h2>
+    <p>Start with the result you need. For a narrated chapter, open <a href="/category/audio-voice">Voice &amp; Music</a>; for a video clip, start in <a href="/category/image-video">Image &amp; Video</a>. The <a href="/indie-ai-tools-directory">indie AI tools directory</a> lists the other categories.</p>
+    <p>For example, if two characters speak in the same scene, a single sample voice tells you little. The <a href="/tool/fullcastbook">FullCastBook listing</a> leads to a builder whose demos show assigning voices to characters and regenerating a passage. Try a short exchange from your own chapter: can you change one line without redoing the other speaker? Check the export format against the player you intend to use.</p>
+    <p>For recent additions, <a href="/new">browse the newest listings</a>. The <a href="/new-ai-tools">new AI tools guide</a> explains the feed; <a href="/blog/launch-weekly">Launch Weekly</a> offers a shorter editorial selection.</p>
+
+    <h2>List your product without buying placement</h2>
+    <p>Prepare a public homepage and a screenshot of someone using the product. For an audiobook tool, show how a builder assigns a voice to a line rather than sending a logo. Follow the <a href="/submit-ai-tool">submission guide</a> to send it for review. Submission, review and listing are free; there is no paid upgrade or priority queue to buy into.</p>
+    <p>Ordinary entries do not go live automatically. At most {SITE.perRoundCap} go live per review round and {SITE.dailyLaunchCap} per day. Those are ceilings, not a promised date or an assurance of approval. See <a href="/about">how the directory is reviewed</a> for the editorial policy.</p>
+    <p>Comparing other routes? The <a href="/product-hunt-alternative-ai-tools">Product Hunt guide</a> covers launch-day discovery; the <a href="/futurepedia-alternative-ai-tools">Futurepedia guide</a> explains where to find its tool categories.</p>
+
+    <section aria-labelledby="faq">
+      <h2 id="faq">Frequently asked questions</h2>
+      {faqs.map(({ q, a }) => <><h3>{q}</h3><p>{a}</p></>)}
+    </section>
+  </article>
+  <JsonLd data={{ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: `${SITE.url}/theres-an-ai-for-that-alternative-ai-tools`, inLanguage: 'en' }} />
+</Base>
