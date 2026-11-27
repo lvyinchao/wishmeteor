@@ -35,7 +35,7 @@ test('live product dates come from listing changes, remain stable, and never inc
 
 test('page maps cover default directory and category pagination with matching canonical URLs',async()=>{
  const env=environment();env.EMAIL=undefined;for(let n=0;n<25;n++)store(env,tool('pagination-'+n,{category:n<13?'ai-coding':'ai-chat'}));
- const guides = ['/submit-ai-tool', '/indie-ai-tools-directory', '/new-ai-tools', '/product-hunt-alternative-ai-tools', '/futurepedia-alternative-ai-tools'];
+ const guides = ['/submit-ai-tool', '/indie-ai-tools-directory', '/new-ai-tools', '/product-hunt-alternative-ai-tools', '/futurepedia-alternative-ai-tools', '/theres-an-ai-for-that-alternative-ai-tools'];
  const xml = await (await call(env, '/sitemap-pages.xml')).text();
  for (const path of guides) {
    assert.ok(SITEMAP_PAGES.includes(path), path);
