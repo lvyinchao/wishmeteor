@@ -1,4 +1,14 @@
-# Futurepedia alternative guide
+# There's An AI For That alternative guide — November 27, 2026
+
+PR: https://github.com/lvyinchao/wishmeteor/pull/13 (against `main`; not merged or deployed).
+
+- `src/pages/theres-an-ai-for-that-alternative-ai-tools.astro`: dated TAAFT comparison, task-based browsing example, submission advice, WebPage and FAQPage data.
+- `src/pages/indie-ai-tools-directory.astro` and `src/lib/sitemap.mjs`: one reciprocal link and the slashless static sitemap entry.
+- `tests/theres-an-ai-for-that-alternative-ai-tools.test.mjs` and `tests/sitemap.test.mjs`: rendered SEO, FAQ parity, official and internal links, hub discovery, robots and sitemap coverage.
+- `CODEX_SEO_REPORT.md`: delivery record. `pnpm test` passed 106/106; `pnpm build` produced 31 pages. Local Miniflare served the built guide at `/theres-an-ai-for-that-alternative-ai-tools` with HTTP 200 and redirected the trailing-slash URL there with HTTP 307.
+- Verification limits: TAAFT's homepage, launch and submit URLs returned HTTP 403 to direct re-fetches, so the guide uses the supplied November 27 observations. The live WishMeteor FullCastBook listing returned 200; live `/llms.txt` returned 404 and no file was added. The referenced `../.tessl/RULES.md` was absent. No delivery blocker; the new route has not been verified in production.
+
+# Previous report: Futurepedia alternative guide
 
 ## Page metadata
 
